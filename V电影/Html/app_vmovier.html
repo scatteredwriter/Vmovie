@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=yes">
+	<meta name="copyright" content="Copyright ©vmovier.com 版权所有">
+	<meta name="keywords" content="短片、视频、搞笑、感人、阅后即焚、微电影、播放器">
+	<meta name="description" content="魔力盒,只给你好看.魔力盒是由V电影团队开发的一款视频app,wifi下自动缓存三部短片,根据用户喜好进行个性化推荐,阅后即焚,不占用空间.">
+	<title>V电影APP</title>
+	<!-- <link rel="stylesheet" href="/Public/Home/css/common.css?v="> -->
+	<link rel="stylesheet" href="http://www.vmovier.com/Public/Home/css/app-vmovier.css?v=1469588617">
+	<script src="http://www.vmovier.com/Public/static/jquery-1.10.2.min.js"></script>
+	<script src="http://www.vmovier.com/Public/static/jquery.fullPage.min.js"></script>
+</head>
+<body>
+
+	<div id="dowebok">
+		<div class="up section ">
+			<section class="gallery-content" style="display:block">
+					<figure class="image-sunset" id="image-sunset1"></figure>
+					<div class="image-sunset-pre"></div>
+			</section>
+			<section class="gallery-content">
+					<figure class="image-sunset" id="image-sunset2"></figure>
+					<div class="image-sunset-pre"></div>
+			</section>
+			<section class="gallery-content">
+					<figure class="image-sunset" id="image-sunset3"></figure>
+					<div class="image-sunset-pre"></div>
+			</section>
+			<section class="gallery-content">
+					<figure class="image-sunset" id="image-sunset4"></figure>
+					<div class="image-sunset-pre"></div>
+			</section>
+			<section class="gallery-content">
+					<figure class="image-sunset" id="image-sunset5"></figure>
+					<div class="image-sunset-pre"></div>
+			</section>
+			<section class="gallery-content" style="display:block">
+					<figure class="image-sunset" id="image-sunset6"></figure>
+					<div class="image-sunset-pre"></div>
+			</section>
+			<section class="gallery-content">
+					<figure class="image-sunset" id="image-sunset7"></figure>
+					<div class="image-sunset-pre"></div>
+			</section>		
+
+			<div class="logo"><img  src="http://www.vmovier.com/Public/Home/images/app/app-vmovier-logo.png" alt=""></div>
+			<p class="solgn">感悟人生只需一刻钟</p>
+			
+		</div>
+	</div>
+	
+	<script>
+		var _hmt = _hmt || [];
+		(function() {
+		  var hm = document.createElement("script");
+		  hm.src = "//hm.baidu.com/hm.js?dfd9b1dd5fd1333a1c8e27ce6b5e60ce";
+		  var s = document.getElementsByTagName("script")[0]; 
+		  s.parentNode.insertBefore(hm, s);
+		})();
+	</script>
+	<script type="text/javascript">
+		$(function(){
+			//全屏滑动绑定
+			$('#dowebok').fullpage({
+				onLeave: function(index, direction){
+					if( direction==1){
+						$(".triggle div").removeClass("select-cricle");
+						$("#toup").addClass("select-cricle");
+
+					}else{
+						$(".triggle div").removeClass("select-cricle");
+						$("#todown").addClass("select-cricle");
+					}
+				},
+				afterRender:function(){
+					setTimeout(function(){
+						init();
+					},150);
+				}
+			});
+			
+			//初始化
+			function init(){
+				$("#dowebok").css("visibility","visible");
+				$(".btn span").on("click",function(){
+					$(".layer").show();
+					$(".downcode").hide();
+					$(".downcode").eq($(this).index()).fadeIn(500);
+				})
+				$(".close").on("click",function(){
+					$(".layer").hide();
+				})
+				$(".icon-weixin").hover(function(){
+					$(".weixin-vmovier").show();
+				},function(){
+					$(".weixin-vmovier").hide();
+				});
+			}
+			
+			
+			
+		
+
+			
+
+			//背景轮换
+			var numLoad=0;
+			var arrImg2=["http://www.vmovier.com/Public/Home/images/app/1.jpg","http://www.vmovier.com/Public/Home/images/app/2.jpg","http://www.vmovier.com/Public/Home/images/app/3.jpg","http://www.vmovier.com/Public/Home/images/app/4.jpg","http://www.vmovier.com/Public/Home/images/app/5.jpg","http://www.vmovier.com/Public/Home/images/app/6.jpg","http://www.vmovier.com/Public/Home/images/app/7.jpg"];
+			for(var i=1;i<7;i++){
+				var img=new Image();
+				img.src=arrImg2[i];
+				$(".image-sunset").eq(i).css({background:"url("+arrImg2[i]+")",backgroundSize:"100%"});
+				$(".gallery-content").eq(i).hide();
+				img.onload=function(){
+					numLoad++;
+					console.log(numLoad)
+					if(numLoad==5){
+						setTimeout(function(){
+							topChange();
+						},1000)
+					}
+				}
+			}
+			var order=2;
+			function topChange(){
+				
+				$(".gallery-content").eq(1).fadeIn(2500).siblings(".gallery-content").fadeOut(2500);
+				setInterval(function(){
+					$(".gallery-content").eq(order++).fadeIn(2500).siblings(".gallery-content").fadeOut(2500);
+					if(order>=7){
+						order=0;
+					}
+				},6500)
+			}
+			
+
+			
+
+			
+			
+		})
+	</script>
+</body>
+</html>

@@ -1,0 +1,454 @@
+*{
+	margin: 0;
+	padding: 0;
+}
+html{height: 100%;-webkit-text-size-adjust: none;}
+body{
+	height: 100%;
+	width:100%;
+	font-family:Verdana,"Lantinghei SC","Hiragino Sans GB","Microsoft Yahei",Helvetica,arial,\5b8b\4f53,sans-serif;;
+	position: absolute;
+}
+ul{
+	list-style:none;
+}
+a{
+	text-decoration: none;
+}
+#dowebok{
+	visibility: hidden;
+}
+.up{
+	width: 100%;
+	position: relative;
+	/*height: 100px;*/
+}
+.up .menu{
+	position: absolute;
+	left: 2%;
+	top: 20px;
+	
+}
+.up .menu a{
+	display: inline-block;
+	color: white;
+	font-weight: 600;
+	font-size: 18px;
+	/*font-weight: bold;*/
+	margin-left: 30px;
+	line-height: 28px;
+	-webkit-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+	padding-bottom: 4px;
+}
+.up .logo{
+	width: 100px;
+	margin: 0 auto;
+	padding-top: 230px;
+}
+.up .logo img{
+	width: 100%;
+}
+.up .solgn{
+	text-align: center;
+	color: white;
+	margin-top: 30px;
+	margin-bottom: 50px;
+	font-size: 17px;
+	font-weight: lighter;
+	margin-left: 3px;
+	letter-spacing: 2px;
+
+}
+.up .btn{
+	margin: 0 auto;
+	text-align:center;
+	margin-top: 140px;
+}
+.up .btn span{
+	display: inline-block;
+	width: 150px;
+	color: #fff;
+	border: 1px solid #fff;
+	padding: 12px 30px;
+	margin: 0 10px;
+	cursor: pointer;
+	font-size: 15px;
+}
+.up .btn span:hover{
+	border: 2px solid #fff;
+	padding: 11px 29px;
+}
+.up .btn img{
+	width: 150px;
+	display: inline-block;
+	margin: 0 10px;
+	cursor: pointer;
+}
+
+.up .downcode img{
+	width: 90px;
+	float: left;
+	margin: 5px;
+
+}
+.up .downcode .ia{
+	margin-left: 80px;
+	margin-top: 35px;
+	text-align: center;
+}
+.up .gallery-content{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top:0;
+	left: 0;
+	z-index: -1;
+	display: none;
+}
+.gallery-content .image-sunset{
+	height: 100%;
+	width: 100%;
+	background-repeat: no-repeat!important;
+	background-size: cover!important;
+	background-position: center!important;
+}
+.gallery-content .image-sunset-pre{
+	width: 100%;
+	height: 100%;
+	background: black;
+	opacity: 0.2;
+	filter:alpha(opacity=20);
+	position: absolute;
+	top: 0;
+	left: 0;
+} 
+#image-sunset1{
+	background: url(../images/app/1.jpg?150609);
+	background-size: 100%;
+}
+
+.down{
+	width: 100%;
+	background:#ededed;
+	position: relative;
+}
+.down .container{
+	/*padding-top: 70px;*/
+	width: 86%;
+	max-width: 1078px;
+	/*background:red;*/
+	height: 100%;
+	margin:0 auto;
+	position: relative;
+}
+.container .upline{
+	/*margin-top: 50px;*/
+	height: 110px;
+	line-height:110px;
+}
+.container .upline .title{
+	border-left: 4px solid #2eadfa;
+	padding-left: 8px;
+	color: #727171;
+	font-weight: 600;
+	font-family:"Hiragino Sans";
+
+}
+.container .upline img{
+	float: right;
+	height: 30px;
+	margin-top: 50px;
+	cursor: pointer;
+}
+.container .list{
+	width: 100%;
+	overflow: hidden;
+}
+.container .list li{
+	float: left;
+	width: 27%;
+	height: 180px;
+	/*background: red;*/
+	margin-right:5%;
+	margin-bottom:30px;
+	margin-top:10px;
+	margin-left:20px;
+
+
+	overflow: hidden;
+	border-radius: 4px;
+	position: relative;
+	box-shadow: 0 0 2px rgba(0,0,0,0.6);
+	cursor: pointer;
+	transition: all 0.2s;
+	-moz-transition: all 0.2s;
+	-webkit-transition: all 0.2s;
+	-o-transition: all 0.2s;
+
+	/*-moz-box-shadow: 0 0 2px black;
+	-webkit-box-shadow: 0 0 2px black;*/
+}
+.container .list li img{
+	height: 100%;
+	
+}
+#gagu{
+	height: 110%;
+}
+.list li .desc{
+	display: inline-block;
+	position: absolute;
+	bottom: 5px;
+	color:white;
+	font-weight: 600;
+	margin-left: 10px;
+	-webkit-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+}
+.list li .desc .title{
+	font-size: 12px;
+	letter-spacing: 1px;
+	
+}
+.list li .desc img{
+	width: 11px;
+	height: 11px;
+	vertical-align:text-middle;
+
+	/*margin-bottom: -1px;*/
+}
+.list li .desc .msg{
+	height: 18px;
+	line-height: 18px;
+}
+.list li .desc .ele{
+	font-size: 10px;
+	margin-right: 5px;
+	-webkit-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+}
+.list li .desc .opa{
+	opacity: 0.8;
+	filter:alpha(opacity=80);
+	vertical-align: top;
+}
+.container .app-footer{
+	/*margin-top: 35px;*/
+	width: 100%;
+	text-align: center;
+	color: #888888;
+	font-size: 8px;
+	position: absolute;
+	-webkit-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+	bottom: 26px;
+
+}
+.container .app-footer p{
+	text-align: center;
+}
+#power{
+	font-size: 14px;
+}
+.container .app-footer a{
+	text-decoration: none;
+	color: #888888;
+}
+.container .app-footer a:hover{
+	color: #2eadfa;
+}
+.triggle{
+	position:fixed;
+	top:50%;
+	right:20px;
+}
+.triggle div{
+	background: white;
+	margin-bottom: 18px;
+	z-index: 100;
+	width: 4px;
+	height: 4px;
+	border-radius:2px;
+}
+.select-cricle{
+	transform: scale(2,2);
+	-ms-transform: scale(2,2);	/* IE 9 */
+	-webkit-transform: scale(2,2);	/* Safari 和 Chrome */
+	-o-transform: scale(2,2);	/* Opera */
+}
+.downcode{
+	width:288px;
+	height: 375px;
+	background: #ffffff;
+	border-radius: 8px;
+	position: absolute;
+	left: 50%;
+	top:50%;
+	color:#313131;
+	margin-left: -144px;
+	margin-top: -187px;
+	/*display: none;*/
+}
+.layer{
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,0.4);
+	position: absolute;
+	top:0;
+	display: none;
+}
+.layer p{text-align: center;margin-top:25px;font-size: 18px;}
+.layer img{width: 180px;margin: 0 auto;display: block;margin-top:21px;}
+.layer .text{text-align: center;margin-top: 10px;line-height: 1.8;font-size: 14px;}
+.layer a{margin-top: 5px;color:#313131;display: inline-block;border-bottom: 1px solid #313131;line-height: 1.4;}
+.ios img{left: 255px;}
+.ios .text{margin-left: 22px;margin-top: 29px;line-height: 1.5;}
+.ios h3{font-weight: normal;}
+.ios h5{font-weight: normal;font-size: 14px;margin-top: 29px;}
+.ios span{font-size: 10px;}
+.close{
+	position: absolute;
+	top: 5px;
+	cursor: pointer;
+	color: rgba(0,0,0,0.3);
+	width: 15px;
+	height: 15px;
+	font-size: 20px;
+	-webkit-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+	right: 10px;
+	font-weight: lighter;
+}
+/*#close img{
+	width: 100%;
+}*/
+.app{
+	width:450px;
+	height: 280px;
+	background:#1e1e1e;
+	z-index: 100000;
+	position: absolute;
+	left: 50%;
+	margin-left: -225px;
+	top: 50%;
+	margin-top: -140px;
+	border-radius: 5px;
+	box-shadow: 0 0 4px black;
+	-moz-box-shadow: 0 0 4px black;
+	-webkit-box-shadow: 0 0 4px black;
+	display: none;
+}
+.app .photocode{
+	height: 60%;
+	margin-top: 12%;
+	margin-left:10%;
+	float: left;
+}
+.app .cancel{
+	position: absolute;
+	right: 12px;
+	top: 7px;
+	color: white;
+	cursor: pointer;
+	width: 12px;
+	height: 12px;
+	background: url(../images/magicbox/cancel.png?150516);
+	background-size: 100%;
+	margin-top: 5px;
+}
+
+.appbtn{
+	/*margin-left: 40%;*/
+	height: 100%;
+	width: 45%;
+	/*background: red;*/
+	float: right;
+	padding-top: 14%;
+	
+
+}
+.appbtn li{
+	width: 75%;
+	height: 44px;
+	/*background: yellow;*/
+	margin-bottom: 60px;
+	border-radius: 10px;
+	border: 1px solid white;
+	cursor: pointer;
+	position: relative;
+	background: rgba(225,225,225,0);
+}
+.appbtn li img{
+	position: absolute;
+	width: 30px;
+	top: 7px;
+  	left: 22px;
+}
+.appbtn p{
+	margin-left: 75px;
+	color: white;
+	-webkit-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+
+}
+.appbtn .en{
+	font-size: 9px;
+	font-weight: 400;
+	margin-top: 5px;
+}
+.appbtn .zh{
+	font-weight: 600;
+}
+.plat-warp{
+	position: absolute;
+	top:12px;
+	right: 10px;
+}
+.plat-warp .plat-icon{
+	width: 30px;
+	margin: 15px;
+}
+.plat-warp .plat-icon:first-of-type{
+	opacity: 0.6;
+	filter:alpha(opacity=60);
+}
+.plat-warp .plat-icon:first-of-type:hover{
+	opacity: 1;
+	filter:alpha(opacity=60);
+}
+.plat-warp .weixin-vmovier{
+	width: 170px;
+	background: #fff;
+	position: absolute;
+	top:55px;
+	left: -55px;
+	display: none;
+}
+.plat-warp .weixin-vmovier i{
+	display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: #fff;
+    transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    position: absolute;
+    left: 50%;
+    margin-left: -5px;
+    top: -3px;
+}
+.plat-warp .weixin-vmovier img{
+	width: 78%;
+	margin: 20px auto 0;
+	display: block;
+}
+.plat-warp .weixin-vmovier p{
+	/*transform: scale(0.8,0.8);
+    -webkit-transform: scale(0.8,0.8);*/
+	font-size: 10px;
+	text-align: center;
+	line-height: 1.8;
+	margin: 12px 0 26px;
+}
+
+

@@ -1,0 +1,208 @@
+﻿<Page
+    x:Class="V电影.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:V电影"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodel="using:V电影.ViewModel"
+    xmlns:control="using:V电影.Control"
+    xmlns:converter="using:V电影.Converter"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <converter:User_Name_Converter x:Key="user_name_converter"></converter:User_Name_Converter>
+        <Style x:Key="ListViewItemStyle2" TargetType="ListViewItem">
+            <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}"/>
+            <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}"/>
+            <Setter Property="TabNavigation" Value="Local"/>
+            <Setter Property="IsHoldingEnabled" Value="True"/>
+            <Setter Property="Margin" Value="0,0,0,0"></Setter>
+            <Setter Property="Padding" Value="0,0,0,0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Stretch"/>
+            <Setter Property="MinWidth" Value="{ThemeResource ListViewItemMinWidth}"/>
+            <Setter Property="MinHeight" Value="{ThemeResource ListViewItemMinHeight}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <ListViewItemPresenter CheckBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}" ContentMargin="{TemplateBinding Padding}" CheckMode="Inline" ContentTransitions="{TemplateBinding ContentTransitions}" CheckBoxBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}" DragForeground="{ThemeResource ListViewItemDragForegroundThemeBrush}" DragOpacity="{ThemeResource ListViewItemDragThemeOpacity}" DragBackground="{ThemeResource ListViewItemDragBackgroundThemeBrush}" DisabledOpacity="{ThemeResource ListViewItemDisabledThemeOpacity}" FocusBorderBrush="{ThemeResource SystemControlForegroundAltHighBrush}" FocusSecondaryBorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" PointerOverForeground="{ThemeResource SystemControlHighlightAltBaseHighBrush}" PressedBackground="{ThemeResource SystemControlHighlightListMediumBrush}" PlaceholderBackground="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}" PointerOverBackground="{ThemeResource SystemControlHighlightListLowBrush}" ReorderHintOffset="{ThemeResource ListViewItemReorderHintThemeOffset}" SelectionCheckMarkVisualEnabled="True" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Storyboard x:Name="Close_Pane_But_Open1" FillBehavior="HoldEnd">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="close_pane_but_scale" Storyboard.TargetProperty="ScaleX">
+                <LinearDoubleKeyFrame Value="1.1" KeyTime="0:0:0.2"></LinearDoubleKeyFrame>
+                <LinearDoubleKeyFrame Value="1.0" KeyTime="0:0:0.3"></LinearDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Name="Close_Pane_But_Open2" FillBehavior="HoldEnd">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="close_pane_but_scale" Storyboard.TargetProperty="ScaleY">
+                <LinearDoubleKeyFrame Value="1.1" KeyTime="0:0:0.2"></LinearDoubleKeyFrame>
+                <LinearDoubleKeyFrame Value="1.0" KeyTime="0:0:0.3"></LinearDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Name="Pages_ListView_Open1" FillBehavior="Stop">
+            <DoubleAnimation Storyboard.TargetName="pages_listview_trans" Storyboard.TargetProperty="Y" From="-200" To="0" Duration="0:0:0.3"></DoubleAnimation>
+        </Storyboard>
+        <Storyboard x:Name="Pages_ListView_Open2" FillBehavior="Stop">
+            <DoubleAnimation Storyboard.TargetName="pages_listview" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:0.4"></DoubleAnimation>
+        </Storyboard>
+    </Page.Resources>
+
+    <Page.DataContext>
+        <viewmodel:MainPageViewModel></viewmodel:MainPageViewModel>
+    </Page.DataContext>
+
+    <Grid Background="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"></ColumnDefinition>
+            <ColumnDefinition Width="4*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="1000"></AdaptiveTrigger>
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="titlebar_grid.Grid.ColumnSpan" Value="2"></Setter>
+                        <Setter Target="page_frame_grid.Grid.ColumnSpan" Value="1"></Setter>
+                        <Setter Target="page_frame_grid.Margin" Value="0,15,0,0"></Setter>
+                        <Setter Target="splitview_grid.Grid.ColumnSpan" Value="1"></Setter>
+                        <Setter Target="second_frame_grid.Visibility" Value="Visible"></Setter>
+                        <Setter Target="splitview.OpenPaneLength" Value="400"></Setter>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+        <Grid x:Name="titlebar_grid" Grid.Column="0" Grid.ColumnSpan="1">
+            <control:TitleBar x:Name="titlebar"></control:TitleBar>
+        </Grid>
+        <Grid x:Name="page_frame_grid" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,30,0,0">
+            <Frame x:Name="page_frame">
+                <Frame.ContentTransitions>
+                    <TransitionCollection>
+                        <EdgeUIThemeTransition Edge="Right"></EdgeUIThemeTransition>
+                    </TransitionCollection>
+                </Frame.ContentTransitions>
+            </Frame>
+        </Grid>
+        <Grid x:Name="splitview_grid" Grid.Column="0" Grid.ColumnSpan="2">
+            <SplitView x:Name="splitview" PaneBackground="Transparent" OpenPaneLength="362" IsPaneOpen="False" PaneClosing="splitview_PaneClosing">
+                <SplitView.Pane>
+                    <Grid>
+                        <Grid.Background>
+                            <ImageBrush ImageSource="Assets/slide_bg.9.png" Stretch="Fill"></ImageBrush>
+                        </Grid.Background>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="auto"></RowDefinition>
+                            <RowDefinition Height="*"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <!--<Grid Grid.Row="0" Grid.RowSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.5"></Grid>-->
+                        <RelativePanel Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,0,40">
+                            <StackPanel x:Name="login" Orientation="Vertical" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,50,0,0" Tapped="login_Tapped">
+                                <Ellipse Height="100" Width="100" HorizontalAlignment="Center">
+                                    <Ellipse.Fill>
+                                        <ImageBrush ImageSource="{Binding User_Avatar}"></ImageBrush>
+                                    </Ellipse.Fill>
+                                </Ellipse>
+                                <TextBlock Text="{Binding User_Name}" Foreground="{Binding User_Name_Foreground}" FontSize="{Binding Source={StaticResource APPTheme},Path=Content_Size}" HorizontalAlignment="Center" Margin="0,10,0,0"></TextBlock>
+                            </StackPanel>
+                            <Image x:Name="side_set" Height="40" Width="40" Source="Assets/side_set.png" RelativePanel.LeftOf="login" RelativePanel.AlignVerticalCenterWith="login" Margin="0,20,50,0"></Image>
+                            <Image x:Name="side_message" Height="40" Width="40" RelativePanel.RightOf="login" RelativePanel.AlignVerticalCenterWith="login" Margin="50,20,0,0" Source="Assets/side_message.png"></Image>
+                        </RelativePanel>
+                        <Grid Grid.Row="1">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                                <ColumnDefinition Width="*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <RelativePanel Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <StackPanel RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Tapped="Pages_StackPanel_Tapped">
+                                    <Image Height="25" Width="25" Source="Assets/side_subscribe.png"></Image>
+                                    <TextBlock Text="我的订阅" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" Margin="0,5,0,0"></TextBlock>
+                                </StackPanel>
+                                <Line X1="0" X2="0" Y1="0" Y2="23" Opacity="0.3" Stroke="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" StrokeThickness="1" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"></Line>
+                            </RelativePanel>
+                            <RelativePanel Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <StackPanel RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True">
+                                    <Image Height="25" Width="25" Source="Assets/side_cache.png"></Image>
+                                    <TextBlock Text="我的缓存" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" Margin="0,5,0,0"></TextBlock>
+                                </StackPanel>
+                                <Line X1="0" X2="0" Y1="0" Y2="23" Opacity="0.3" Stroke="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" StrokeThickness="1" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"></Line>
+                            </RelativePanel>
+                            <RelativePanel Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <StackPanel RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True">
+                                    <Image Height="25" Width="25" Source="Assets/side_likes.png"></Image>
+                                    <TextBlock Text="我喜欢的" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" Margin="0,5,0,0"></TextBlock>
+                                </StackPanel>
+                            </RelativePanel>
+                        </Grid>
+                        <ListView x:Name="pages_listview" Grid.Row="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollMode="Enabled" Style="{StaticResource ListViewStyle1}" Margin="0,30,0,0" ItemContainerStyle="{StaticResource ListViewItemStyle2}" IsItemClickEnabled="True" Loaded="ListView_Loaded" SelectionChanged="ListView_SelectionChanged" ItemClick="pages_listview_ItemClick">
+                            <ListView.RenderTransform>
+                                <TranslateTransform x:Name="pages_listview_trans"></TranslateTransform>
+                            </ListView.RenderTransform>
+                            <ListViewItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Horizontal" Padding="30,19,0,19">
+                                        <Image Height="30" Width="30" VerticalAlignment="Center" Source="Assets/side_home_.png"></Image>
+                                        <TextBlock Text="首页" FontSize="{Binding Source={StaticResource APPTheme},Path=Content_Size}" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" VerticalAlignment="Center" Margin="25,0,0,3"></TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Width="1000" HorizontalAlignment="Stretch" Background="Black" Opacity="0.1" Visibility="Collapsed"></StackPanel>
+                                </StackPanel>
+                            </ListViewItem>
+                            <ListViewItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Horizontal" Padding="30,19,0,19">
+                                        <Image Height="30" Width="30" VerticalAlignment="Center" Source="Assets/side_series_.png"></Image>
+                                        <TextBlock Text="系列" FontSize="{Binding Source={StaticResource APPTheme},Path=Content_Size}" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" VerticalAlignment="Center" Margin="25,0,0,3"></TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Width="1000" HorizontalAlignment="Stretch" Background="Black" Opacity="0.1" Visibility="Collapsed"></StackPanel>
+                                </StackPanel>
+                            </ListViewItem>
+                            <ListViewItem>
+                                <StackPanel Orientation="Horizontal">
+                                    <StackPanel Orientation="Horizontal" Padding="30,19,0,19">
+                                        <Image Height="30" Width="30" VerticalAlignment="Center" Source="Assets/side_behind_.png"></Image>
+                                        <TextBlock Text="幕后" FontSize="{Binding Source={StaticResource APPTheme},Path=Content_Size}" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" VerticalAlignment="Center" Margin="25,0,0,3"></TextBlock>
+                                    </StackPanel>
+                                    <StackPanel Width="1000" HorizontalAlignment="Stretch" Background="Black" Opacity="0.1" Visibility="Collapsed"></StackPanel>
+                                </StackPanel>
+                            </ListViewItem>
+                        </ListView>
+                        <Image x:Name="close_pane_but" Grid.Row="0" Grid.RowSpan="3" Height="90" Width="90" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,3,30" Source="Assets/side_close.png" Tapped="close_pane_but_Tapped">
+                            <Image.RenderTransform>
+                                <ScaleTransform x:Name="close_pane_but_scale" CenterX="47.5" CenterY="47.5" ScaleX="0" ScaleY="0"></ScaleTransform>
+                            </Image.RenderTransform>
+                        </Image>
+                    </Grid>
+                </SplitView.Pane>
+            </SplitView>
+        </Grid>
+        <Grid x:Name="second_frame_grid" Grid.Column="1" Visibility="Collapsed" Margin="0,15,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"></RowDefinition>
+                <RowDefinition Height="*"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Background="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}">
+                <Button x:Name="back_but" HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" Margin="10" Style="{StaticResource BackButtonStyle}" Visibility="Collapsed" Click="back_but_Click">
+                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE00E;" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}"></FontIcon>
+                </Button>
+                <TextBlock x:Name="second_frame_title" Text="内容" FontSize="{Binding Source={StaticResource APPTheme},Path=Header_Size}" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,13,10,13"></TextBlock>
+            </Grid>
+            <Frame x:Name="second_frame" Grid.Row="1">
+                <Frame.ContentTransitions>
+                    <TransitionCollection>
+                        <PaneThemeTransition Edge="Right"></PaneThemeTransition>
+                        <NavigationThemeTransition></NavigationThemeTransition>
+                    </TransitionCollection>
+                </Frame.ContentTransitions>
+            </Frame>
+        </Grid>
+    </Grid>
+</Page>

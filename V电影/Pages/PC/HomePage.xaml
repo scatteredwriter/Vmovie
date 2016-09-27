@@ -1,0 +1,156 @@
+﻿<Page
+    x:Class="V电影.Pages.PC.HomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:V电影.Pages.PC"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodel="using:V电影.ViewModel"
+    xmlns:converter="using:V电影.Converter"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <converter:Lastest_Second_Content_Converter x:Key="lastest_second_content_converter"></converter:Lastest_Second_Content_Converter>
+        <converter:Get_New_Converter x:Key="get_new_converter"></converter:Get_New_Converter>
+        <converter:Cate_CateName_Converter x:Key="cate_catename_converter"></converter:Cate_CateName_Converter>
+        <Style x:Key="FlipViewStyle1" TargetType="FlipView">
+            <Setter Property="Background" Value="{ThemeResource SystemControlPageBackgroundListLowBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="TabNavigation" Value="Once"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Hidden"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden"/>
+            <Setter Property="ScrollViewer.IsHorizontalRailEnabled" Value="True"/>
+            <Setter Property="ScrollViewer.IsVerticalRailEnabled" Value="False"/>
+            <Setter Property="ScrollViewer.IsHorizontalScrollChainingEnabled" Value="True"/>
+            <Setter Property="ScrollViewer.IsVerticalScrollChainingEnabled" Value="True"/>
+            <Setter Property="ScrollViewer.IsDeferredScrollingEnabled" Value="True"/>
+            <Setter Property="ScrollViewer.BringIntoViewOnFocusChange" Value="True"/>
+            <Setter Property="UseSystemFocusVisuals" Value="True"/>
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel AreScrollSnapPointsRegular="True" Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="FlipView">
+                        <Grid BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
+                            <ScrollViewer x:Name="ScrollingHost" AutomationProperties.AccessibilityView="Raw" BringIntoViewOnFocusChange="{TemplateBinding ScrollViewer.BringIntoViewOnFocusChange}" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalSnapPointsAlignment="Center" HorizontalSnapPointsType="MandatorySingle" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" IsTabStop="False" IsHorizontalRailEnabled="{TemplateBinding ScrollViewer.IsHorizontalRailEnabled}" IsHorizontalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsHorizontalScrollChainingEnabled}" IsVerticalScrollChainingEnabled="{TemplateBinding ScrollViewer.IsVerticalScrollChainingEnabled}" IsVerticalRailEnabled="{TemplateBinding ScrollViewer.IsVerticalRailEnabled}" IsDeferredScrollingEnabled="{TemplateBinding ScrollViewer.IsDeferredScrollingEnabled}" Padding="{TemplateBinding Padding}" TabNavigation="{TemplateBinding TabNavigation}" VerticalSnapPointsType="MandatorySingle" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" ZoomMode="Disabled">
+                                <ItemsPresenter/>
+                            </ScrollViewer>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+
+    <Page.DataContext>
+        <viewmodel:HomePageViewModel></viewmodel:HomePageViewModel>
+    </Page.DataContext>
+
+    <Grid Background="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}">
+        <Pivot x:Name="pivot" SelectionChanged="Pivot_SelectionChanged" Style="{StaticResource PivotStyle1}">
+            <Pivot.LeftHeader>
+                <Image x:Name="menu_but" Margin="10" Height="30" Width="30" Source="ms-appx:///Assets/home_side.png" Tapped="menu_but_Tapped"></Image>
+            </Pivot.LeftHeader>
+            <PivotItem Margin="0,0,0,0">
+                <PivotItem.Header>
+                    <Grid BorderBrush="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" Padding="0,0,0,14">
+                        <Grid.RenderTransform>
+                            <TranslateTransform X="0" Y="8"></TranslateTransform>
+                        </Grid.RenderTransform>
+                        <TextBlock Text="最新" Opacity="0.5" FontSize="{Binding Source={StaticResource APPTheme},Path=Header_Size}" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" VerticalAlignment="Center"></TextBlock>
+                    </Grid>
+                </PivotItem.Header>
+                <Grid>
+                    <ListView x:Name="lastest_listview" IsItemClickEnabled="True" ItemsSource="{Binding Lastest_Info}" ScrollViewer.IsScrollInertiaEnabled="True" ScrollViewer.IsDeferredScrollingEnabled="True" ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollMode="Enabled" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource ListViewStyle2}" Loaded="ListView_Loaded" ItemClick="lastest_listview_ItemClick">
+                        <ListView.Header>
+                            <ListViewHeaderItem Style="{StaticResource ListViewHeaderItemStyle1}" Margin="0,-10,0,0" Padding="0,0,0,-10">
+                                <Grid Height="300" HorizontalAlignment="Center" ManipulationMode="TranslateX,System" ManipulationDelta="Grid_ManipulationDelta" ManipulationCompleted="Grid_ManipulationCompleted">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="500"></ColumnDefinition>
+                                        <ColumnDefinition Width="500"></ColumnDefinition>
+                                        <ColumnDefinition Width="500"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <FlipView x:Name="l_flipview" Grid.Column="0" MaxHeight="250" ItemsSource="{Binding Flipview_Lists}" Style="{StaticResource FlipViewStyle1}">
+                                        <FlipView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Background="Black" Opacity="0.5">
+                                                    <Image Source="{Binding image_source}" Tapped="View_Content_Tapped"></Image>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </FlipView.ItemTemplate>
+                                    </FlipView>
+                                    <Grid Grid.Column="1">
+                                        <FlipView x:Name="flipview" MaxHeight="300" ItemsSource="{Binding Flipview_Lists}" Style="{StaticResource FlipViewStyle1}" SelectionChanged="flipview_SelectionChanged">
+                                            <FlipView.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Grid>
+                                                        <Image Source="{Binding image_source}" Tapped="View_Content_Tapped"></Image>
+                                                    </Grid>
+                                                </DataTemplate>
+                                            </FlipView.ItemTemplate>
+                                        </FlipView>
+                                        <StackPanel x:Name="sp" HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Horizontal" Margin="0,0,0,20"></StackPanel>
+                                    </Grid>
+                                    <FlipView x:Name="r_flipview" Grid.Column="2" MaxHeight="250" ItemsSource="{Binding Flipview_Lists}" Style="{StaticResource FlipViewStyle1}" SelectionChanged="r_flipview_SelectionChanged">
+                                        <FlipView.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid Background="Black" Opacity="0.5">
+                                                    <Image Source="{Binding image_source}" Tapped="View_Content_Tapped"></Image>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </FlipView.ItemTemplate>
+                                    </FlipView>
+                                </Grid>
+                            </ListViewHeaderItem>
+                        </ListView.Header>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <RelativePanel>
+                                    <Grid x:Name="image_grid" Background="Black" Opacity="0.7" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True">
+                                        <Image x:Name="lastest_image" Source="{Binding image_source}" Stretch="UniformToFill"></Image>
+                                    </Grid>
+                                    <TextBlock x:Name="lastest_second_content" Text="{Binding Converter={StaticResource lastest_second_content_converter}}" TextWrapping="Wrap" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" RelativePanel.AlignLeftWith="image_grid" RelativePanel.AlignBottomWith="image_grid" Margin="20,0,20,20"></TextBlock>
+                                    <TextBlock x:Name="lastset_title" Text="{Binding title}" FontWeight="Medium" FontSize="{Binding Source={StaticResource APPTheme},Path=Content_Size}" TextWrapping="Wrap" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" RelativePanel.Above="lastest_second_content" RelativePanel.AlignLeftWith="image_grid" Margin="20,0,20,20"></TextBlock>
+                                </RelativePanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                    <Border x:Name="lastest_new_border" Padding="10,10,10,10" Opacity="0.8" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}" Visibility="Collapsed">
+                        <TextBlock Text="{Binding Lastest_New_Count, Converter={StaticResource get_new_converter}}" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                    </Border>
+                </Grid>
+            </PivotItem>
+            <PivotItem Margin="0,0,0,0" LayoutUpdated="PivotItem_LayoutUpdated">
+                <PivotItem.Header>
+                    <Grid BorderBrush="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" Padding="0,0,0,14">
+                        <Grid.RenderTransform>
+                            <TranslateTransform X="0" Y="8"></TranslateTransform>
+                        </Grid.RenderTransform>
+                        <TextBlock Text="频道" Opacity="0.5" FontSize="{Binding Source={StaticResource APPTheme},Path=Header_Size}" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" VerticalAlignment="Center"></TextBlock>
+                    </Grid>
+                </PivotItem.Header>
+                <GridView x:Name="cates_gridview" IsItemClickEnabled="True" ItemsSource="{Binding Cate_Lists}" HorizontalAlignment="Stretch" Style="{StaticResource GridViewStyle1}" ItemContainerStyle="{StaticResource GridViewItemStyle1}" ItemClick="cates_gridview_ItemClick">
+                    <GridView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Height="250" Width="250">
+                                <Grid Background="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}" Opacity="0.7">
+                                    <Image Source="{Binding image_source}"></Image>
+                                </Grid>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Converter={StaticResource cate_catename_converter}}" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" FontWeight="Medium" FontSize="{Binding Source={StaticResource APPTheme},Path=Content_Size}"></TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </GridView.ItemTemplate>
+                </GridView>
+            </PivotItem>
+            <Pivot.RightHeader>
+                <Image x:Name="search_but" Margin="0,0,10,0" Height="30" Width="30" Source="ms-appx:///Assets/home_search.png" Tapped="search_but_Tapped"></Image>
+            </Pivot.RightHeader>
+        </Pivot>
+    </Grid>
+</Page>

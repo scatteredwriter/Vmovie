@@ -1,0 +1,53 @@
+﻿<Page
+    x:Class="V电影.Pages.Share.SeriesPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:V电影.Pages.Share"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodel="using:V电影.ViewModel"
+    xmlns:converter="using:V电影.Converter"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <converter:Series_Info_Converter x:Key="series_info_converter"></converter:Series_Info_Converter>
+        <converter:Is_Attention_Converter x:Key="is_attention_converter"></converter:Is_Attention_Converter>
+        <converter:Get_New_Converter x:Key="get_new_converter"></converter:Get_New_Converter>
+    </Page.Resources>
+
+    <Page.DataContext>
+        <viewmodel:SeriesPageViewModel></viewmodel:SeriesPageViewModel>
+    </Page.DataContext>
+
+    <Grid Background="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Image x:Name="menu_but" Margin="10" Height="30" Width="30" HorizontalAlignment="Left" VerticalAlignment="Center" Source="ms-appx:///Assets/home_side.png" Tapped="menu_but_Tapped"></Image>
+            <TextBlock Text="系列" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="{Binding Source={StaticResource APPTheme},Path=Header_Size}" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}"></TextBlock>
+            <Image x:Name="search_but" Margin="0,0,10,0" Height="30" Width="30" HorizontalAlignment="Right" VerticalAlignment="Center" Source="ms-appx:///Assets/home_search.png" Tapped="search_but_Tapped"></Image>
+        </Grid>
+        <Grid Grid.Row="1">
+            <ListView x:Name="series_listview" ItemsSource="{Binding Series_Info}" ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollMode="Enabled" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource ListViewStyle2}" Loaded="series_listview_Loaded">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <RelativePanel Background="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" Tapped="View_Content_Tapped">
+                            <Image x:Name="series_image" Source="{Binding image_source}" Stretch="UniformToFill" RelativePanel.AlignTopWithPanel="True" Margin="0,0,0,20"></Image>
+                            <StackPanel x:Name="series_info" Orientation="Vertical" RelativePanel.Below="series_image" Margin="20,0,20,0">
+                                <TextBlock Text="{Binding title}" Foreground="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}" FontWeight="Medium" FontSize="{Binding Source={StaticResource APPTheme},Path=Content_Size}"></TextBlock>
+                                <TextBlock Text="{Binding Converter={StaticResource series_info_converter}}" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" FontSize="12" Margin="0,7,0,0"></TextBlock>
+                            </StackPanel>
+                            <Image x:Name="attention" Height="28" Width="28" Source="{Binding Converter={StaticResource is_attention_converter}}" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWith="series_info" Margin="0,0,20,0" Tapped="attention_Tapped"></Image>
+                            <TextBlock x:Name="series_content" MaxHeight="40" Text="{Binding content}" Foreground="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}" FontSize="{Binding Source={StaticResource APPTheme},Path=Second_Content_Size}" FontWeight="Thin" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" RelativePanel.Below="series_info" Margin="20,20,20,40"></TextBlock>
+                        </RelativePanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <Border x:Name="series_new_border" Padding="10,10,10,10" Opacity="0.8" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}" Visibility="Collapsed">
+                <TextBlock Text="{Binding Series_New_Count, Converter={StaticResource get_new_converter}}" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+            </Border>
+        </Grid>
+    </Grid>
+</Page>
