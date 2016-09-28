@@ -124,6 +124,7 @@
     <Compile Include="Model\order.cs" />
     <Compile Include="Model\search.cs" />
     <Compile Include="Model\series.cs" />
+    <Compile Include="Model\series_param.cs" />
     <Compile Include="Model\series_view.cs" />
     <Compile Include="Model\user.cs" />
     <Compile Include="Model\view.cs" />
@@ -170,6 +171,7 @@
     <Compile Include="ViewModel\OrderPageViewModel.cs" />
     <Compile Include="ViewModel\SearchPageViewModel.cs" />
     <Compile Include="ViewModel\SeriesPageViewModel.cs" />
+    <Compile Include="ViewModel\SeriesViewViewModel.cs" />
     <Compile Include="ViewModel\ViewContentPageViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -183,6 +185,8 @@
     <Content Include="Assets\attention_finish.png" />
     <Content Include="Assets\black_share_icon.png" />
     <Content Include="Assets\default_avatar.png" />
+    <Content Include="Assets\dropdown.png" />
+    <Content Include="Assets\dropup.png" />
     <Content Include="Assets\home_like.png" />
     <Content Include="Assets\home_search.png" />
     <Content Include="Assets\home_search_disable.png" />

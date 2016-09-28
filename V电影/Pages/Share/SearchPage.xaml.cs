@@ -47,13 +47,6 @@ namespace V电影.Pages.Share
 
             if (e.NavigationMode == NavigationMode.New)
             {
-                if ((e.Parameter != null) && e.Parameter.ToString() != "")
-                {
-                    if (e.Parameter.ToString().Contains(this.GetType().ToString()))
-                    {
-                        return;
-                    }
-                }
                 First_Step();
             }
         }

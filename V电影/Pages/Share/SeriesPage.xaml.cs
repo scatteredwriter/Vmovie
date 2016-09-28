@@ -22,18 +22,25 @@ using Newtonsoft.Json.Linq;
 
 namespace V电影.Pages.Share
 {
+    public interface Attention_Notice
+    {
+        void Reception(int status, int seriesid);
+    }
+
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
     /// </summary>
-    public sealed partial class SeriesPage : Page
+    public sealed partial class SeriesPage : Page, Attention_Notice
     {
-
         private int series_p = 1;
 
         private bool is_first_navigation = true;
         private bool is_series_loading = false;
 
+        public static SeriesPage seriespage;
+
         private ScrollViewer series_listview_sc = null;
+
         private Resource.APPTheme apptheme = new Resource.APPTheme();
 
         private ViewModel.SeriesPageViewModel viewmodel = new ViewModel.SeriesPageViewModel();
@@ -43,6 +50,7 @@ namespace V电影.Pages.Share
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Enabled;
             this.DataContext = viewmodel;
+            seriespage = this;
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -235,30 +243,88 @@ namespace V电影.Pages.Share
             MainPage.mainpage.Navigate_To_SearchPage();
         }
 
-        private async void attention_Tapped(object sender, TappedRoutedEventArgs e)
+        private void series_listview_ItemClick(object sender, ItemClickEventArgs e)
         {
-            Model.series series = (sender as Image).DataContext as Model.series;
-            string json = await HttpRequest.VmovieRequset.Series_Follow_Request(series.seriesid, Convert.ToInt32(!series.isfollow));
-            JObject json_object = (JObject)JsonConvert.DeserializeObject(json);
-            if (json_object["status"].ToString() == "0")
-            {
-                series.isfollow = !series.isfollow;
-                if (json_object["msg"].ToString() == "追剧成功")
-                {
-                    (sender as Image).Source = new BitmapImage(new Uri("ms-appx:///Assets/attention_finish.png", UriKind.Absolute));
-                }
-                else if (json_object["msg"].ToString() == "已取消追剧")
-                {
-                    (sender as Image).Source = new BitmapImage(new Uri("ms-appx:///Assets/attention.png", UriKind.Absolute));
-                }
-            }
-            Control.ShowMessage showmessage = new Control.ShowMessage("系列", json_object["msg"].ToString(), "确定", "", 1);
-            showmessage._popup.IsOpen = true;
+            MainPage.mainpage.View_Series_Content((e.ClickedItem as Model.series).seriesid);
         }
 
-        private void View_Content_Tapped(object sender, TappedRoutedEventArgs e)
+        public async Task<Attention_Reuslt> Change_Attention(int seriesid, bool isfollow)
         {
-            //MainPage.mainpage.View_Content(((sender as RelativePanel).DataContext as Model.series).seriesid.ToString());
+            string json = await HttpRequest.VmovieRequset.Series_Follow_Request(seriesid, Convert.ToInt32(!isfollow));
+            JObject json_object = (JObject)JsonConvert.DeserializeObject(json);
+            Control.ShowMessage showmessage = new Control.ShowMessage("系列", json_object["msg"].ToString(), "确定", "", 1);
+            showmessage._popup.IsOpen = true;
+            if (json_object["status"].ToString() == "0")
+            {
+                isfollow = !isfollow;
+                return new Attention_Reuslt(json_object["msg"].ToString(), isfollow);
+            }
+            return null;
+        }
+
+        private async void attention_Click(object sender, RoutedEventArgs e)
+        {
+            Model.series series = ((sender as Button).Content as Image).DataContext as Model.series;
+            Attention_Reuslt result = await Change_Attention(series.seriesid, series.isfollow);
+            if (result != null)
+            {
+                series.isfollow = result.isfollow;
+                if (result.msg.ToString() == "追剧成功")
+                {
+                    try
+                    {
+                        Pages.Share.SeriesViewPage.seriesviewpage.Reception(1, series.seriesid);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    ((sender as Button).Content as Image).Source = new BitmapImage(new Uri("ms-appx:///Assets/attention_finish.png", UriKind.Absolute));
+                }
+                else if (result.msg.ToString() == "已取消追剧")
+                {
+                    try
+                    {
+                        Pages.Share.SeriesViewPage.seriesviewpage.Reception(0, series.seriesid);
+                    }
+                    catch (Exception)
+                    {
+                    }
+                    ((sender as Button).Content as Image).Source = new BitmapImage(new Uri("ms-appx:///Assets/attention.png", UriKind.Absolute));
+                }
+            }
+        }
+
+        public void Reception(int status, int seriesid)
+        {
+            Button attention_but = null;
+            for (int i = 0; i < series_listview.ItemsPanelRoot.Children.Count; i++)
+            {
+                if ((((series_listview.ItemsPanelRoot.Children[i] as ListViewItem).ContentTemplateRoot as RelativePanel).DataContext as Model.series).seriesid == seriesid)
+                {
+                    attention_but = ((series_listview.ItemsPanelRoot.Children[i] as ListViewItem).ContentTemplateRoot as RelativePanel).Children[2] as Button;
+                    break;
+                }
+            }
+            if (status == 1)
+            {
+                (attention_but.Content as Image).Source = new BitmapImage(new Uri("ms-appx:///Assets/attention_finish.png", UriKind.Absolute));
+            }
+            else if (status == 0)
+            {
+                (attention_but.Content as Image).Source = new BitmapImage(new Uri("ms-appx:///Assets/attention.png", UriKind.Absolute));
+            }
+        }
+    }
+
+    public class Attention_Reuslt
+    {
+        public string msg { get; set; }
+        public bool isfollow { get; set; }
+
+        public Attention_Reuslt(string msg, bool isfollow)
+        {
+            this.msg = msg;
+            this.isfollow = isfollow;
         }
     }
 }

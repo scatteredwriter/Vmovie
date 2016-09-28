@@ -133,7 +133,8 @@ namespace V电影.Pages.Share
 
         private void order_listview_ItemClick(object sender, ItemClickEventArgs e)
         {
-
+            Model.order item = e.ClickedItem as Model.order;
+            MainPage.mainpage.View_Series_Content(item.seriesid, item.update_to);
         }
     }
 }

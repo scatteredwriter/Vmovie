@@ -252,7 +252,7 @@
                     </Pivot.HeaderTemplate>
                     <Pivot.ItemTemplate>
                         <DataTemplate>
-                            <ListView IsItemClickEnabled="True" ItemsSource="{Binding Behind_Info}" ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollMode="Enabled" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource ListViewStyle1}" Margin="-12,0,-12,0" Loaded="ListView_Loaded" ItemClick="ListView_ItemClick">
+                            <ListView IsItemClickEnabled="True" ItemsSource="{Binding Behind_Info}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollMode="Enabled" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource ListViewStyle1}" Margin="-12,0,-12,0" Loaded="ListView_Loaded" ItemClick="ListView_ItemClick">
                                 <ListView.ItemTemplate>
                                     <DataTemplate>
                                         <Grid Padding="10,10,10,10">

@@ -30,16 +30,20 @@
             <Image x:Name="search_but" Margin="0,0,10,0" Height="30" Width="30" HorizontalAlignment="Right" VerticalAlignment="Center" Source="ms-appx:///Assets/home_search.png" Tapped="search_but_Tapped"></Image>
         </Grid>
         <Grid Grid.Row="1">
-            <ListView x:Name="series_listview" ItemsSource="{Binding Series_Info}" ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollMode="Enabled" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource ListViewStyle2}" Loaded="series_listview_Loaded">
+            <ListView x:Name="series_listview" IsItemClickEnabled="True" ItemsSource="{Binding Series_Info}" ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollMode="Enabled" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource ListViewStyle2}" Loaded="series_listview_Loaded" ItemClick="series_listview_ItemClick">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <RelativePanel Background="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" Tapped="View_Content_Tapped">
+                        <RelativePanel Background="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}">
                             <Image x:Name="series_image" Source="{Binding image_source}" Stretch="UniformToFill" RelativePanel.AlignTopWithPanel="True" Margin="0,0,0,20"></Image>
                             <StackPanel x:Name="series_info" Orientation="Vertical" RelativePanel.Below="series_image" Margin="20,0,20,0">
                                 <TextBlock Text="{Binding title}" Foreground="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}" FontWeight="Medium" FontSize="{Binding Source={StaticResource APPTheme},Path=Content_Size}"></TextBlock>
                                 <TextBlock Text="{Binding Converter={StaticResource series_info_converter}}" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" FontSize="12" Margin="0,7,0,0"></TextBlock>
                             </StackPanel>
-                            <Image x:Name="attention" Height="28" Width="28" Source="{Binding Converter={StaticResource is_attention_converter}}" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWith="series_info" Margin="0,0,20,0" Tapped="attention_Tapped"></Image>
+                            <Button x:Name="attention" Style="{StaticResource NullButtonStyle}" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWith="series_info" Margin="0,0,20,0" Click="attention_Click">
+                                <Button.Content>
+                                    <Image Height="28" Width="28" Source="{Binding isfollow,Converter={StaticResource is_attention_converter}}"></Image>
+                                </Button.Content>
+                            </Button>
                             <TextBlock x:Name="series_content" MaxHeight="40" Text="{Binding content}" Foreground="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}" FontSize="{Binding Source={StaticResource APPTheme},Path=Second_Content_Size}" FontWeight="Thin" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" RelativePanel.Below="series_info" Margin="20,20,20,40"></TextBlock>
                         </RelativePanel>
                     </DataTemplate>

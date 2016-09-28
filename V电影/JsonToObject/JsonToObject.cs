@@ -402,7 +402,7 @@ namespace V电影.JsonToObject
                 ObservableCollection<Model.series_view_lists> view_lists = new ObservableCollection<Model.series_view_lists>();
                 try
                 {
-                    JArray posts = (JArray)data["posts"].ToString();
+                    JArray posts = (JArray)data["posts"];
                     for (int i = 0; i < posts.Count; i++)
                     {
                         Model.series_view_lists view_list = new Model.series_view_lists();

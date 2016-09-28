@@ -100,13 +100,21 @@ namespace V电影.Converter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if ((value as Model.series).isfollow)
+            if (value != null)
             {
-                return "ms-appx:///Assets/attention_finish.png";
+                bool is_follow = System.Convert.ToBoolean((value.ToString()));
+                if (is_follow)
+                {
+                    return "ms-appx:///Assets/attention_finish.png";
+                }
+                else
+                {
+                    return "ms-appx:///Assets/attention.png";
+                }
             }
             else
             {
-                return "ms-appx:///Assets/attention.png";
+                return null;
             }
         }
 

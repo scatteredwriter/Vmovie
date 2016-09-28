@@ -291,7 +291,7 @@ namespace V电影.HttpRequest
             }
         }
 
-        public static async Task<string> Series_View_Request(int series_id)
+        public static async Task<string> Series_View_Request(int series_id) //系列内容请求
         {
             HttpClient httpclient = Default_HttpClient();
             HttpResponseMessage response = new HttpResponseMessage();
@@ -299,8 +299,27 @@ namespace V电影.HttpRequest
             string result = "";
             try
             {
-                param.Add(new KeyValuePair<string, string>("postid", series_id.ToString()));
+                param.Add(new KeyValuePair<string, string>("seriesid", series_id.ToString()));
                 response = await httpclient.PostAsync(API.Vmovies_API.series_view_api, new FormUrlEncodedContent(param));
+                result = await response.Content.ReadAsStringAsync();
+                return result;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public static async Task<string> Series_Video_Request(int series_id) //系列视频请求
+        {
+            HttpClient httpclient = Default_HttpClient();
+            HttpResponseMessage response = new HttpResponseMessage();
+            List<KeyValuePair<string, string>> param = new List<KeyValuePair<string, string>>();
+            string result = "";
+            try
+            {
+                param.Add(new KeyValuePair<string, string>("series_postid", series_id.ToString()));
+                response = await httpclient.PostAsync(API.Vmovies_API.series_video_api, new FormUrlEncodedContent(param));
                 result = await response.Content.ReadAsStringAsync();
                 return result;
             }

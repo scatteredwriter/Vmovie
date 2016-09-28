@@ -335,11 +335,6 @@
             <PasswordBox x:Name="password_pb" Grid.Row="1" PlaceholderText="密码" MaxWidth="300" HorizontalAlignment="Stretch" Margin="20,15,20,0" Style="{StaticResource PasswordBoxStyle1}" KeyUp="password_pb_KeyUp"></PasswordBox>
             <Grid x:Name="login_but" Margin="0,60,0,0" Tapped="login_but_Tapped">
                 <Canvas x:Name="login_but_shadow" HorizontalAlignment="Center" VerticalAlignment="Center" Height="40" MinWidth="200"></Canvas>
-                <!--<Rectangle Height="40" MaxWidth="200" RadiusX="20" RadiusY="20" Fill="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" Opacity="0.5">
-                    <Rectangle.RenderTransform>
-                        <TranslateTransform X="0" Y="2"></TranslateTransform>
-                    </Rectangle.RenderTransform>
-                </Rectangle>-->
                 <Rectangle x:Name="login_rectangle" Height="40" MaxWidth="200" RadiusX="20" RadiusY="20" Fill="{Binding Source={StaticResource APPTheme},Path=Blue_Color_Brush}"></Rectangle>
                 <TextBlock Text="登录" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
             </Grid>

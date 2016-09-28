@@ -4,10 +4,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 
 namespace V电影.Model
 {
-    public class series_view
+    public class series_view : basemodel
     {
         public int seriesid { get; set; }
         public string title { get; set; }
@@ -21,16 +22,42 @@ namespace V电影.Model
         public int update_to { get; set; }
         public string tag_name { get; set; }
         public int post_num_per_seg { get; set; }
-        public ObservableCollection<Model.series_view_lists> posts { get; set; }
+
+        private ObservableCollection<Model.series_view_lists> _posts;
+        public ObservableCollection<Model.series_view_lists> posts
+        {
+            get
+            {
+                return _posts;
+            }
+            set
+            {
+                _posts = value;
+                RaisePropertyChanged(nameof(posts));
+            }
+        }
     }
 
-    public class series_view_lists
+    public class series_view_lists : basemodel
     {
         public string from_to { get; set; }
-        public ObservableCollection<Model.series_view_item> items { get; set; }
+
+        private ObservableCollection<Model.series_view_item> _items;
+        public ObservableCollection<Model.series_view_item> items
+        {
+            get
+            {
+                return _items;
+            }
+            set
+            {
+                _items = value;
+                RaisePropertyChanged(nameof(items));
+            }
+        }
     }
 
-    public class series_view_item
+    public class series_view_item : basemodel
     {
         public int series_postid { get; set; }
         public int number { get; set; }
@@ -39,5 +66,19 @@ namespace V电影.Model
         public int duration { get; set; }
         public string thumbnail { get; set; }
         public string source_link { get; set; }
+
+        private Visibility _is_playing = Visibility.Collapsed;
+        public Visibility is_playing
+        {
+            get
+            {
+                return _is_playing;
+            }
+            set
+            {
+                _is_playing = value;
+                RaisePropertyChanged(nameof(is_playing));
+            }
+        }
     }
 }

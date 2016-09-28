@@ -103,7 +103,7 @@ namespace V电影
             splitview.IsPaneOpen = false;
             (second_frame.ContentTransitions[0] as PaneThemeTransition).Edge = EdgeTransitionLocation.Bottom;
             Back_Button_Visible(1);
-            second_frame.Navigate(typeof(Pages.Share.SearchPage), second_frame.GetNavigationState(), new DrillInNavigationTransitionInfo());
+            second_frame.Navigate(typeof(Pages.Share.SearchPage), new DrillInNavigationTransitionInfo());
         }
 
         public void Navigate_To_LoginPage()
@@ -126,6 +126,16 @@ namespace V电影
             (second_frame.ContentTransitions[0] as PaneThemeTransition).Edge = EdgeTransitionLocation.Right;
             Back_Button_Visible(1);
             second_frame.Navigate(typeof(Pages.Share.ViewContentPage), postid, new DrillInNavigationTransitionInfo());
+        }
+
+        public void View_Series_Content(int series_id, int number = -1)
+        {
+            Model.series_param param = new Model.series_param();
+            param.series_id = series_id;
+            param.number = number;
+            (second_frame.ContentTransitions[0] as PaneThemeTransition).Edge = EdgeTransitionLocation.Right;
+            Back_Button_Visible(1);
+            second_frame.Navigate(typeof(Pages.Share.SeriesViewPage), param, new DrillInNavigationTransitionInfo());
         }
 
         private void Pages_StackPanel_Tapped(object sender, TappedRoutedEventArgs e)

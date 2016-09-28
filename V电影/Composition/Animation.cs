@@ -14,7 +14,7 @@ namespace V电影.Composition
     {
         private static Resource.APPTheme apptheme = new Resource.APPTheme();
 
-        public static void Drop_Shadow(UIElement host, UIElement target)
+        public static void Drop_Shadow(UIElement host, UIElement target, float x = 0f)
         {
             Visual hostvisual = ElementCompositionPreview.GetElementVisual(target);
             Compositor compositor = hostvisual.Compositor;

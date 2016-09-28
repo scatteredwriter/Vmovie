@@ -30,6 +30,7 @@ namespace V电影.Control
         {
             this.InitializeComponent();
 
+            Composition.Animation.Drop_Shadow(root_shadow, root_rectangle, -10f);
             _popup = new Popup();
             _popup.ChildTransitions = new Windows.UI.Xaml.Media.Animation.TransitionCollection();
             Windows.UI.Xaml.Media.Animation.EdgeUIThemeTransition edge = new Windows.UI.Xaml.Media.Animation.EdgeUIThemeTransition();
