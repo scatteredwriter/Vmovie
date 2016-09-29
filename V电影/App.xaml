@@ -315,9 +315,8 @@
                                             <RowDefinition Height="auto"></RowDefinition>
                                             <RowDefinition Height="*"></RowDefinition>
                                         </Grid.RowDefinitions>
-                                        <Grid x:Name="refresh_ring" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                            <Ellipse Height="30" Width="30" Fill="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}" Opacity="0.7" StrokeThickness="0"></Ellipse>
-                                            <ProgressRing IsActive="True" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}"></ProgressRing>
+                                        <Grid x:Name="refresh_ring" Grid.Row="0" Height="30" Background="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}">
+                                            <ProgressRing IsActive="True" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" HorizontalAlignment="Center" VerticalAlignment="Center"></ProgressRing>
                                         </Grid>
                                         <ItemsPresenter Grid.Row="1" FooterTransitions="{TemplateBinding FooterTransitions}" FooterTemplate="{TemplateBinding FooterTemplate}" Footer="{TemplateBinding Footer}" HeaderTemplate="{TemplateBinding HeaderTemplate}" Header="{TemplateBinding Header}" HeaderTransitions="{TemplateBinding HeaderTransitions}"/>
                                     </Grid>

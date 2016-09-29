@@ -57,15 +57,18 @@ namespace V电影.Pages.Share
                 Model.series_param param = e.Parameter as Model.series_param;
                 series_id = param.series_id;
                 await FirstStep();
-                if (param.number == -1)
+                if (viewmodel != null && viewmodel.Series_View.posts != null)
                 {
-                    Find_Current_Item(viewmodel.Series_View.update_to);
+                    if (param.number == -1)
+                    {
+                        Find_Current_Item(viewmodel.Series_View.update_to);
+                    }
+                    else
+                    {
+                        Find_Current_Item(param.number);
+                    }
+                    await Get_Video_Source();
                 }
-                else
-                {
-                    Find_Current_Item(param.number);
-                }
-                await Get_Video_Source();
             }
         }
 
@@ -161,7 +164,7 @@ namespace V电影.Pages.Share
 
         private async void attention_Click(object sender, RoutedEventArgs e)
         {
-            Attention_Reuslt result = await Pages.Share.SeriesPage.seriespage.Change_Attention(viewmodel.Series_View.seriesid, viewmodel.Series_View.isfollow);
+            Attention_Reuslt result = await Attention_Reuslt.Change_Attention(viewmodel.Series_View.seriesid, viewmodel.Series_View.isfollow);
             if (result != null)
             {
                 viewmodel.Series_View.isfollow = result.isfollow;
@@ -204,6 +207,25 @@ namespace V电影.Pages.Share
             {
                 (attention.Content as Image).Source = new BitmapImage(new Uri("ms-appx:///Assets/attention.png", UriKind.Absolute));
             }
+            viewmodel.Series_View.isfollow = !(viewmodel.Series_View.isfollow);
+        }
+
+        private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
+        {
+            //if (mediaelement.CurrentState == MediaElementState.Paused || mediaelement.CurrentState == MediaElementState.Closed)
+            //{
+            //    Grid root_grid = this.Content as Grid;
+            //    if ((sender as ScrollViewer).VerticalOffset >= 48)
+            //    {
+            //        root_grid.RowDefinitions[0].Height = new GridLength(48, GridUnitType.Pixel);
+            //        root_grid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Auto);
+            //    }
+            //    else
+            //    {
+            //        root_grid.RowDefinitions[0].Height = new GridLength(3, GridUnitType.Star);
+            //        root_grid.RowDefinitions[1].Height = new GridLength(7, GridUnitType.Star);
+            //    }
+            //}
         }
     }
 }

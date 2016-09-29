@@ -33,6 +33,12 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Storyboard x:Name="Forward_In_Card_Mode" FillBehavior="HoldEnd">
+            <DoubleAnimation Storyboard.TargetName="second_frame_tt" Storyboard.TargetProperty="X" To="0" Duration="0:0:0.3"></DoubleAnimation>
+        </Storyboard>
+        <Storyboard x:Name="Back_In_Card_Mode" FillBehavior="HoldEnd">
+            <DoubleAnimation Storyboard.TargetName="second_frame_tt" Storyboard.TargetProperty="X" From="0" Duration="0:0:0.3"></DoubleAnimation>
+        </Storyboard>
         <Storyboard x:Name="Close_Pane_But_Open1" FillBehavior="HoldEnd">
             <DoubleAnimationUsingKeyFrames Storyboard.TargetName="close_pane_but_scale" Storyboard.TargetProperty="ScaleX">
                 <LinearDoubleKeyFrame Value="1.1" KeyTime="0:0:0.2"></LinearDoubleKeyFrame>
@@ -184,11 +190,14 @@
                 </SplitView.Pane>
             </SplitView>
         </Grid>
-        <Grid x:Name="second_frame_grid" Grid.Column="1" Visibility="Collapsed" Margin="0,15,0,0">
+        <Grid x:Name="second_frame_grid" Grid.Column="1" Margin="0,15,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>
             </Grid.RowDefinitions>
+            <Grid.RenderTransform>
+                <TranslateTransform x:Name="second_frame_tt" X="0"></TranslateTransform>
+            </Grid.RenderTransform>
             <Grid Grid.Row="0" Background="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}">
                 <Button x:Name="back_but" HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" Margin="10" Style="{StaticResource BackButtonStyle}" Visibility="Collapsed" Click="back_but_Click">
                     <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE00E;" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}"></FontIcon>

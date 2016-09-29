@@ -427,14 +427,12 @@ namespace V电影.JsonToObject
                         }
                         catch (Exception)
                         {
-                            return null;
                         }
                         view_lists.Add(view_list);
                     }
                 }
                 catch (Exception)
                 {
-                    return null;
                 }
                 item.posts = view_lists;
                 return item;

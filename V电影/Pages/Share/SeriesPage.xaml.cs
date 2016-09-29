@@ -245,27 +245,21 @@ namespace V电影.Pages.Share
 
         private void series_listview_ItemClick(object sender, ItemClickEventArgs e)
         {
-            MainPage.mainpage.View_Series_Content((e.ClickedItem as Model.series).seriesid);
-        }
-
-        public async Task<Attention_Reuslt> Change_Attention(int seriesid, bool isfollow)
-        {
-            string json = await HttpRequest.VmovieRequset.Series_Follow_Request(seriesid, Convert.ToInt32(!isfollow));
-            JObject json_object = (JObject)JsonConvert.DeserializeObject(json);
-            Control.ShowMessage showmessage = new Control.ShowMessage("系列", json_object["msg"].ToString(), "确定", "", 1);
-            showmessage._popup.IsOpen = true;
-            if (json_object["status"].ToString() == "0")
+            if ((e.ClickedItem as Model.series).update_to != 0)
             {
-                isfollow = !isfollow;
-                return new Attention_Reuslt(json_object["msg"].ToString(), isfollow);
+                MainPage.mainpage.View_Series_Content((e.ClickedItem as Model.series).seriesid);
             }
-            return null;
+            else
+            {
+                Control.ShowMessage showmessage = new Control.ShowMessage("系列", "该系列暂时还无更新", "确定", "", 1);
+                showmessage._popup.IsOpen = true;
+            }
         }
 
         private async void attention_Click(object sender, RoutedEventArgs e)
         {
             Model.series series = ((sender as Button).Content as Image).DataContext as Model.series;
-            Attention_Reuslt result = await Change_Attention(series.seriesid, series.isfollow);
+            Attention_Reuslt result = await Attention_Reuslt.Change_Attention(series.seriesid, series.isfollow);
             if (result != null)
             {
                 series.isfollow = result.isfollow;
@@ -296,11 +290,13 @@ namespace V电影.Pages.Share
 
         public void Reception(int status, int seriesid)
         {
+            Model.series series = null;
             Button attention_but = null;
             for (int i = 0; i < series_listview.ItemsPanelRoot.Children.Count; i++)
             {
                 if ((((series_listview.ItemsPanelRoot.Children[i] as ListViewItem).ContentTemplateRoot as RelativePanel).DataContext as Model.series).seriesid == seriesid)
                 {
+                    series = ((series_listview.ItemsPanelRoot.Children[i] as ListViewItem).ContentTemplateRoot as RelativePanel).DataContext as Model.series;
                     attention_but = ((series_listview.ItemsPanelRoot.Children[i] as ListViewItem).ContentTemplateRoot as RelativePanel).Children[2] as Button;
                     break;
                 }
@@ -313,6 +309,7 @@ namespace V电影.Pages.Share
             {
                 (attention_but.Content as Image).Source = new BitmapImage(new Uri("ms-appx:///Assets/attention.png", UriKind.Absolute));
             }
+            series.isfollow = !(series.isfollow);
         }
     }
 
@@ -325,6 +322,20 @@ namespace V电影.Pages.Share
         {
             this.msg = msg;
             this.isfollow = isfollow;
+        }
+
+        public static async Task<Attention_Reuslt> Change_Attention(int seriesid, bool isfollow)
+        {
+            string json = await HttpRequest.VmovieRequset.Series_Follow_Request(seriesid, Convert.ToInt32(!isfollow));
+            JObject json_object = (JObject)JsonConvert.DeserializeObject(json);
+            Control.ShowMessage showmessage = new Control.ShowMessage("系列", json_object["msg"].ToString(), "确定", "", 1);
+            showmessage._popup.IsOpen = true;
+            if (json_object["status"].ToString() == "0")
+            {
+                isfollow = !isfollow;
+                return new Attention_Reuslt(json_object["msg"].ToString(), isfollow);
+            }
+            return null;
         }
     }
 }

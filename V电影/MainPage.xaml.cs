@@ -28,6 +28,7 @@ namespace V电影
     public sealed partial class MainPage : Page
     {
         private bool is_tapped_close_but = false;
+        private bool is_card_mode = false;
 
         private ViewModel.MainPageViewModel viewmodel = new ViewModel.MainPageViewModel();
         private Resource.APPTheme apptheme = new Resource.APPTheme();
@@ -37,6 +38,9 @@ namespace V电影
         public MainPage()
         {
             this.InitializeComponent();
+            this.SizeChanged += MainPage_SizeChanged;
+            this.second_frame.Navigating += Second_frame_Navigating;
+            this.Back_In_Card_Mode.Completed += Back_In_Card_Mode_Completed;
             this.NavigationCacheMode = NavigationCacheMode.Enabled;
             this.DataContext = viewmodel;
             mainpage = this;
@@ -61,6 +65,31 @@ namespace V电影
             }
         }
 
+        private void MainPage_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize.Width <= 1000)
+            {
+                Grid.SetColumn(second_frame_grid, 0);
+                Grid.SetColumnSpan(second_frame_grid, 2);
+                is_card_mode = true;
+            }
+            else
+            {
+                if(is_card_mode)
+                {
+                    second_frame.SetNavigationState("1,1,0,24,V电影.Pages.PC.WelcomePage,12,3,1,0,0");
+                }
+                Grid.SetColumn(second_frame_grid, 1);
+                Grid.SetColumnSpan(second_frame_grid, 1);
+                second_frame_tt.X = 0;
+                is_card_mode = false;
+            }
+            if (is_card_mode)
+            {
+                second_frame_tt.X = e.NewSize.Width;
+            }
+        }
+
         public Frame Get_Frame(int n)
         {
             if (n == 0)
@@ -72,6 +101,34 @@ namespace V电影
                 return second_frame;
             }
             return null;
+        }
+
+        private void Second_frame_Navigating(object sender, NavigatingCancelEventArgs e)
+        {
+            if (is_card_mode)
+            {
+                Second_Frame_Grid_Forward_In_Card_Mode();
+            }
+        }
+
+        private void Second_Frame_Grid_Forward_In_Card_Mode()
+        {
+            DoubleAnimation animation = Forward_In_Card_Mode.Children[0] as DoubleAnimation;
+            animation.From = second_frame_tt.X;
+            Forward_In_Card_Mode.Begin();
+        }
+
+        private void Second_Frame_Grid_Back_In_Card_Mode()
+        {
+            DoubleAnimation animation = Back_In_Card_Mode.Children[0] as DoubleAnimation;
+            animation.To = this.ActualWidth;
+            Back_In_Card_Mode.Begin();
+        }
+
+        private void Back_In_Card_Mode_Completed(object sender, object e)
+        {
+            second_frame.Content = null;
+            Back_Button_Visible(0);
         }
 
         public async void Open_Pane()
@@ -91,7 +148,7 @@ namespace V电影
             {
                 back_but.Visibility = Visibility.Visible;
             }
-            else
+            else if (status == 0)
             {
                 back_but.Visibility = Visibility.Collapsed;
             }
@@ -287,17 +344,27 @@ namespace V电影
 
         public void Second_Frame_Go_Back(int param = 0)
         {
-            if (second_frame.CanGoBack)
+            if (is_card_mode == false)
             {
-                if (param == 1 || second_frame.SourcePageType == typeof(Pages.Share.LoginPage))
+                if (second_frame.CanGoBack)
                 {
-                    second_frame_title.Text = "内容";
+                    if (param == 1 || second_frame.SourcePageType == typeof(Pages.Share.LoginPage))
+                    {
+                        second_frame_title.Text = "内容";
+                    }
+                    second_frame.GoBack();
                 }
-                second_frame.GoBack();
+                if (!second_frame.CanGoBack)
+                {
+                    Back_Button_Visible(0);
+                }
             }
-            if (!second_frame.CanGoBack)
+            else if (is_card_mode)
             {
-                Back_Button_Visible(0);
+                if (second_frame.CanGoBack)
+                {
+                    Second_Frame_Grid_Back_In_Card_Mode();
+                }
             }
         }
 

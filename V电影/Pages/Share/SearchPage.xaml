@@ -163,7 +163,7 @@
             <TextBlock Grid.Column="1" Text="取消" Foreground="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}" FontWeight="SemiLight" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="15,0,0,0" Tapped="Cancel_Tapped"></TextBlock>
         </Grid>
         <Grid x:Name="search_grid" Grid.Row="1">
-            <ListView x:Name="search_result_listview" IsItemClickEnabled="True" ItemsSource="{Binding Search_Result}" ItemContainerStyle="{StaticResource ListViewItemStyle1}" ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollMode="Enabled"  Style="{StaticResource ListViewStyle1}" Loaded="search_result_listview_Loaded" ItemClick="search_result_listview_ItemClick">
+            <ListView x:Name="search_result_listview" IsItemClickEnabled="True" ItemsSource="{Binding Search_Result}" ItemContainerStyle="{StaticResource ListViewItemStyle1}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollMode="Enabled"  Style="{StaticResource ListViewStyle1}" Loaded="search_result_listview_Loaded" ItemClick="search_result_listview_ItemClick">
                 <ListView.Header>
                     <Grid>
                         <TextBlock x:Name="search_result_header" FontSize="13" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" HorizontalAlignment="Center" Margin="10,40,10,50"></TextBlock>

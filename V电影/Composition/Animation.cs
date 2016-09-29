@@ -14,7 +14,7 @@ namespace V电影.Composition
     {
         private static Resource.APPTheme apptheme = new Resource.APPTheme();
 
-        public static void Drop_Shadow(UIElement host, UIElement target, float x = 0f)
+        public static void Drop_Shadow(UIElement host, UIElement target, float y = 5f)
         {
             Visual hostvisual = ElementCompositionPreview.GetElementVisual(target);
             Compositor compositor = hostvisual.Compositor;
@@ -25,7 +25,7 @@ namespace V电影.Composition
             DropShadow dropshadow = compositor.CreateDropShadow();
             dropshadow.Color = apptheme.Gary_Color_Brush.Color;
             dropshadow.Opacity = 0.5f;
-            dropshadow.Offset = new System.Numerics.Vector3(0f, 5f, 0f);
+            dropshadow.Offset = new System.Numerics.Vector3(0f, y, 0f);
             if (target is Shape)
             {
                 dropshadow.Mask = (target as Shape).GetAlphaMask();

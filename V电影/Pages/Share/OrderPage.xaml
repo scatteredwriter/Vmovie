@@ -30,7 +30,7 @@
             <TextBlock Text="我的订阅" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="{Binding Source={StaticResource APPTheme},Path=Header_Size}" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}"></TextBlock>
         </Grid>
         <Grid Grid.Row="1">
-            <ListView x:Name="order_listview" IsItemClickEnabled="True" ItemsSource="{Binding Order_Info}" ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollMode="Enabled" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource ListViewStyle1}" Loaded="order_listview_Loaded" ItemClick="order_listview_ItemClick">
+            <ListView x:Name="order_listview" IsItemClickEnabled="True" ItemsSource="{Binding Order_Info}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollMode="Enabled" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource ListViewStyle1}" Loaded="order_listview_Loaded" ItemClick="order_listview_ItemClick">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <Grid>

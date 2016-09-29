@@ -1099,32 +1099,24 @@
         <Grid x:Name="mediaelement_grid" Grid.Row="0">
             <MediaElement x:Name="mediaelement" AreTransportControlsEnabled="True" Stretch="UniformToFill" Source="{Binding Current_Item_Video}"></MediaElement>
         </Grid>
-        <Grid Grid.Row="1" Padding="10,10,0,0">
-            <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollMode="Enabled">
+        <Grid Grid.Row="1" Padding="10,0,0,0">
+            <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollMode="Enabled" ViewChanging="ScrollViewer_ViewChanging">
                 <StackPanel Orientation="Vertical">
                     <RelativePanel>
-                        <TextBlock x:Name="title" TextWrapping="Wrap" FontSize="25" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignTopWithPanel="True" Margin="10,20,80,20">
-                            <TextBlock.Inlines>
+                        <TextBlock x:Name="title" TextWrapping="Wrap" FontSize="25" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignTopWithPanel="True" Margin="10,30,80,20">
                                 <Run Text="第"/><Run Text="{Binding Current_Playing_Item.number}"/><Run Text="集 "/><Run Text="{Binding Current_Playing_Item.title}"/>
-                            </TextBlock.Inlines>
                         </TextBlock>
                         <TextBlock x:Name="series_name" Text="{Binding Series_View.title}" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" FontSize="{Binding Source={StaticResource APPTheme},Path=Header_Size}" RelativePanel.Below="title" RelativePanel.AlignLeftWithPanel="True" Margin="10,0,10,15"></TextBlock>
                         <TextBlock x:Name="update" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" RelativePanel.Below="series_name" RelativePanel.AlignLeftWithPanel="True" Margin="10,0,10,10">
-                            <TextBlock.Inlines>
                                 <Run Text="更新:  "/><Run Text="{Binding Series_View.weekly}"/>
-                            </TextBlock.Inlines>
                         </TextBlock>
                         <TextBlock x:Name="jishu" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" RelativePanel.Below="update" RelativePanel.AlignLeftWithPanel="True" Margin="10,0,10,10">
-                            <TextBlock.Inlines>
                                 <Run Text="集数:  更新至"/><Run Text="{Binding Series_View.update_to}"/><Run Text="集"/>
-                            </TextBlock.Inlines>
                         </TextBlock>
                         <TextBlock x:Name="leixing" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" RelativePanel.Below="jishu" RelativePanel.AlignLeftWithPanel="True" Margin="10,0,10,10">
-                            <TextBlock.Inlines>
                                 <Run Text="类型:  "/><Run Text="{Binding Series_View.tag_name}"/>
-                            </TextBlock.Inlines>
                         </TextBlock>
-                        <StackPanel x:Name="order_sp" Orientation="Vertical" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignTopWithPanel="True" Margin="0,20,15,0">
+                        <StackPanel x:Name="order_sp" Orientation="Vertical" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignTopWithPanel="True" Margin="0,30,15,0">
                             <Button x:Name="attention" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWith="series_info" Margin="0,0,0,10" Style="{StaticResource NullButtonStyle}" Click="attention_Click">
                                 <Button.Content>
                                     <Image Height="28" Width="28" Source="{Binding Series_View.isfollow,Converter={StaticResource is_attention_converter}}"></Image>
@@ -1132,7 +1124,8 @@
                             </Button>
                             <TextBlock x:Name="follow_count" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" FontSize="11" TextWrapping="Wrap" HorizontalAlignment="Center">
                                 <TextBlock.Inlines>
-                                    <Run Text="{Binding Series_View.count_follow}"/><Run Text="人订阅"/>
+                                    <Run Text="{Binding Series_View.count_follow}"/>
+                                    <Run Text="人订阅"/>
                                 </TextBlock.Inlines>
                             </TextBlock>
                         </StackPanel>
@@ -1148,7 +1141,7 @@
                             </StackPanel>
                         </Button.Content>
                     </Button>
-                    <Pivot x:Name="item_pivot" ItemsSource="{Binding Series_View.posts}" Margin="10,30,10,10" Style="{StaticResource PivotStyle1}">
+                    <Pivot x:Name="item_pivot" ItemsSource="{Binding Series_View.posts}" Margin="0,30,10,10" Style="{StaticResource PivotStyle1}">
                         <Pivot.HeaderTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -1168,10 +1161,10 @@
                         </Pivot.HeaderTemplate>
                         <Pivot.ItemTemplate>
                             <DataTemplate>
-                                <ListView x:Name="item_listview" IsItemClickEnabled="True" ItemsSource="{Binding items}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollMode="Enabled" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource ListViewStyle1}" Margin="-12,0,-12,0" ItemClick="item_listview_ItemClick">
+                                <ListView x:Name="item_listview" IsItemClickEnabled="True" ItemsSource="{Binding items}" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollMode="Disabled" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource ListViewStyle1}" Margin="-12,0,-12,0" ItemClick="item_listview_ItemClick">
                                     <ListView.ItemTemplate>
                                         <DataTemplate>
-                                            <Grid Padding="0,10,10,10">
+                                            <Grid Padding="10,10,10,10">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="4*"></ColumnDefinition>
                                                     <ColumnDefinition Width="6*"></ColumnDefinition>
@@ -1185,7 +1178,10 @@
                                                 <RelativePanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20,0,0,0">
                                                     <TextBlock x:Name="item_title" MaxHeight="40" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" FontSize="{Binding Source={StaticResource APPTheme},Path=Header_Size}" FontWeight="Medium" Foreground="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}" RelativePanel.AlignTopWithPanel="True" Margin="0,0,0,0">
                                                         <TextBlock.Inlines>
-                                                            <Run Text="第"/><Run Text="{Binding number}"/><Run Text="集: "/><Run Text="{Binding title}"/>
+                                                            <Run Text="第"/>
+                                                            <Run Text="{Binding number}"/>
+                                                            <Run Text="集: "/>
+                                                            <Run Text="{Binding title}"/>
                                                         </TextBlock.Inlines>
                                                     </TextBlock>
                                                     <TextBlock x:Name="addtime" Text="{Binding addtime}" FontSize="11" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" CharacterSpacing="80" RelativePanel.Below="item_title" Margin="0,20,0,0"></TextBlock>
