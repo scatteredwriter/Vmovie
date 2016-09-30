@@ -200,7 +200,14 @@ namespace V电影.Pages.Share
 
         private void View_Content_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            MainPage.mainpage.View_Content(((sender as RelativePanel).DataContext as Model.lastest_info).postid.ToString());
+            if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
+            {
+                Pages.Mobile.MainPage.mainpage.View_Content(((sender as RelativePanel).DataContext as Model.lastest_info).postid.ToString());
+            }
+            else
+            {
+                MainPage.mainpage.View_Content(((sender as RelativePanel).DataContext as Model.lastest_info).postid.ToString());
+            }
         }
 
         private void Get_Child(DependencyObject o, int n)

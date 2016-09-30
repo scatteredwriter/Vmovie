@@ -29,16 +29,18 @@ namespace V电影.Pages.Share
         private int search_p = 1;
         private bool is_search_loading = false;
 
+        public static SearchPage current;
         private ScrollViewer search_result_sc;
 
         private SQLite.Search_SQLite sqlite = new SQLite.Search_SQLite();
-        private ViewModel.SearchPageViewModel viewmodel = new ViewModel.SearchPageViewModel();
+        public ViewModel.SearchPageViewModel viewmodel = new ViewModel.SearchPageViewModel();
 
         public SearchPage()
         {
             this.InitializeComponent();
             this.NavigationCacheMode = NavigationCacheMode.Enabled;
             this.DataContext = viewmodel;
+            current = this;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -47,6 +49,7 @@ namespace V电影.Pages.Share
 
             if (e.NavigationMode == NavigationMode.New)
             {
+                viewmodel.Is_Go_Back = false;
                 First_Step();
             }
         }
@@ -167,12 +170,26 @@ namespace V电影.Pages.Share
 
         private void Cancel_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            MainPage.mainpage.Second_Frame_Go_Back();
+            if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
+            {
+                Pages.Mobile.MainPage.mainpage.Second_Frame_Go_Back();
+            }
+            else
+            {
+                MainPage.mainpage.Second_Frame_Go_Back();
+            }
         }
 
         private void search_result_listview_ItemClick(object sender, ItemClickEventArgs e)
         {
-            MainPage.mainpage.View_Content((e.ClickedItem as Model.search).postid.ToString());
+            if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
+            {
+                Pages.Mobile.MainPage.mainpage.View_Content((e.ClickedItem as Model.search).postid.ToString());
+            }
+            else
+            {
+                MainPage.mainpage.View_Content((e.ClickedItem as Model.search).postid.ToString());
+            }
         }
     }
 }

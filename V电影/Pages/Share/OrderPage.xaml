@@ -40,12 +40,12 @@
                             </Grid.ColumnDefinitions>
                             <RelativePanel Grid.Column="0" Padding="0,10,0,10">
                                 <Image x:Name="image" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Margin="10,0,0,0" Source="{Binding thumbnail}" Stretch="UniformToFill"></Image>
-                                <TextBlock x:Name="movie_time" Text="{Binding len, Converter={StaticResource during_converter}}" Opacity="0.7" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" RelativePanel.AlignBottomWith="image" RelativePanel.AlignRightWith="image" Margin="10,10,10,10"></TextBlock>
+                                <TextBlock x:Name="movie_time" Text="{Binding len, Converter={StaticResource during_converter}}" Opacity="0.7" FontSize="12" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" RelativePanel.AlignBottomWith="image" RelativePanel.AlignRightWith="image" Margin="10,10,10,5"></TextBlock>
                             </RelativePanel>
                             <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="20,0,20,0">
                                 <TextBlock x:Name="seriestitle" Text="{Binding seriestitle}" FontSize="12" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" Margin="0,0,0,5"></TextBlock>
-                                <TextBlock x:Name="title" Text="{Binding Converter={StaticResource order_title_converter}}" FontSize="{Binding Source={StaticResource APPTheme},Path=Header_Size}" FontWeight="Medium" MaxHeight="50" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Margin="0,0,0,10"></TextBlock>
-                                <TextBlock x:Name="addtime" Text="{Binding addtime}" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}"></TextBlock>
+                                <TextBlock x:Name="title" Text="{Binding Converter={StaticResource order_title_converter}}" FontSize="{Binding Source={StaticResource APPTheme},Path=Second_Content_Size}" FontWeight="Medium" MaxHeight="50" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Margin="0,0,0,5"></TextBlock>
+                                <TextBlock x:Name="addtime" Text="{Binding addtime}" FontSize="12" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}"></TextBlock>
                             </StackPanel>
                             <Line Grid.Column="0" Grid.ColumnSpan="2" X1="0" X2="20" Y1="0" Y2="0" Stroke="{Binding Source={StaticResource APPTheme},Path=Second_White_Color_Brush}" StrokeThickness="1" Stretch="Fill" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"></Line>
                         </Grid>

@@ -1,5 +1,4 @@
-﻿using Microsoft.Toolkit.Uwp.UI.Animations;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -149,19 +148,6 @@ namespace V电影.Pages.Share
             Change_Playing_Item(e.ClickedItem as Model.series_view_item);
         }
 
-        private void DownloadButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private async void Canvas_Loaded(object sender, RoutedEventArgs e)
-        {
-            await ((sender as Canvas).Parent as Grid).Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-            {
-                ((sender as Canvas).Parent as Grid).Blur(10, 1, 0).Start();
-            });
-        }
-
         private async void attention_Click(object sender, RoutedEventArgs e)
         {
             Attention_Reuslt result = await Attention_Reuslt.Change_Attention(viewmodel.Series_View.seriesid, viewmodel.Series_View.isfollow);
@@ -226,6 +212,34 @@ namespace V电影.Pages.Share
             //        root_grid.RowDefinitions[1].Height = new GridLength(7, GridUnitType.Star);
             //    }
             //}
+        }
+
+        private void DownloadButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void FullWindowButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
+            {
+                if (Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().IsFullScreenMode)
+                {
+                    Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.Portrait;
+                }
+                else
+                {
+                    Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.Landscape;
+                }
+            }
+        }
+
+        private void Canvas_Loaded(object sender, RoutedEventArgs e)
+        {
+            //await ((sender as Canvas).Parent as Grid).Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            //{
+            //    ((sender as Canvas).Parent as Grid).Blur(10, 1, 0).Start();
+            //});
         }
     }
 }

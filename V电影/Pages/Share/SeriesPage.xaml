@@ -39,7 +39,7 @@
                                 <TextBlock Text="{Binding title}" Foreground="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}" FontWeight="Medium" FontSize="{Binding Source={StaticResource APPTheme},Path=Content_Size}"></TextBlock>
                                 <TextBlock Text="{Binding Converter={StaticResource series_info_converter}}" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" FontSize="12" Margin="0,7,0,0"></TextBlock>
                             </StackPanel>
-                            <Button x:Name="attention" Style="{StaticResource NullButtonStyle}" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWith="series_info" Margin="0,0,20,0" Click="attention_Click">
+                            <Button x:Name="attention" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWith="series_info" Margin="0,0,20,0" Style="{StaticResource NullButtonStyle}" Click="attention_Click">
                                 <Button.Content>
                                     <Image Height="28" Width="28" Source="{Binding isfollow,Converter={StaticResource is_attention_converter}}"></Image>
                                 </Button.Content>

@@ -1,5 +1,4 @@
-﻿using Microsoft.Toolkit.Uwp.UI.Animations;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -157,12 +156,27 @@ namespace V电影.Pages.Share
 
         }
 
-        private async void Canvas_Loaded(object sender, RoutedEventArgs e)
+        private void FullWindowButton_Click(object sender, RoutedEventArgs e)
         {
-            await ((sender as Canvas).Parent as Grid).Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
             {
-                ((sender as Canvas).Parent as Grid).Blur(10, 1, 0).Start();
-            });
+                if (Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().IsFullScreenMode)
+                {
+                    Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.Portrait;
+                }
+                else
+                {
+                    Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.Landscape;
+                }
+            }
+        }
+
+        private void Canvas_Loaded(object sender, RoutedEventArgs e)
+        {
+            //await ((sender as Canvas).Parent as Grid).Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+            //{
+            //    ((sender as Canvas).Parent as Grid).Blur(10, 1, 0).Start();
+            //});
         }
     }
 }

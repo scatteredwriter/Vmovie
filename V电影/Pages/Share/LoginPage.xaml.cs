@@ -66,8 +66,16 @@ namespace V电影.Pages.Share
                 App.settings.Values[Resource.APPTheme.user_name] = user.username;
                 Control.ShowMessage message = new Control.ShowMessage("登录成功", "欢迎回来，" + user.username + "！\r\n您可以开始使用V电影服务了", "确定", "", 1);
                 message._popup.IsOpen = true;
-                MainPage.mainpage.UpDate_User_Info();
-                MainPage.mainpage.Second_Frame_Go_Back(1);
+                if (App.DeviceInfo.Device_type == DeviceType.Mobile)
+                {
+                    Pages.Mobile.MainPage.mainpage.UpDate_User_Info();
+                    Pages.Mobile.MainPage.mainpage.Second_Frame_Go_Back(1);
+                }
+                else
+                {
+                    MainPage.mainpage.UpDate_User_Info();
+                    MainPage.mainpage.Second_Frame_Go_Back(1);
+                }
             }
         }
 

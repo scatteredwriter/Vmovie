@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -18,9 +17,9 @@ using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 
-//“空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409 上有介绍
+// “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上有介绍
 
-namespace V电影
+namespace V电影.Pages.Mobile
 {
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
@@ -28,7 +27,6 @@ namespace V电影
     public sealed partial class MainPage : Page
     {
         private bool is_tapped_close_but = false;
-        private bool is_card_mode = false;
 
         private ViewModel.MainPageViewModel viewmodel = new ViewModel.MainPageViewModel();
         private Resource.APPTheme apptheme = new Resource.APPTheme();
@@ -51,35 +49,17 @@ namespace V电影
             base.OnNavigatedTo(e);
             if (e.NavigationMode == NavigationMode.New)
             {
-                CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = true;
-                Window.Current.SetTitleBar(titlebar);
                 page_frame.Navigate(typeof(Pages.PC.HomePage));
-                second_frame.Navigate(typeof(Pages.PC.WelcomePage), second_frame.GetNavigationState(), new DrillInNavigationTransitionInfo());
+                second_frame.Navigate(typeof(Pages.Mobile.WelcomePage), new DrillInNavigationTransitionInfo());
             }
         }
 
         private void MainPage_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (e.NewSize.Width <= 1000)
-            {
-                Grid.SetColumn(second_frame_grid, 0);
-                Grid.SetColumnSpan(second_frame_grid, 2);
-                is_card_mode = true;
-            }
-            else
-            {
-                Grid.SetColumn(second_frame_grid, 1);
-                Grid.SetColumnSpan(second_frame_grid, 1);
-                second_frame_tt.X = 0;
-                is_card_mode = false;
-            }
-            if (is_card_mode && (!second_frame.CanGoBack))
+            viewmodel.Windows_Width = e.NewSize.Width;
+            if (second_frame.CurrentSourcePageType == typeof(Pages.Mobile.WelcomePage))
             {
                 second_frame_tt.X = e.NewSize.Width;
-            }
-            else if (is_card_mode && second_frame.CanGoBack)
-            {
-                second_frame_tt.X = 0;
             }
         }
 
@@ -98,7 +78,7 @@ namespace V电影
 
         private void Second_frame_Navigating(object sender, NavigatingCancelEventArgs e)
         {
-            if (is_card_mode)
+            if (e.SourcePageType != typeof(Pages.Mobile.WelcomePage))
             {
                 Second_Frame_Grid_Forward_In_Card_Mode();
             }
@@ -122,7 +102,7 @@ namespace V电影
         {
             if (second_frame.CurrentSourcePageType == typeof(Pages.Share.SeriesViewPage) || second_frame.CurrentSourcePageType == typeof(Pages.Share.ViewContentPage))
             {
-                second_frame.SetNavigationState("1,1,0,24,V电影.Pages.PC.WelcomePage,12,3,1,0,0");
+                second_frame.Content = null;
             }
             Back_Button_Visible(0);
         }
@@ -130,12 +110,15 @@ namespace V电影
         public async void Open_Pane()
         {
             splitview.IsPaneOpen = true;
+            await Windows.UI.ViewManagement.StatusBar.GetForCurrentView().HideAsync();
             is_tapped_close_but = false;
-            Pages_ListView_Open1.Begin();
-            Pages_ListView_Open2.Begin();
+            //Pages_ListView_Open1.Begin();
             await Task.Delay(300);
             Close_Pane_But_Open1.Begin();
             Close_Pane_But_Open2.Begin();
+            await Task.Delay(300);
+            Pages_ListView_Open2.Begin();
+            pages_listview.Opacity = 1;
         }
 
         private void Back_Button_Visible(int status)
@@ -165,7 +148,7 @@ namespace V电影
             splitview.IsPaneOpen = false;
             (second_frame.ContentTransitions[0] as PaneThemeTransition).Edge = EdgeTransitionLocation.Right;
             Back_Button_Visible(1);
-            second_frame.Navigate(typeof(Pages.Share.LoginPage), second_frame.GetNavigationState());
+            second_frame.Navigate(typeof(Pages.Share.LoginPage));
         }
 
         public void UpDate_User_Info()
@@ -194,6 +177,12 @@ namespace V电影
 
         private void Pages_StackPanel_Tapped(object sender, TappedRoutedEventArgs e)
         {
+            if (!App.settings.Values.ContainsKey(Resource.APPTheme.user_email))
+            {
+                second_frame_title.Text = "登录";
+                Navigate_To_LoginPage();
+                return;
+            }
             is_tapped_close_but = true;
             splitview.IsPaneOpen = false;
             string page_name = ((sender as StackPanel).Children[1] as TextBlock).Text;
@@ -304,7 +293,7 @@ namespace V电影
             }
         }
 
-        private void splitview_PaneClosing(SplitView sender, SplitViewPaneClosingEventArgs args)
+        private async void splitview_PaneClosing(SplitView sender, SplitViewPaneClosingEventArgs args)
         {
             if (is_tapped_close_but == false)
             {
@@ -314,6 +303,8 @@ namespace V电影
             {
                 Close_Pane_But_Open1.Stop();
                 Close_Pane_But_Open2.Stop();
+                await Windows.UI.ViewManagement.StatusBar.GetForCurrentView().ShowAsync();
+                pages_listview.Opacity = 0;
             }
         }
 
@@ -341,43 +332,25 @@ namespace V电影
 
         public void Second_Frame_Go_Back(int param = 0)
         {
-            if (is_card_mode == false)
+            if (second_frame.CanGoBack)
             {
-                if (second_frame.CanGoBack)
+                if (param == 1 || second_frame.SourcePageType == typeof(Pages.Share.LoginPage))
                 {
-                    if (param == 1 || second_frame.SourcePageType == typeof(Pages.Share.LoginPage))
-                    {
-                        second_frame_title.Text = "内容";
-                    }
-                    second_frame.GoBack();
+                    second_frame_title.Text = "内容";
                 }
-                if (!second_frame.CanGoBack)
+                if (second_frame.CurrentSourcePageType == typeof(Pages.Share.SearchPage))
                 {
-                    Back_Button_Visible(0);
+                    Pages.Share.SearchPage.current.viewmodel.Is_Go_Back = true;
                 }
-            }
-            else if (is_card_mode)
-            {
-                if (second_frame.CanGoBack)
+                if (second_frame.BackStack[second_frame.BackStack.Count - 1].SourcePageType == typeof(Pages.Share.SearchPage))
                 {
-                    if (param == 1 || second_frame.SourcePageType == typeof(Pages.Share.LoginPage))
+                    if (Pages.Share.SearchPage.current.viewmodel.Is_Go_Back == false)
                     {
-                        second_frame_title.Text = "内容";
+                        second_frame.GoBack();
+                        return;
                     }
-                    if (second_frame.CurrentSourcePageType == typeof(Pages.Share.SearchPage))
-                    {
-                        Pages.Share.SearchPage.current.viewmodel.Is_Go_Back = true;
-                    }
-                    if (second_frame.BackStack[second_frame.BackStack.Count - 1].SourcePageType == typeof(Pages.Share.SearchPage))
-                    {
-                        if (Pages.Share.SearchPage.current.viewmodel.Is_Go_Back == false)
-                        {
-                            second_frame.GoBack();
-                            return;
-                        }
-                    }
-                    Second_Frame_Grid_Back_In_Card_Mode();
                 }
+                Second_Frame_Grid_Back_In_Card_Mode();
             }
         }
 

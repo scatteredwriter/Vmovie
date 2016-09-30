@@ -10,6 +10,8 @@ namespace V电影.ViewModel
 {
     public class SearchPageViewModel : BasePageViewModel
     {
+        public bool Is_Go_Back { get; set; } = false;
+
         private ObservableCollection<string> _search_history;
         public ObservableCollection<string> Search_History
         {

@@ -9,6 +9,20 @@ namespace V电影.ViewModel
 {
     public class MainPageViewModel : BasePageViewModel
     {
+        private double _windows_width;
+        public double Windows_Width
+        {
+            get
+            {
+                return _windows_width;
+            }
+            set
+            {
+                _windows_width = value;
+                RaisePropertyChanged(nameof(Windows_Width));
+            }
+        }
+
         public string User_Avatar
         {
             get
@@ -19,7 +33,7 @@ namespace V电影.ViewModel
                 }
                 else
                 {
-                    return "Assets/default_avatar.png";
+                    return "ms-appx:///Assets/default_avatar.png";
                 }
             }
             set

@@ -127,14 +127,28 @@ namespace V电影.Pages.Share
             if (Frame.CanGoBack)
             {
                 Frame.GoBack();
-                MainPage.mainpage.Open_Pane();
+                if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
+                {
+                    Pages.Mobile.MainPage.mainpage.Open_Pane();
+                }
+                else
+                {
+                    MainPage.mainpage.Open_Pane();
+                }
             }
         }
 
         private void order_listview_ItemClick(object sender, ItemClickEventArgs e)
         {
             Model.order item = e.ClickedItem as Model.order;
-            MainPage.mainpage.View_Series_Content(item.seriesid, item.update_to);
+            if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
+            {
+                Pages.Mobile.MainPage.mainpage.View_Series_Content(item.seriesid, item.update_to);
+            }
+            else
+            {
+                MainPage.mainpage.View_Series_Content(item.seriesid, item.update_to);
+            }
         }
     }
 }

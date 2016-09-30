@@ -235,19 +235,40 @@ namespace V电影.Pages.Share
 
         private void menu_but_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            MainPage.mainpage.Open_Pane();
+            if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
+            {
+                Pages.Mobile.MainPage.mainpage.Open_Pane();
+            }
+            else
+            {
+                MainPage.mainpage.Open_Pane();
+            }
         }
 
         private void search_but_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            MainPage.mainpage.Navigate_To_SearchPage();
+            if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
+            {
+                Pages.Mobile.MainPage.mainpage.Navigate_To_SearchPage();
+            }
+            else
+            {
+                MainPage.mainpage.Navigate_To_SearchPage();
+            }
         }
 
         private void series_listview_ItemClick(object sender, ItemClickEventArgs e)
         {
             if ((e.ClickedItem as Model.series).update_to != 0)
             {
-                MainPage.mainpage.View_Series_Content((e.ClickedItem as Model.series).seriesid);
+                if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
+                {
+                    Pages.Mobile.MainPage.mainpage.View_Series_Content((e.ClickedItem as Model.series).seriesid);
+                }
+                else
+                {
+                    MainPage.mainpage.View_Series_Content((e.ClickedItem as Model.series).seriesid);
+                }
             }
             else
             {

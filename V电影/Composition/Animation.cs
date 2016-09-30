@@ -16,25 +16,25 @@ namespace V电影.Composition
 
         public static void Drop_Shadow(UIElement host, UIElement target, float y = 5f)
         {
-            Visual hostvisual = ElementCompositionPreview.GetElementVisual(target);
-            Compositor compositor = hostvisual.Compositor;
+            //Visual hostvisual = ElementCompositionPreview.GetElementVisual(target);
+            //Compositor compositor = hostvisual.Compositor;
 
-            SpriteVisual spritevisual = compositor.CreateSpriteVisual();
-            ElementCompositionPreview.SetElementChildVisual(host, spritevisual);
+            //SpriteVisual spritevisual = compositor.CreateSpriteVisual();
+            //ElementCompositionPreview.SetElementChildVisual(host, spritevisual);
 
-            DropShadow dropshadow = compositor.CreateDropShadow();
-            dropshadow.Color = apptheme.Gary_Color_Brush.Color;
-            dropshadow.Opacity = 0.5f;
-            dropshadow.Offset = new System.Numerics.Vector3(0f, y, 0f);
-            if (target is Shape)
-            {
-                dropshadow.Mask = (target as Shape).GetAlphaMask();
-            }
-            spritevisual.Shadow = dropshadow;
+            //DropShadow dropshadow = compositor.CreateDropShadow();
+            //dropshadow.Color = apptheme.Gary_Color_Brush.Color;
+            //dropshadow.Opacity = 0.5f;
+            //dropshadow.Offset = new System.Numerics.Vector3(0f, y, 0f);
+            //if (target is Shape)
+            //{
+            //    dropshadow.Mask = (target as Shape).GetAlphaMask();
+            //}
+            //spritevisual.Shadow = dropshadow;
 
-            ExpressionAnimation animation = compositor.CreateExpressionAnimation("hostvisual.Size");
-            animation.SetReferenceParameter("hostvisual", hostvisual);
-            spritevisual.StartAnimation("Size", animation);
+            //ExpressionAnimation animation = compositor.CreateExpressionAnimation("hostvisual.Size");
+            //animation.SetReferenceParameter("hostvisual", hostvisual);
+            //spritevisual.StartAnimation("Size", animation);
         }
     }
 }
