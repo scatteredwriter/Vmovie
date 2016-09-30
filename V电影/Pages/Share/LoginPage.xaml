@@ -272,7 +272,7 @@
         </Grid.RowDefinitions>
         <Image Grid.Row="0" Source="ms-appx:///Assets/login_bg.jpg" Stretch="UniformToFill"></Image>
         <StackPanel Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="20,30,20,20">
-            <TextBox x:Name="email_tb" Grid.Row="0" PlaceholderText="邮箱" IsSpellCheckEnabled="False" MaxWidth="300" HorizontalAlignment="Stretch" Margin="20,0,20,0" Style="{StaticResource TextBoxStyle1}">
+            <TextBox x:Name="email_tb" Grid.Row="0" PlaceholderText="邮箱" IsSpellCheckEnabled="False" MaxWidth="300" HorizontalAlignment="Stretch" Margin="20,0,20,0" Style="{StaticResource TextBoxStyle1}" GotFocus="Got_Focus" KeyUp="email_tb_KeyUp">
                 <TextBox.InputScope>
                     <InputScope>
                         <InputScope.Names>
@@ -281,7 +281,7 @@
                     </InputScope>
                 </TextBox.InputScope>
             </TextBox>
-            <PasswordBox x:Name="password_pb" Grid.Row="1" PlaceholderText="密码" MaxWidth="300" HorizontalAlignment="Stretch" Margin="20,15,20,0" Style="{StaticResource PasswordBoxStyle1}" KeyUp="password_pb_KeyUp"></PasswordBox>
+            <PasswordBox x:Name="password_pb" Grid.Row="1" PlaceholderText="密码" MaxWidth="300" HorizontalAlignment="Stretch" Margin="20,15,20,0" Style="{StaticResource PasswordBoxStyle1}" GotFocus="Got_Focus" KeyUp="password_pb_KeyUp"></PasswordBox>
             <Grid x:Name="login_but" Margin="0,60,0,0" Tapped="login_but_Tapped">
                 <Canvas x:Name="login_but_shadow" HorizontalAlignment="Center" VerticalAlignment="Center" Height="40" MinWidth="200"></Canvas>
                 <Rectangle x:Name="login_rectangle" Height="40" MaxWidth="200" RadiusX="20" RadiusY="20" Fill="{Binding Source={StaticResource APPTheme},Path=Blue_Color_Brush}"></Rectangle>

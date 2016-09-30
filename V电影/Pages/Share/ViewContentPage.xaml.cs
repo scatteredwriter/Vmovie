@@ -67,23 +67,30 @@ namespace V电影.Pages.Share
                 {
                     postid = Convert.ToInt32(e.Parameter.ToString());
                     await FirstStep();
-                    switch (viewmodel.View_Info.content.Count)
+                    try
                     {
-                        case 0:
-                            {
-                                mediaelement_grid.Visibility = Visibility.Collapsed;
-                                Grid.SetRow(webview_grid, 0);
-                                Grid.SetRowSpan(webview_grid, 2);
-                            }; break;
-                        case 1:
-                            {
-                                mediaelement.Source = new Uri(viewmodel.View_Info.content[0].qiniu_url);
+                        switch (viewmodel.View_Info.content.Count)
+                        {
+                            case 0:
+                                {
+                                    mediaelement_grid.Visibility = Visibility.Collapsed;
+                                    Grid.SetRow(webview_grid, 0);
+                                    Grid.SetRowSpan(webview_grid, 2);
+                                }; break;
+                            case 1:
+                                {
+                                    mediaelement.Source = new Uri(viewmodel.View_Info.content[0].qiniu_url);
 
-                            }; break;
-                        default:
-                            {
-                                mediaelement.Source = new Uri(viewmodel.View_Info.content[0].qiniu_url);
-                            }; break;
+                                }; break;
+                            default:
+                                {
+                                    mediaelement.Source = new Uri(viewmodel.View_Info.content[0].qiniu_url);
+                                }; break;
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        return;
                     }
                 }
                 catch (Exception)

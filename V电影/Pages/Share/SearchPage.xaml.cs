@@ -63,12 +63,19 @@ namespace V电影.Pages.Share
             }
         }
 
+        private void search_tb_GotFocus(object sender, RoutedEventArgs e)
+        {
+            Windows.UI.ViewManagement.InputPane.GetForCurrentView().TryShow();
+        }
+
         private async void search_tb_KeyDown(object sender, KeyRoutedEventArgs e)
         {
             if (e.Key == VirtualKey.Enter)
             {
                 sqlite.Add_New_KeyWord(search_tb.Text);
                 viewmodel.Search_History = sqlite.Get_All_KeyWord();
+                Windows.UI.ViewManagement.InputPane.GetForCurrentView().TryHide();
+                search_result_header.Focus(FocusState.Pointer);
                 await Search(search_tb.Text);
             }
         }

@@ -30,6 +30,19 @@ namespace V电影.Pages.Share
             Composition.Animation.Drop_Shadow(login_but_shadow, login_rectangle);
         }
 
+        private void Got_Focus(object sender, RoutedEventArgs e)
+        {
+            Windows.UI.ViewManagement.InputPane.GetForCurrentView().TryShow();
+        }
+
+        private void email_tb_KeyUp(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.Enter)
+            {
+                password_pb.Focus(FocusState.Keyboard);
+            }
+        }
+
         private void password_pb_KeyUp(object sender, KeyRoutedEventArgs e)
         {
             if (e.Key == VirtualKey.Enter)
@@ -64,6 +77,7 @@ namespace V电影.Pages.Share
                 App.settings.Values[Resource.APPTheme.user_avatar] = user.avatar;
                 App.settings.Values[Resource.APPTheme.user_email] = user.email;
                 App.settings.Values[Resource.APPTheme.user_name] = user.username;
+                Windows.UI.ViewManagement.InputPane.GetForCurrentView().TryHide();
                 Control.ShowMessage message = new Control.ShowMessage("登录成功", "欢迎回来，" + user.username + "！\r\n您可以开始使用V电影服务了", "确定", "", 1);
                 message._popup.IsOpen = true;
                 if (App.DeviceInfo.Device_type == DeviceType.Mobile)

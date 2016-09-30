@@ -151,7 +151,7 @@
                 <ColumnDefinition Width="*"></ColumnDefinition>
                 <ColumnDefinition Width="auto"></ColumnDefinition>
             </Grid.ColumnDefinitions>
-            <TextBox x:Name="search_tb" Grid.Column="0" PlaceholderText="请输入要搜索的内容" HorizontalAlignment="Stretch" VerticalAlignment="Center" Style="{StaticResource TextBoxStyle1}" KeyDown="search_tb_KeyDown" TextChanged="search_tb_TextChanged">
+            <TextBox x:Name="search_tb" Grid.Column="0" PlaceholderText="请输入要搜索的内容" HorizontalAlignment="Stretch" VerticalAlignment="Center" Style="{StaticResource TextBoxStyle1}" GotFocus="search_tb_GotFocus" KeyDown="search_tb_KeyDown" TextChanged="search_tb_TextChanged">
                 <TextBox.InputScope>
                     <InputScope>
                         <InputScope.Names>
