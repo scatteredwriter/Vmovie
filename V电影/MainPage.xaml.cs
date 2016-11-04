@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -70,6 +71,10 @@ namespace V电影
             {
                 Grid.SetColumn(second_frame_grid, 1);
                 Grid.SetColumnSpan(second_frame_grid, 1);
+                if (second_frame.CanGoBack)
+                {
+                    Back_Button_Visible(1);
+                }
                 second_frame_tt.X = 0;
                 is_card_mode = false;
             }
@@ -138,6 +143,24 @@ namespace V电影
             Close_Pane_But_Open2.Begin();
         }
 
+        public void EnterFullScreenMode(int status)
+        {
+            if (status == 0) //退出全屏
+            {
+                ApplicationView.GetForCurrentView().ExitFullScreenMode();
+                Grid.SetColumn(second_frame_grid, 1);
+                Grid.SetColumnSpan(second_frame_grid, 1);
+                second_grid_title.Visibility = Visibility.Visible;
+            }
+            else if (status == 1) //进入全屏
+            {
+                ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
+                Grid.SetColumn(second_frame_grid, 0);
+                Grid.SetColumnSpan(second_frame_grid, 2);
+                second_grid_title.Visibility = Visibility.Collapsed;
+            }
+        }
+
         private void Back_Button_Visible(int status)
         {
             if (status == 1)
@@ -165,7 +188,7 @@ namespace V电影
             splitview.IsPaneOpen = false;
             (second_frame.ContentTransitions[0] as PaneThemeTransition).Edge = EdgeTransitionLocation.Right;
             Back_Button_Visible(1);
-            second_frame.Navigate(typeof(Pages.Share.LoginPage), second_frame.GetNavigationState());
+            second_frame.Navigate(typeof(Pages.Share.LoginPage));
         }
 
         public void UpDate_User_Info()
@@ -192,17 +215,33 @@ namespace V电影
             second_frame.Navigate(typeof(Pages.Share.SeriesViewPage), param, new DrillInNavigationTransitionInfo());
         }
 
-        private void Pages_StackPanel_Tapped(object sender, TappedRoutedEventArgs e)
+        private void Pages_Button_Click(object sender, RoutedEventArgs e)
         {
             is_tapped_close_but = true;
             splitview.IsPaneOpen = false;
-            string page_name = ((sender as StackPanel).Children[1] as TextBlock).Text;
+            string page_name = (((sender as Button).Content as StackPanel).Children[1] as TextBlock).Text;
             switch (page_name)
             {
                 case "我的订阅":
                     {
+                        if (!App.settings.Values.ContainsKey(Resource.APPTheme.user_email))
+                        {
+                            second_frame_title.Text = "登录";
+                            Navigate_To_LoginPage();
+                            return;
+                        }
                         page_frame.Navigate(typeof(Pages.Share.OrderPage));
                     }; break;
+                case "我喜欢的":
+                    {
+                        if (!App.settings.Values.ContainsKey(Resource.APPTheme.user_email))
+                        {
+                            second_frame_title.Text = "登录";
+                            Navigate_To_LoginPage();
+                            return;
+                        }
+                        page_frame.Navigate(typeof(Pages.Share.LikePage));
+                    };break;
             }
         }
 
@@ -384,6 +423,19 @@ namespace V电影
         private void back_but_Click(object sender, RoutedEventArgs e)
         {
             Second_Frame_Go_Back();
+        }
+
+        private void side_message_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            is_tapped_close_but = true;
+            splitview.IsPaneOpen = false;
+            if (!App.settings.Values.ContainsKey(Resource.APPTheme.user_email))
+            {
+                second_frame_title.Text = "登录";
+                Navigate_To_LoginPage();
+                return;
+            }
+            page_frame.Navigate(typeof(Pages.Share.MessagePage));
         }
     }
 }

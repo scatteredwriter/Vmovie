@@ -11,7 +11,7 @@ namespace V电影.JsonToObject
 {
     public class JsonToObject
     {
-        public static ObservableCollection<Model.flipview> Convert_Flipview_Json(string json) //Flipview Json转换
+        public static ObservableCollection<Model.flipview> Convert_Flipview_Json(string json)
         {
             ObservableCollection<Model.flipview> flipview_lists = new ObservableCollection<Model.flipview>();
             Model.flipview flipview = new Model.flipview();
@@ -38,7 +38,7 @@ namespace V电影.JsonToObject
 
         }
 
-        public static ObservableCollection<Model.lastest_info> Convert_Lastest_Json(string json) //Lastest Json转换
+        public static ObservableCollection<Model.lastest_info> Convert_Lastest_Json(string json)
         {
             ObservableCollection<Model.lastest_info> lists = new ObservableCollection<Model.lastest_info>();
             List<Model.cate> cates_list = new List<Model.cate>();
@@ -436,6 +436,227 @@ namespace V电影.JsonToObject
                 }
                 item.posts = view_lists;
                 return item;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public static ObservableCollection<Model.comment_data> Convert_Comment_Data_Json(string json)
+        {
+            ObservableCollection<Model.comment_data> lists = new ObservableCollection<Model.comment_data>();
+            try
+            {
+                JObject json_object = (JObject)JsonConvert.DeserializeObject(json);
+                JArray data = (JArray)json_object["data"];
+                for (int i = 0; i < data.Count; i++)
+                {
+                    Model.comment_data comment_data = new Model.comment_data();
+                    comment_data.commentid = Convert.ToInt32(data[i]["commentid"].ToString());
+                    comment_data.isrecommend = Convert.ToBoolean(Convert.ToInt32(data[i]["isrecommend"].ToString()));
+                    comment_data.count_approve = Convert.ToInt32(data[i]["count_approve"].ToString());
+                    comment_data.has_approve = Convert.ToBoolean(Convert.ToInt32(data[i]["has_approve"].ToString()));
+                    comment_data.content = data[i]["content"].ToString();
+                    comment_data.addtime = Convert.ToInt64(data[i]["addtime"].ToString());
+                    JObject userinfo = (JObject)data[i]["userinfo"];
+                    comment_data.userinfo = new Model.comment_user_info();
+                    comment_data.userinfo.userid = Convert.ToInt32(userinfo["userid"].ToString());
+                    comment_data.userinfo.username = userinfo["username"].ToString();
+                    comment_data.userinfo.avatar = userinfo["avatar"].ToString();
+                    comment_data.userinfo.isadmin = Convert.ToBoolean(Convert.ToInt32(userinfo["isadmin"].ToString()));
+                    comment_data.userinfo.is_xpc_author = Convert.ToBoolean(Convert.ToInt32(userinfo["is_xpc_author"].ToString()));
+                    if (!String.IsNullOrEmpty(data[i]["reply_username"].ToString()))
+                    {
+                        comment_data.reply_username = data[i]["reply_username"].ToString();
+                        comment_data.reply_user_isadmin = Convert.ToBoolean(Convert.ToInt32(data[i]["reply_user_isadmin"].ToString()));
+                        comment_data.reply_userinfo = new Model.comment_user_info();
+                        comment_data.reply_userinfo.userid = Convert.ToInt32(userinfo["userid"].ToString());
+                        comment_data.reply_userinfo.username = userinfo["username"].ToString();
+                        comment_data.reply_userinfo.avatar = userinfo["avatar"].ToString();
+                        comment_data.reply_userinfo.isadmin = Convert.ToBoolean(Convert.ToInt32(userinfo["isadmin"].ToString()));
+                        comment_data.reply_userinfo.is_xpc_author = Convert.ToBoolean(Convert.ToInt32(userinfo["is_xpc_author"].ToString()));
+                    }
+                    JArray subcomment = (JArray)data[i]["subcomment"];
+                    if (subcomment.Count != 0)
+                    {
+                        ObservableCollection<Model.comment_data> sub_lists = new ObservableCollection<Model.comment_data>();
+                        try
+                        {
+                            for (int j = 0; j < subcomment.Count; j++)
+                            {
+                                Model.comment_data comment_data_j = new Model.comment_data();
+                                comment_data_j.commentid = Convert.ToInt32(subcomment[j]["commentid"].ToString());
+                                comment_data_j.isrecommend = Convert.ToBoolean(Convert.ToInt32(subcomment[j]["isrecommend"].ToString()));
+                                comment_data_j.count_approve = Convert.ToInt32(subcomment[j]["count_approve"].ToString());
+                                comment_data_j.has_approve = Convert.ToBoolean(Convert.ToInt32(subcomment[j]["has_approve"].ToString()));
+                                comment_data_j.content = subcomment[j]["content"].ToString();
+                                comment_data_j.addtime = Convert.ToInt64(subcomment[j]["addtime"].ToString());
+                                JObject userinfo_j = (JObject)subcomment[j]["userinfo"];
+                                comment_data_j.userinfo = new Model.comment_user_info();
+                                comment_data_j.userinfo.userid = Convert.ToInt32(userinfo_j["userid"].ToString());
+                                comment_data_j.userinfo.username = userinfo_j["username"].ToString();
+                                comment_data_j.userinfo.avatar = userinfo_j["avatar"].ToString();
+                                comment_data_j.userinfo.isadmin = Convert.ToBoolean(Convert.ToInt32(userinfo_j["isadmin"].ToString()));
+                                comment_data_j.userinfo.is_xpc_author = Convert.ToBoolean(Convert.ToInt32(userinfo_j["is_xpc_author"].ToString()));
+                                if (!String.IsNullOrEmpty(subcomment[j]["reply_username"].ToString()))
+                                {
+                                    comment_data_j.reply_username = subcomment[j]["reply_username"].ToString();
+                                    comment_data_j.reply_user_isadmin = Convert.ToBoolean(Convert.ToInt32(subcomment[j]["reply_user_isadmin"].ToString()));
+                                    comment_data_j.reply_userinfo = new Model.comment_user_info();
+                                    comment_data_j.reply_userinfo.userid = Convert.ToInt32(userinfo_j["userid"].ToString());
+                                    comment_data_j.reply_userinfo.username = userinfo_j["username"].ToString();
+                                    comment_data_j.reply_userinfo.avatar = userinfo_j["avatar"].ToString();
+                                    comment_data_j.reply_userinfo.isadmin = Convert.ToBoolean(Convert.ToInt32(userinfo_j["isadmin"].ToString()));
+                                    comment_data_j.reply_userinfo.is_xpc_author = Convert.ToBoolean(Convert.ToInt32(userinfo_j["is_xpc_author"].ToString()));
+                                }
+                                comment_data_j.subcomment = null;
+                                sub_lists.Add(comment_data_j);
+                            }
+                            comment_data.subcomment = sub_lists;
+                        }
+                        catch (Exception)
+                        {
+                            comment_data.subcomment = null;
+                        }
+                    }
+                    else
+                    {
+                        comment_data.subcomment = null;
+                    }
+                    lists.Add(comment_data);
+                }
+                return lists;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public static ObservableCollection<Model.notice> Convert_Message_Json(string json)
+        {
+            ObservableCollection<Model.notice> lists = new ObservableCollection<Model.notice>();
+            try
+            {
+                JObject json_object = (JObject)JsonConvert.DeserializeObject(json);
+                JObject data = (JObject)json_object["data"];
+                JArray list = (JArray)data["list"];
+                for (int i = 0; i < list.Count; i++)
+                {
+                    Model.notice notice = new Model.notice();
+                    notice.noticeid = Convert.ToInt32(list[i]["noticeid"].ToString());
+                    notice.isread = Convert.ToBoolean(Convert.ToInt32(list[i]["isread"].ToString()));
+                    notice.addtime = Convert.ToInt64(list[i]["addtime"].ToString());
+                    if (list[i]["type"].ToString() == "101") //评论
+                    {
+                        notice.type = "评论";
+                    }
+                    else if(list[i]["type"].ToString()=="301")
+                    {
+                        notice.type = "点赞";
+                    }
+                    JObject m_object = (JObject)JsonConvert.DeserializeObject(list[i]["json"].ToString());
+                    try
+                    {
+                        notice.message = new Model.message();
+
+                        //user
+                        notice.message.user = new Model.message_user();
+                        JObject user = (JObject)m_object["user"];
+                        notice.message.user.id = Convert.ToInt32(user["id"].ToString());
+                        notice.message.user.username = user["username"].ToString();
+                        notice.message.user.avatar = user["avatar"].ToString();
+
+                        //reply
+                        try
+                        {
+                            JObject reply = (JObject)m_object["reply"];
+                            notice.message.reply = new Model.message_comment();
+                            notice.message.reply.id = Convert.ToInt32(reply["id"].ToString());
+                            notice.message.reply.content = reply["content"].ToString();
+                            notice.message.reply.addtime = Convert.ToInt64(reply["addtime"].ToString());
+                        }
+                        catch (Exception)
+                        {
+                            notice.message.reply = null;
+                        }
+
+                        //comment
+                        notice.message.comment = new Model.message_comment();
+                        JObject comment = (JObject)m_object["comment"];
+                        notice.message.comment.id = Convert.ToInt32(comment["id"].ToString());
+                        notice.message.comment.content = comment["content"].ToString();
+                        notice.message.comment.addtime = Convert.ToInt64(comment["addtime"].ToString());
+
+                        //object
+                        notice.message.m_object = new Model.message_object();
+                        JObject m_o = (JObject)m_object["object"];
+                        notice.message.m_object.id = Convert.ToInt32(m_o["id"].ToString());
+                        notice.message.m_object.content = m_o["content"].ToString();
+                        notice.message.m_object.image = m_o["image"].ToString();
+                        JObject info = (JObject)m_o["info"];
+                        notice.message.m_object.is_album = Convert.ToBoolean(Convert.ToInt32(info["is_album"].ToString()));
+                        notice.message.m_object.app_fu_title = info["app_fu_title"].ToString();
+                    }
+                    catch (Exception)
+                    {
+                        notice.message = null;
+                    }
+                    lists.Add(notice);
+                }
+                return lists;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public static ObservableCollection<Model.collect> Convert_Collect_Json(string json)
+        {
+            ObservableCollection<Model.collect> lists = new ObservableCollection<Model.collect>();
+            try
+            {
+                JObject json_object = (JObject)JsonConvert.DeserializeObject(json);
+                JArray data = (JArray)json_object["data"];
+                for (int i = 0; i < data.Count; i++)
+                {
+                    Model.collect item = new Model.collect();
+                    item.count_share = Convert.ToInt32(data[i]["count_share"].ToString());
+                    item.count_like = Convert.ToInt32(data[i]["count_like"].ToString());
+                    item.postid = Convert.ToInt32(data[i]["postid"].ToString());
+                    item.title = data[i]["title"].ToString();
+                    item.publish_time = Convert.ToInt64(data[i]["publish_time"].ToString());
+                    item.duration = Convert.ToInt32(data[i]["duration"].ToString());
+                    item.rating = data[i]["rating"].ToString();
+                    if (Convert.ToDouble(item.rating) / 2.0 > 0.0)
+                    {
+                        double total_rating = Convert.ToDouble(item.rating);
+                        int j = 0;
+                        for (; j < (int)(total_rating / 2.0); j++)
+                        {
+                            item.star[j] = 0; //全黄
+                        }
+                        total_rating -= j * 2;
+                        if (total_rating != 0.0)
+                        {
+                            item.star[j++] = 1; //半黄
+
+                        }
+                        for (; j < item.star.Count(); j++)
+                        {
+                            item.star[j] = 2; //全灰
+                        }
+                    }
+                    item.rating = item.rating + "分";
+                    item.image = data[i]["image"].ToString();
+                    item.collect_time = Convert.ToInt64(data[i]["collect_time"].ToString());
+                    item.app_fu_title = data[i]["app_fu_title"].ToString();
+                    item.is_album = Convert.ToBoolean(Convert.ToInt32(data[i]["is_album"].ToString()));
+                    lists.Add(item);
+                }
+                return lists;
             }
             catch (Exception)
             {

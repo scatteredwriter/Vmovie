@@ -20,7 +20,16 @@ namespace V电影.ViewModel
             {
                 if (_fis != null)
                 {
-                    for (int i = 0; i < _fis.Count; i++)
+                    int count;
+                    if (_fis.Count <= _flipview_lists.Count)
+                    {
+                        count = _fis.Count;
+                    }
+                    else
+                    {
+                        count = _flipview_lists.Count;
+                    }
+                    for (int i = 0; i < count; i++)
                     {
                         _flipview_lists[i].image_source = _fis[i];
                     }
@@ -54,7 +63,16 @@ namespace V电影.ViewModel
             {
                 if (_lis != null)
                 {
-                    for (int i = 0; i < _lis.Count; i++)
+                    int count;
+                    if (_lis.Count <= _lastest_info.Count)
+                    {
+                        count = _lis.Count;
+                    }
+                    else
+                    {
+                        count = _lastest_info.Count;
+                    }
+                    for (int i = 0; i < count; i++)
                     {
                         _lastest_info[i].image_source = _lis[i];
                     }
@@ -102,7 +120,16 @@ namespace V电影.ViewModel
             {
                 if (_cis != null)
                 {
-                    for (int i = 0; i < _cis.Count; i++)
+                    int count;
+                    if (_cis.Count <= _cate_lists.Count)
+                    {
+                        count = _cis.Count;
+                    }
+                    else
+                    {
+                        count = _cate_lists.Count;
+                    }
+                    for (int i = 0; i < count; i++)
                     {
                         _cate_lists[i].image_source = _cis[i];
                     }

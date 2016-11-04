@@ -24,37 +24,32 @@ namespace V电影.Cache
         /// </summary>
         /// <param name="ImageUrls"></param>
         /// <returns>图片位图的List集合</returns>
-        public async Task<ObservableCollection<ImageSource>> Get_Image_Source(List<string> ImageUrls, string foldername)
+        public async Task<ImageSource> Get_Image_Source(string Url, string foldername)
         {
             await Create_FoldName(foldername);
             string filename = "";
-            ObservableCollection<ImageSource> lists = new ObservableCollection<ImageSource>();
-            for (int i = 0; i < ImageUrls.Count; i++)
+            SoftwareBitmapSource source = new SoftwareBitmapSource();
+            SoftwareBitmap bitmap;
+            filename = Url.Substring(Url.LastIndexOf('/') + 1);
+            bool is_contain = await Is_Contain_File(filename);
+            if (is_contain)
             {
-                SoftwareBitmapSource source = new SoftwareBitmapSource();
-                SoftwareBitmap bitmap;
-                filename = ImageUrls[i].Substring(ImageUrls[i].LastIndexOf('/') + 1);
-                bool is_contain = await Is_Contain_File(filename);
-                if (is_contain)
-                {
-                    bitmap = await ReadFromFile(filename);
-                }
-                else
-                {
-                    await WriteToFile(await DownloadImage(ImageUrls[i]), filename);
-                    bitmap = await ReadFromFile(filename);
-                }
-                if (bitmap != null)
-                {
-                    await source.SetBitmapAsync(bitmap);
-                    lists.Add(source);
-                }
-                else
-                {
-                    lists.Add(new BitmapImage(new Uri("ms-appx:///Assets/main_pic_shadow.png", UriKind.Absolute)));
-                }
+                bitmap = await ReadFromFile(filename);
             }
-            return lists;
+            else
+            {
+                await WriteToFile(await DownloadImage(Url), filename);
+                bitmap = await ReadFromFile(filename);
+            }
+            if (bitmap != null)
+            {
+                await source.SetBitmapAsync(bitmap);
+                return source;
+            }
+            else
+            {
+                return new BitmapImage(new Uri("ms-appx:///Assets/main_pic_shadow.png", UriKind.Absolute));
+            }
         }
 
         private async Task Create_FoldName(string foldername)

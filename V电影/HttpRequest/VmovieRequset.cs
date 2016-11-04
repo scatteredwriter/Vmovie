@@ -328,5 +328,133 @@ namespace V电影.HttpRequest
                 return null;
             }
         }
+
+        public static async Task<string> Get_Comment_Request(int postid, int p, int type) //获取评论请求
+        {
+            HttpClient httpclient = Default_HttpClient();
+            HttpResponseMessage response = new HttpResponseMessage();
+            List<KeyValuePair<string, string>> param = new List<KeyValuePair<string, string>>();
+            string result = "";
+            try
+            {
+                param.Add(new KeyValuePair<string, string>("p", p.ToString()));
+                param.Add(new KeyValuePair<string, string>("size", Params.Params.comment_size.ToString()));
+                param.Add(new KeyValuePair<string, string>("postid", postid.ToString()));
+                param.Add(new KeyValuePair<string, string>("type", type.ToString()));
+                response = await httpclient.PostAsync(API.Vmovies_API.get_comment_api, new FormUrlEncodedContent(param));
+                result = await response.Content.ReadAsStringAsync();
+                return result;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public static async Task<string> Approve_Request(int commentid, bool is_approve) //评论点赞或取消点赞请求
+        {
+            HttpClient httpclient = Default_HttpClient();
+            HttpResponseMessage respone = new HttpResponseMessage();
+            List<KeyValuePair<string, string>> param = new List<KeyValuePair<string, string>>();
+            string result = "";
+            string api = "";
+            try
+            {
+                if (is_approve)
+                {
+                    api = API.Vmovies_API.unapprove_api;
+                }
+                else
+                {
+                    api = API.Vmovies_API.approve_api;
+                }
+                param.Add(new KeyValuePair<string, string>("commentid", commentid.ToString()));
+                respone = await httpclient.PostAsync(api, new FormUrlEncodedContent(param));
+                result = await respone.Content.ReadAsStringAsync();
+                return result;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public static async Task<string> Add_Comment_Request(int postid, int type, string content, int commentid = -1) //添加评论请求
+        {
+            HttpClient httpclient = Default_HttpClient();
+            HttpResponseMessage respone = new HttpResponseMessage();
+            List<KeyValuePair<string, string>> param = new List<KeyValuePair<string, string>>();
+            string result = "";
+            try
+            {
+                if (commentid >= 0)
+                {
+                    param.Add(new KeyValuePair<string, string>("commentid", commentid.ToString()));
+                }
+                param.Add(new KeyValuePair<string, string>("postid", postid.ToString()));
+                param.Add(new KeyValuePair<string, string>("type", type.ToString()));
+                param.Add(new KeyValuePair<string, string>("content", content));
+                respone = await httpclient.PostAsync(API.Vmovies_API.add_comment_api, new FormUrlEncodedContent(param));
+                result = await respone.Content.ReadAsStringAsync();
+                return result;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public static async Task<string> Set_Collect_Request(string data) //收藏或取消收藏请求
+        {
+            HttpClient httpclient = Default_HttpClient();
+            HttpResponseMessage response = new HttpResponseMessage();
+            List<KeyValuePair<string, string>> param = new List<KeyValuePair<string, string>>();
+            string result = "";
+            try
+            {
+                param.Add(new KeyValuePair<string, string>("data", data));
+                response = await httpclient.PostAsync(API.Vmovies_API.set_collect_api, new FormUrlEncodedContent(param));
+                result = await response.Content.ReadAsStringAsync();
+                return result;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public static async Task<string> Get_Message_Request(int p, string tab) //用户消息请求
+        {
+            HttpClient httpclient = Default_HttpClient();
+            HttpResponseMessage response = new HttpResponseMessage();
+            string result = "";
+            try
+            {
+                response = await httpclient.PostAsync(API.Vmovies_API.get_list_by_tab, Default_Params(p, Params.Params.message_size, new KeyValuePair<string, string>("tab", tab)));
+                result = await response.Content.ReadAsStringAsync();
+                return result;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        public static async Task<string> Collect_Request(int p,int pid) //我喜欢的请求
+        {
+            HttpClient httpclient = Default_HttpClient();
+            HttpResponseMessage response = new HttpResponseMessage();
+            string result = "";
+            try
+            {
+                response = await httpclient.PostAsync(API.Vmovies_API.collections_api, Default_Params(p, Params.Params.collect_size, new KeyValuePair<string, string>("pid", pid.ToString())));
+                result = await response.Content.ReadAsStringAsync();
+                return result;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
     }
 }

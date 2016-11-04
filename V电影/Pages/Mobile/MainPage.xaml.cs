@@ -110,7 +110,7 @@ namespace V电影.Pages.Mobile
         public async void Open_Pane()
         {
             splitview.IsPaneOpen = true;
-            await Windows.UI.ViewManagement.StatusBar.GetForCurrentView().HideAsync();
+            //await Windows.UI.ViewManagement.StatusBar.GetForCurrentView().HideAsync();
             is_tapped_close_but = false;
             //Pages_ListView_Open1.Begin();
             await Task.Delay(300);
@@ -119,6 +119,18 @@ namespace V电影.Pages.Mobile
             await Task.Delay(300);
             Pages_ListView_Open2.Begin();
             pages_listview.Opacity = 1;
+        }
+
+        public void Second_Grid_Title_Visible(int status)
+        {
+            if (status == 1)
+            {
+                second_grid_title.Visibility = Visibility.Visible;
+            }
+            else if (status == 0)
+            {
+                second_grid_title.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void Back_Button_Visible(int status)
@@ -175,21 +187,21 @@ namespace V电影.Pages.Mobile
             second_frame.Navigate(typeof(Pages.Share.SeriesViewPage), param, new DrillInNavigationTransitionInfo());
         }
 
-        private void Pages_StackPanel_Tapped(object sender, TappedRoutedEventArgs e)
+        private void Pages_Button_Click(object sender, RoutedEventArgs e)
         {
-            if (!App.settings.Values.ContainsKey(Resource.APPTheme.user_email))
-            {
-                second_frame_title.Text = "登录";
-                Navigate_To_LoginPage();
-                return;
-            }
             is_tapped_close_but = true;
             splitview.IsPaneOpen = false;
-            string page_name = ((sender as StackPanel).Children[1] as TextBlock).Text;
+            string page_name = (((sender as Button).Content as StackPanel).Children[1] as TextBlock).Text;
             switch (page_name)
             {
                 case "我的订阅":
                     {
+                        if (!App.settings.Values.ContainsKey(Resource.APPTheme.user_email))
+                        {
+                            second_frame_title.Text = "登录";
+                            Navigate_To_LoginPage();
+                            return;
+                        }
                         page_frame.Navigate(typeof(Pages.Share.OrderPage));
                     }; break;
             }
@@ -293,7 +305,7 @@ namespace V电影.Pages.Mobile
             }
         }
 
-        private async void splitview_PaneClosing(SplitView sender, SplitViewPaneClosingEventArgs args)
+        private void splitview_PaneClosing(SplitView sender, SplitViewPaneClosingEventArgs args)
         {
             if (is_tapped_close_but == false)
             {
@@ -303,7 +315,7 @@ namespace V电影.Pages.Mobile
             {
                 Close_Pane_But_Open1.Stop();
                 Close_Pane_But_Open2.Stop();
-                await Windows.UI.ViewManagement.StatusBar.GetForCurrentView().ShowAsync();
+                //await Windows.UI.ViewManagement.StatusBar.GetForCurrentView().ShowAsync();
                 pages_listview.Opacity = 0;
             }
         }
@@ -357,6 +369,19 @@ namespace V电影.Pages.Mobile
         private void back_but_Click(object sender, RoutedEventArgs e)
         {
             Second_Frame_Go_Back();
+        }
+
+        private void side_message_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            is_tapped_close_but = true;
+            splitview.IsPaneOpen = false;
+            if (!App.settings.Values.ContainsKey(Resource.APPTheme.user_email))
+            {
+                second_frame_title.Text = "登录";
+                Navigate_To_LoginPage();
+                return;
+            }
+            page_frame.Navigate(typeof(Pages.Share.MessagePage));
         }
     }
 }

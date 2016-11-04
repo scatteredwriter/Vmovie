@@ -109,7 +109,14 @@ namespace V电影.Pages.Share
             del_history_but.Visibility = Visibility.Visible;
             string json = await HttpRequest.VmovieRequset.Search_Request(search_p, search_tb.Text);
             viewmodel.Search_Result = JsonToObject.JsonToObject.Convert_Search_Json(json);
-            search_result_header.Text = "搜索到" + viewmodel.Search_Result[0].total.ToString() + "条关于" + "\"" + keyword + "\"" + "的内容";
+            if (viewmodel.Search_Result != null && viewmodel.Search_Result.Count != 0)
+            {
+                search_result_header.Text = "搜索到" + viewmodel.Search_Result[0].total.ToString() + "条关于" + "\"" + keyword + "\"" + "的内容";
+            }
+            else
+            {
+                search_result_header.Text = "没有搜索到关于" + "\"" + keyword + "\"" + "的内容";
+            }
         }
 
         private void search_result_listview_Loaded(object sender, RoutedEventArgs e)

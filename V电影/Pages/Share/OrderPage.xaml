@@ -24,8 +24,8 @@
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Background="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}">
-            <Button x:Name="back_but" HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" Margin="10" Style="{StaticResource BackButtonStyle}" Click="back_but_Click">
-                <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE00E;" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}"></FontIcon>
+            <Button x:Name="back_but" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" Margin="11" Style="{StaticResource BackButtonStyle}" Click="back_but_Click">
+                <Image Source="ms-appx:///Assets/back_icon.png"></Image>
             </Button>
             <TextBlock Text="我的订阅" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="{Binding Source={StaticResource APPTheme},Path=Header_Size}" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}"></TextBlock>
         </Grid>

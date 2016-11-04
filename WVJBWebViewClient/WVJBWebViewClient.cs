@@ -1,73 +1,45 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Foundation.Metadata;
+using Windows.UI.Popups;
 
 namespace WVJBWebViewClient
 {
     [AllowForWeb]
     public sealed class Bridge
     {
-        private IList<KeyValuePair<String, WVJBHandler>> messageHandlers = null;
-        private IList<WVJBMessage> startupMessageQueue = null;
-        public IList<WVJBMessage> StartUp_MessageQueue
+
+        public event EventHandler<bool> FpVideoFullScreenEvent;
+
+        public async void showMessage(string msg)
         {
-            get
+            await new MessageDialog(msg).ShowAsync();
+        }
+
+        public async void getMessage(string paramString, string param1, string param2)
+        {
+            await new MessageDialog(paramString).ShowAsync();
+        }
+
+        public void elementResize(string param, string height, string width)
+        {
+
+        }
+
+        public void fpVideoFullScreen(string is_fullscreen)
+        {
+            if (is_fullscreen == "1")
             {
-                return startupMessageQueue;
+                FpVideoFullScreenEvent?.Invoke(this, true);
             }
-        }
-
-        public event EventHandler<int> MessageQueue_Changed;
-
-        private void queueMessage(WVJBMessage paramWVJBMessage)
-        {
-            if (this.startupMessageQueue != null)
+            else
             {
-                this.startupMessageQueue.Add(paramWVJBMessage);
-                MessageQueue_Changed?.Invoke(this, StartUp_MessageQueue.Count);
-                return;
+                FpVideoFullScreenEvent?.Invoke(this, false);
             }
-        }
-
-        private void sendData(object paramObject, WVJBResponseCallback paramWVJBResponseCallback, string paramString)
-        {
-            if ((paramObject == null) && ((paramString == null) || (paramString.Length == 0)))
-                return;
-            WVJBMessage localWVJBMessage = new WVJBMessage();
-            if (paramObject != null)
-                localWVJBMessage.data = paramObject;
-            if (paramWVJBResponseCallback != null)
-            {
-                StringBuilder localStringBuilder = new StringBuilder().Append("objc_cb_");
-            }
-            if (paramString != null)
-                localWVJBMessage.handlerName = paramString;
-            queueMessage(localWVJBMessage);
-        }
-
-        public void registerHandler(String paramString, WVJBHandler paramWVJBHandler)
-        {
-            if ((paramString == null) || (paramString.Length == 0) || (paramWVJBHandler == null))
-                return;
-            this.messageHandlers.Add(new KeyValuePair<string, WVJBHandler>(paramString, paramWVJBHandler));
-        }
-
-        public void callHandler(string paramString)
-        {
-            callHandler(paramString, null, null);
-        }
-
-        public void callHandler(string paramString, object paramObject)
-        {
-            callHandler(paramString, paramObject, null);
-        }
-
-        public void callHandler(string paramString, object paramObject, WVJBResponseCallback paramWVJBResponseCallback)
-        {
-            sendData(paramObject, paramWVJBResponseCallback, paramString);
         }
     }
 
@@ -79,5 +51,15 @@ namespace WVJBWebViewClient
     public interface WVJBHandler
     {
         void request(Object paramObject, WVJBWebViewClient.WVJBResponseCallback paramWVJBResponseCallback);
+    }
+
+    [AllowForWeb]
+    public sealed class WVJBMessage
+    {
+        public string callbackId { get; set; }
+        public object data { get; set; }
+        public string handlerName { get; set; }
+        public object responseData { get; set; }
+        public string responseId { get; set; }
     }
 }

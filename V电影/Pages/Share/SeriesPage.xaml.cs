@@ -74,12 +74,12 @@ namespace V电影.Pages.Share
             string json = await HttpRequest.VmovieRequset.Series_Request(series_p);
             viewmodel.Series_Info = JsonToObject.JsonToObject.Convert_Series_Json(json);
             Cache.ImageCache imagecache = new Cache.ImageCache();
-            List<string> image_url = new List<string>();
+            viewmodel.Series_Image_Sbs = new ObservableCollection<ImageSource>();
             for (int i = 0; i < viewmodel.Series_Info.Count; i++)
             {
-                image_url.Add(viewmodel.Series_Info[i].app_image);
+                ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Series_Info[i].app_image, "Series");
+                viewmodel.Series_Image_Sbs.Add(imagesource);
             }
-            viewmodel.Series_Image_Sbs = await imagecache.Get_Image_Source(image_url, "Series");
             viewmodel.Series_New_Count = viewmodel.Series_Info.Count;
         }
 
@@ -90,12 +90,12 @@ namespace V电影.Pages.Share
                 string json = await HttpRequest.VmovieRequset.Series_Request(series_p = 1);
                 viewmodel.Series_Info = JsonToObject.JsonToObject.Convert_Series_Json(json);
                 Cache.ImageCache imagecache = new Cache.ImageCache();
-                List<string> image_url = new List<string>();
+                viewmodel.Series_Image_Sbs = new ObservableCollection<ImageSource>();
                 for (int i = 0; i < viewmodel.Series_Info.Count; i++)
                 {
-                    image_url.Add(viewmodel.Series_Info[i].app_image);
+                    ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Series_Info[i].app_image, "Series");
+                    viewmodel.Series_Image_Sbs.Add(imagesource);
                 }
-                viewmodel.Series_Image_Sbs = await imagecache.Get_Image_Source(image_url, "Series");
                 viewmodel.Series_New_Count = viewmodel.Series_Info.Count;
                 await Task.Delay(1000);
 
@@ -181,15 +181,10 @@ namespace V电影.Pages.Share
                 }
                 viewmodel.Series_New_Count = viewmodel.Series_Info.Count - viewmodel.Series_New_Count;
                 Cache.ImageCache imagecache = new Cache.ImageCache();
-                List<string> image_url = new List<string>();
                 for (int i = (viewmodel.Series_Info.Count - viewmodel.Series_New_Count); i < viewmodel.Series_Info.Count; i++)
                 {
-                    image_url.Add(viewmodel.Series_Info[i].image);
-                }
-                sources = await imagecache.Get_Image_Source(image_url, "Series");
-                for (int i = 0; i < sources.Count; i++)
-                {
-                    viewmodel.Series_Image_Sbs.Add(sources[i]);
+                    ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Series_Info[i].app_image, "Series");
+                    viewmodel.Series_Image_Sbs.Add(imagesource);
                 }
                 series_new_border.Visibility = Visibility.Visible;
                 await Task.Delay(2000);

@@ -68,6 +68,10 @@ namespace V电影.Pages.Share
         {
             string json = await HttpRequest.VmovieRequset.Behind_Cates_Request();
             viewmodel.Behind_Data = JsonToObject.JsonToObject.Convert_Behind_Cates_Json(json);
+            for (int i = 0; i < viewmodel.Behind_Data.Count; i++)
+            {
+                viewmodel.Behind_Data[i].Image_Sbs = new ObservableCollection<ImageSource>();
+            }
         }
 
         private UIElementCollection Get_Header()
@@ -93,16 +97,27 @@ namespace V电影.Pages.Share
             {
                 return;
             }
-            string json = await HttpRequest.VmovieRequset.Behind_Content_Request(viewmodel.Behind_Data[pivot_selectedindex].Behind_Info_P, viewmodel.Behind_Data[pivot_selectedindex].cateid);
-            viewmodel.Behind_Data[pivot_selectedindex].Behind_Info = JsonToObject.JsonToObject.Convert_Behind_Info_Json(json);
-            List<string> image_url = new List<string>();
-            for (int i = 0; i < viewmodel.Behind_Data[pivot_selectedindex].Behind_Info.Count; i++)
+            try
             {
-                image_url.Add(viewmodel.Behind_Data[pivot_selectedindex].Behind_Info[i].image);
+                string json = await HttpRequest.VmovieRequset.Behind_Content_Request(viewmodel.Behind_Data[pivot_selectedindex].Behind_Info_P, viewmodel.Behind_Data[pivot_selectedindex].cateid);
+                viewmodel.Behind_Data[pivot_selectedindex].Behind_Info = JsonToObject.JsonToObject.Convert_Behind_Info_Json(json);
+                for (int i = 0; i < viewmodel.Behind_Data[pivot_selectedindex].Behind_Info.Count; i++)
+                {
+                    ImageSource imagesource = await cache.Get_Image_Source(viewmodel.Behind_Data[pivot_selectedindex].Behind_Info[i].image, "Behind");
+                    if (viewmodel.Behind_Data[pivot_selectedindex].Image_Sbs != null)
+                        viewmodel.Behind_Data[pivot_selectedindex].Image_Sbs.Add(imagesource);
+                    else
+                    {
+                        viewmodel.Behind_Data[pivot_selectedindex].Image_Sbs = new ObservableCollection<ImageSource>();
+                        viewmodel.Behind_Data[pivot_selectedindex].Image_Sbs.Add(imagesource);
+                    }
+                }
+                viewmodel.Behind_Data[pivot_selectedindex].Behind_Info_New_Count = viewmodel.Behind_Data[pivot_selectedindex].Behind_Info.Count;
+                viewmodel.Behind_Data[pivot_selectedindex].Is_Loaded = true;
             }
-            viewmodel.Behind_Data[pivot_selectedindex].Image_Sbs = await cache.Get_Image_Source(image_url, "Behind");
-            viewmodel.Behind_Data[pivot_selectedindex].Behind_Info_New_Count = viewmodel.Behind_Data[pivot_selectedindex].Behind_Info.Count;
-            viewmodel.Behind_Data[pivot_selectedindex].Is_Loaded = true;
+            catch (Exception)
+            {
+            }
         }
 
         private void pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -179,15 +194,10 @@ namespace V电影.Pages.Share
                 }
                 viewmodel.Behind_Data[index].Behind_Info_New_Count = lists.Count;
                 Cache.ImageCache imagecache = new Cache.ImageCache();
-                List<string> image_url = new List<string>();
                 for (int i = (viewmodel.Behind_Data[index].Behind_Info.Count - viewmodel.Behind_Data[index].Behind_Info_New_Count); i < viewmodel.Behind_Data[index].Behind_Info.Count; i++)
                 {
-                    image_url.Add(viewmodel.Behind_Data[index].Behind_Info[i].image);
-                }
-                sources = await imagecache.Get_Image_Source(image_url, "Behind");
-                for (int i = 0; i < sources.Count; i++)
-                {
-                    viewmodel.Behind_Data[index].Image_Sbs.Add(sources[i]);
+                    ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Behind_Data[index].Behind_Info[i].image, "Behind");
+                    viewmodel.Behind_Data[index].Image_Sbs.Add(imagesource);
                 }
                 behind_info_new_border.Visibility = Visibility.Visible;
                 behind_new_count_tb.Text = "本次加载了" + viewmodel.Behind_Data[index].Behind_Info_New_Count.ToString() + "条新内容";

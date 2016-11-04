@@ -67,60 +67,38 @@ namespace V电影.Pages.PC
                 else
                     return;
                 await First_Step();
-                Dispatcher?.RunAsync(CoreDispatcherPriority.Normal, async () =>
-                {
-                    ((pivot.Items[0] as PivotItem).Header as Grid).Padding = new Thickness(0, 0, 0, 10);
-                    for (int i = 0; i < viewmodel.Flipview_Lists.Count; i++)
-                    {
-                        Line line = new Line();
-                        line.X1 = 0;
-                        line.X2 = 25;
-                        line.Y1 = 0;
-                        line.Y2 = 0;
-                        line.Margin = new Thickness(0, 0, 5, 0);
-                        line.Opacity = 0.5;
-                        line.StrokeThickness = 2.5;
-                        flipview.SelectedIndex = 1;
-                        flipview.SelectedIndex = 0;
-                        if (i == 0)
-                        {
-                            line.Stroke = apptheme.Foreground_Color_Brush;
-                        }
-                        else
-                        {
-                            line.Stroke = apptheme.Gary_Color_Brush;
-                        }
-                        sp.Children.Add(line);
-                    }
-                    await Task.Delay(500);
-                    lastest_listview_sc.ChangeView(null, 30, null);
-                });
                 date.Start();
             }
         }
 
         private async Task First_Step()
         {
+            ((pivot.Items[0] as PivotItem).Header as Grid).Padding = new Thickness(0, 0, 0, 13);
+
             string json = await HttpRequest.VmovieRequset.Flipview_Requset();
             viewmodel.Flipview_Lists = JsonToObject.JsonToObject.Convert_Flipview_Json(json);
             Cache.ImageCache imagecache = new Cache.ImageCache();
-            List<string> image_url = new List<string>();
+            viewmodel.Flipview_Image_Sbs = new ObservableCollection<ImageSource>();
             for (int i = 0; i < viewmodel.Flipview_Lists.Count; i++)
             {
-                image_url.Add(viewmodel.Flipview_Lists[i].imageurl);
+                ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Flipview_Lists[i].imageurl, "FlipView");
+                viewmodel.Flipview_Image_Sbs.Add(imagesource);
             }
-            viewmodel.Flipview_Image_Sbs = await imagecache.Get_Image_Source(image_url, "FlipView");
+
+            Add_FlipView_Lines();
 
             json = await HttpRequest.VmovieRequset.Lastest_Requset(lastest_p);
             viewmodel.Lastest_Info = JsonToObject.JsonToObject.Convert_Lastest_Json(json);
-            imagecache = new Cache.ImageCache();
-            image_url = new List<string>();
+            viewmodel.Lastest_Image_Sbs = new ObservableCollection<ImageSource>();
             for (int i = 0; i < viewmodel.Lastest_Info.Count; i++)
             {
-                image_url.Add(viewmodel.Lastest_Info[i].image);
+                ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Lastest_Info[i].image, "Lastest");
+                viewmodel.Lastest_Image_Sbs.Add(imagesource);
             }
-            viewmodel.Lastest_Image_Sbs = await imagecache.Get_Image_Source(image_url, "Lastest");
             viewmodel.Lastest_New_Count = viewmodel.Lastest_Info.Count;
+
+            await Task.Delay(500);
+            lastest_listview_sc.ChangeView(null, 30, null);
 
             json = await HttpRequest.VmovieRequset.Cates_Request();
             viewmodel.Cate_Lists = JsonToObject.JsonToObject.Convert_Cates_Json(json);
@@ -138,13 +116,12 @@ namespace V电影.Pages.PC
             cate.icon = "http://cs.vmoiver.com/Uploads/Activity/2016-04-26/571ed9b5d2e44.jpg";
             cate.tab = "hot";
             viewmodel.Cate_Lists.Insert(0, cate);
-            imagecache = new Cache.ImageCache();
-            image_url = new List<string>();
+            viewmodel.Cate_Image_Sbs = new ObservableCollection<ImageSource>();
             for (int i = 0; i < viewmodel.Cate_Lists.Count; i++)
             {
-                image_url.Add(viewmodel.Cate_Lists[i].icon);
+                ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Cate_Lists[i].icon, "Cates");
+                viewmodel.Cate_Image_Sbs.Add(imagesource);
             }
-            viewmodel.Cate_Image_Sbs = await imagecache.Get_Image_Source(image_url, "Cates");
         }
 
         private void HomePage_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -177,29 +154,63 @@ namespace V电影.Pages.PC
             }
         }
 
+        private void Add_FlipView_Lines()
+        {
+            Dispatcher?.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                for (int i = 0; i < viewmodel.Flipview_Lists.Count; i++)
+                {
+                    Line line = new Line();
+                    line.X1 = 0;
+                    line.X2 = 25;
+                    line.Y1 = 0;
+                    line.Y2 = 0;
+                    line.Margin = new Thickness(0, 0, 5, 0);
+                    line.Opacity = 0.4;
+                    line.StrokeThickness = 2.5;
+                    if (i == 0)
+                    {
+                        line.Stroke = apptheme.Foreground_Color_Brush;
+                    }
+                    else
+                    {
+                        line.Stroke = apptheme.Gary_Color_Brush;
+                    }
+                    sp.Children.Add(line);
+                }
+            });
+        }
+
         private async void Lastest_Refresh()
         {
             if (lastest_listview_sc.VerticalOffset == 0.0)
             {
+                int temp_flipview_count = viewmodel.Flipview_Lists.Count;
+
                 string json = await HttpRequest.VmovieRequset.Flipview_Requset();
                 viewmodel.Flipview_Lists = JsonToObject.JsonToObject.Convert_Flipview_Json(json);
                 Cache.ImageCache imagecache = new Cache.ImageCache();
-                List<string> image_url = new List<string>();
+                viewmodel.Flipview_Image_Sbs = new ObservableCollection<ImageSource>();
                 for (int i = 0; i < viewmodel.Flipview_Lists.Count; i++)
                 {
-                    image_url.Add(viewmodel.Flipview_Lists[i].imageurl);
+                    ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Flipview_Lists[i].imageurl, "FlipView");
+                    viewmodel.Flipview_Image_Sbs.Add(imagesource);
                 }
-                viewmodel.Flipview_Image_Sbs = await imagecache.Get_Image_Source(image_url, "FlipView");
+
+                if (temp_flipview_count != viewmodel.Flipview_Lists.Count)
+                {
+                    sp.Children.Clear();
+                    Add_FlipView_Lines();
+                }
 
                 json = await HttpRequest.VmovieRequset.Lastest_Requset(lastest_p = 1);
                 viewmodel.Lastest_Info = JsonToObject.JsonToObject.Convert_Lastest_Json(json);
-                imagecache = new Cache.ImageCache();
-                image_url = new List<string>();
+                viewmodel.Lastest_Image_Sbs = new ObservableCollection<ImageSource>();
                 for (int i = 0; i < viewmodel.Lastest_Info.Count; i++)
                 {
-                    image_url.Add(viewmodel.Lastest_Info[i].image);
+                    ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Lastest_Info[i].image, "Lastest");
+                    viewmodel.Lastest_Image_Sbs.Add(imagesource);
                 }
-                viewmodel.Lastest_Image_Sbs = await imagecache.Get_Image_Source(image_url, "Lastest");
                 viewmodel.Lastest_New_Count = viewmodel.Lastest_Info.Count;
 
                 await Task.Delay(500);
@@ -245,7 +256,7 @@ namespace V电影.Pages.PC
                 (((sender as Pivot).Items[pivot_selectedindex] as PivotItem).Header as Grid).BorderThickness = new Thickness(0, 0, 0, 0);
                 pivot_selectedindex = (sender as Pivot).SelectedIndex;
                 ((((sender as Pivot).SelectedItem as PivotItem).Header as Grid).Children[0] as TextBlock).Opacity = 1;
-                (((sender as Pivot).SelectedItem as PivotItem).Header as Grid).Padding = new Thickness(0, 0, 0, 10);
+                (((sender as Pivot).SelectedItem as PivotItem).Header as Grid).Padding = new Thickness(0, 0, 0, 12);
                 (((sender as Pivot).SelectedItem as PivotItem).Header as Grid).BorderThickness = new Thickness(0, 0, 0, 2);
             }
             catch (Exception)
@@ -454,15 +465,10 @@ namespace V电影.Pages.PC
                 }
                 viewmodel.Lastest_New_Count = viewmodel.Lastest_Info.Count - viewmodel.Lastest_New_Count;
                 Cache.ImageCache imagecache = new Cache.ImageCache();
-                List<string> image_url = new List<string>();
                 for (int i = (viewmodel.Lastest_Info.Count - viewmodel.Lastest_New_Count); i < viewmodel.Lastest_Info.Count; i++)
                 {
-                    image_url.Add(viewmodel.Lastest_Info[i].image);
-                }
-                sources = await imagecache.Get_Image_Source(image_url, "Lastest");
-                for (int i = 0; i < sources.Count; i++)
-                {
-                    viewmodel.Lastest_Image_Sbs.Add(sources[i]);
+                    ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Lastest_Info[i].image, "Lastest");
+                    viewmodel.Lastest_Image_Sbs.Add(imagesource);
                 }
                 lastest_new_border.Visibility = Visibility.Visible;
                 await Task.Delay(2000);

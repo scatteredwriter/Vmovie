@@ -134,7 +134,7 @@
             </Setter>
         </Style>
         <converter:During_Converter x:Key="during_converter"></converter:During_Converter>
-        <converter:Search_Rating_Stars_Converter x:Key="search_rating_stars_converter"></converter:Search_Rating_Stars_Converter>
+        <converter:Rating_Stars_Converter x:Key="search_rating_stars_converter"></converter:Rating_Stars_Converter>
     </Page.Resources>
 
     <Page.DataContext>

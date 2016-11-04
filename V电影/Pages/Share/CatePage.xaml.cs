@@ -61,12 +61,12 @@ namespace V电影.Pages.Share
             string json = await HttpRequest.VmovieRequset.Cate_Content_Requset(cate_p, cateid, tab);
             viewmodel.Cate_Info = JsonToObject.JsonToObject.Convert_Lastest_Json(json);
             Cache.ImageCache imagecache = new Cache.ImageCache();
-            List<string> image_url = new List<string>();
+            viewmodel.Cate_Content_Image_Sbs = new ObservableCollection<ImageSource>();
             for (int i = 0; i < viewmodel.Cate_Info.Count; i++)
             {
-                image_url.Add(viewmodel.Cate_Info[i].image);
+                ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Cate_Info[i].image, "Cate_Content");
+                viewmodel.Cate_Content_Image_Sbs.Add(imagesource);
             }
-            viewmodel.Cate_Content_Image_Sbs = await imagecache.Get_Image_Source(image_url, "Cate_Content");
             viewmodel.Cate_New_Count = viewmodel.Cate_Info.Count;
 
             await Task.Delay(500);
@@ -80,12 +80,12 @@ namespace V电影.Pages.Share
                 string json = await HttpRequest.VmovieRequset.Cate_Content_Requset(cate_p = 1, cateid, tab);
                 viewmodel.Cate_Info = JsonToObject.JsonToObject.Convert_Lastest_Json(json);
                 Cache.ImageCache imagecache = new Cache.ImageCache();
-                List<string> image_url = new List<string>();
+                viewmodel.Cate_Content_Image_Sbs = new ObservableCollection<ImageSource>();
                 for (int i = 0; i < viewmodel.Cate_Info.Count; i++)
                 {
-                    image_url.Add(viewmodel.Cate_Info[i].image);
+                    ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Cate_Info[i].image, "Cate_Content");
+                    viewmodel.Cate_Content_Image_Sbs.Add(imagesource);
                 }
-                viewmodel.Cate_Content_Image_Sbs = await imagecache.Get_Image_Source(image_url, "Cate_Content");
                 viewmodel.Cate_New_Count = viewmodel.Cate_Info.Count;
 
                 await Task.Delay(500);
@@ -156,15 +156,10 @@ namespace V电影.Pages.Share
                 }
                 viewmodel.Cate_New_Count = viewmodel.Cate_Info.Count - viewmodel.Cate_New_Count;
                 Cache.ImageCache imagecache = new Cache.ImageCache();
-                List<string> image_url = new List<string>();
                 for (int i = (viewmodel.Cate_Info.Count - viewmodel.Cate_New_Count); i < viewmodel.Cate_Info.Count; i++)
                 {
-                    image_url.Add(viewmodel.Cate_Info[i].image);
-                }
-                sources = await imagecache.Get_Image_Source(image_url, "Cate_Content");
-                for (int i = 0; i < sources.Count; i++)
-                {
-                    viewmodel.Cate_Content_Image_Sbs.Add(sources[i]);
+                    ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Cate_Info[i].image, "Cate_Content");
+                    viewmodel.Cate_Content_Image_Sbs.Add(imagesource);
                 }
                 cate_new_border.Visibility = Visibility.Visible;
                 await Task.Delay(2000);

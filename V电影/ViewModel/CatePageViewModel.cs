@@ -17,7 +17,16 @@ namespace V电影.ViewModel
             {
                 if (_cis != null)
                 {
-                    for (int i = 0; i < _cis.Count; i++)
+                    int count;
+                    if (_cis.Count <= _cate_info.Count)
+                    {
+                        count = _cis.Count;
+                    }
+                    else
+                    {
+                        count = _cate_info.Count;
+                    }
+                    for (int i = 0; i < count; i++)
                     {
                         _cate_info[i].image_source = _cis[i];
                     }

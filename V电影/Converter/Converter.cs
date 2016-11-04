@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Media.Imaging;
 
 namespace V电影.Converter
@@ -155,7 +157,7 @@ namespace V电影.Converter
         }
     }
 
-    public class Search_Rating_Stars_Converter : IValueConverter
+    public class Rating_Stars_Converter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
         {
@@ -189,6 +191,172 @@ namespace V电影.Converter
         {
             Model.order order = value as Model.order;
             return "第" + order.update_to.ToString() + "集：" + order.title;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class TimeStamp_Converter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            Int64 timeStamp = System.Convert.ToInt64(value.ToString());
+            DateTime dtStart = TimeZoneInfo.ConvertTime(new DateTime(1970, 1, 1), TimeZoneInfo.Utc, TimeZoneInfo.Local);
+            long lTime = long.Parse(timeStamp + "0000000");
+            TimeSpan toNow = new TimeSpan(lTime);
+            DateTime resultTime = dtStart.Add(toNow);
+            if (parameter != null && parameter.ToString() == "ymd")
+            {
+                if (DateTime.Now.Year == resultTime.Year)
+                {
+                    return resultTime.Month.ToString() + "." + resultTime.Day.ToString() + " " + resultTime.Hour.ToString() + ":" + resultTime.Minute.ToString();
+                }
+                else
+                {
+                    return resultTime.Year.ToString() + " " + resultTime.Month.ToString() + "." + resultTime.Day.ToString() + " " + resultTime.Hour.ToString() + ":" + resultTime.Minute.ToString();
+                }
+            }
+            TimeSpan deltaTime = DateTime.Now - resultTime;
+            if (deltaTime.TotalDays >= 365)
+            {
+                return System.Convert.ToInt32(deltaTime.TotalDays / 365).ToString() + "年前";
+            }
+            else if (deltaTime.TotalDays < 365 && deltaTime.TotalDays >= 30)
+            {
+                return System.Convert.ToInt32(deltaTime.TotalDays / 30).ToString() + "月前";
+            }
+            else if (deltaTime.TotalDays < 30 && deltaTime.TotalDays >= 1)
+            {
+                return System.Convert.ToInt32(deltaTime.TotalDays).ToString() + "天前";
+            }
+            else if (deltaTime.TotalHours > 1)
+            {
+                return System.Convert.ToInt32(deltaTime.TotalHours).ToString() + "小时前";
+            }
+            else if (deltaTime.TotalMinutes < 60 && deltaTime.TotalMinutes >= 1)
+            {
+                return System.Convert.ToInt32(deltaTime.TotalMinutes).ToString() + "分钟前";
+            }
+            else
+            {
+                return "刚刚";
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class Is_Approve_Converter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if (value != null)
+            {
+                bool has_approve = (bool)value;
+                if (has_approve)
+                {
+                    return "ms-appx:///Assets/comment_handle_.png";
+                }
+                else
+                {
+                    return "ms-appx:///Assets/comment_handle.png";
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class Is_Unread_Backbround_Converter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if (value != null)
+            {
+                bool is_read = (bool)value;
+                if (!is_read)
+                    return (new SolidColorBrush(Windows.UI.Color.FromArgb(255, 240, 240, 240)));
+                else
+                    return (new SolidColorBrush(Windows.UI.Colors.Transparent));
+            }
+            else
+                return (new SolidColorBrush(Windows.UI.Colors.Transparent));
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class Is_Collect_Converter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if (value != null)
+            {
+                bool is_collect = (bool)value;
+                if (is_collect)
+                {
+                    return "ms-appx:///Assets/details_like_finish.png";
+                }
+                else
+                {
+                    return "ms-appx:///Assets/details_like.png";
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class Is_Display_Comment_Converter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            if (parameter.ToString() == "content_grid")
+            {
+                if (value != null && value.ToString() == "评论")
+                {
+                    return Visibility.Visible;
+                }
+                else
+                {
+                    return Visibility.Collapsed;
+                }
+            }
+            else if (parameter.ToString() == "zan")
+            {
+                if (value != null && value.ToString() == "评论")
+                {
+                    return Visibility.Collapsed;
+                }
+                else if (value != null && value.ToString() == "点赞")
+                {
+                    return Visibility.Visible;
+                }
+            }
+            return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

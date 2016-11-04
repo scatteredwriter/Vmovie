@@ -149,7 +149,7 @@ namespace V电影.Resource
 
         public static readonly DependencyProperty Blue_Color_Brush_DP = DependencyProperty.Register("Blue_Color_Brush", typeof(SolidColorBrush), typeof(APPTheme), new PropertyMetadata(new SolidColorBrush(Color.FromArgb(255, 49, 175, 252))));
 
-        public static readonly DependencyProperty Second_White_Color_Brush_DP = DependencyProperty.Register("Second_White_Color_Brush", typeof(SolidColorBrush), typeof(APPTheme), new PropertyMetadata(new SolidColorBrush(Color.FromArgb(255, 245, 245, 245))));
+        public static readonly DependencyProperty Second_White_Color_Brush_DP = DependencyProperty.Register("Second_White_Color_Brush", typeof(SolidColorBrush), typeof(APPTheme), new PropertyMetadata(new SolidColorBrush(Color.FromArgb(255, 231, 231, 231))));
 
         public static readonly DependencyProperty Border_White_Color_Brush_DP = DependencyProperty.Register("Border_White_Color_Brush", typeof(SolidColorBrush), typeof(APPTheme), new PropertyMetadata(new SolidColorBrush(Color.FromArgb(255, 221, 221, 225))));
 

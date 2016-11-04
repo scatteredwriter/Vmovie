@@ -59,9 +59,9 @@
             </Pivot.LeftHeader>
             <PivotItem Margin="0,0,0,0">
                 <PivotItem.Header>
-                    <Grid BorderBrush="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" Padding="0,0,0,14">
+                    <Grid BorderBrush="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" Padding="0,0,0,12">
                         <Grid.RenderTransform>
-                            <TranslateTransform X="0" Y="8"></TranslateTransform>
+                            <TranslateTransform X="0" Y="7"></TranslateTransform>
                         </Grid.RenderTransform>
                         <TextBlock Text="最新" Opacity="0.5" FontSize="{Binding Source={StaticResource APPTheme},Path=Header_Size}" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" VerticalAlignment="Center"></TextBlock>
                     </Grid>
@@ -130,7 +130,7 @@
                 <PivotItem.Header>
                     <Grid BorderBrush="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" Padding="0,0,0,14">
                         <Grid.RenderTransform>
-                            <TranslateTransform X="0" Y="8"></TranslateTransform>
+                            <TranslateTransform X="0" Y="7"></TranslateTransform>
                         </Grid.RenderTransform>
                         <TextBlock Text="频道" Opacity="0.5" FontSize="{Binding Source={StaticResource APPTheme},Path=Header_Size}" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" VerticalAlignment="Center"></TextBlock>
                     </Grid>

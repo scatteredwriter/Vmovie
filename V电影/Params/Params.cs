@@ -33,5 +33,17 @@ namespace V电影.Params
         public const int order_size = 10;
         #endregion
 
+        #region 评论请求
+        public const int comment_size = 10;
+        #endregion
+
+        #region 消息请求
+        public const int message_size = 10;
+        #endregion
+
+        #region 喜欢的集合请求
+        public const int collect_size = 10;
+        #endregion
+
     }
 }

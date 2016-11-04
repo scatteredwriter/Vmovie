@@ -72,7 +72,7 @@
                 <RowDefinition Height="1.5*"></RowDefinition>
             </Grid.RowDefinitions>
             <Canvas x:Name="root_shadow" Grid.RowSpan="3" MinHeight="200" MaxWidth="350"></Canvas>
-            <Rectangle x:Name="root_rectangle" Grid.RowSpan="3" MinHeight="200" MaxWidth="350" RadiusX="10" RadiusY="10" Fill="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}">
+            <Rectangle x:Name="root_rectangle" Grid.RowSpan="3" MinHeight="200" MaxWidth="350" RadiusX="10" RadiusY="10" Fill="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" Stroke="{Binding Source={StaticResource APPTheme},Path=Second_White_Color_Brush}" StrokeThickness="1">
             </Rectangle>
             <Grid Grid.Row="0">
                 <TextBlock x:Name="title" FontWeight="Medium" FontSize="{Binding Source={StaticResource APPTheme},Path=Header_Size}" Foreground="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>

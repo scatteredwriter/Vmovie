@@ -109,7 +109,6 @@
                             <RowDefinition Height="auto"></RowDefinition>
                             <RowDefinition Height="*"></RowDefinition>
                         </Grid.RowDefinitions>
-                        <!--<Grid Grid.Row="0" Grid.RowSpan="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Black" Opacity="0.5"></Grid>-->
                         <RelativePanel Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,0,0,40">
                             <StackPanel x:Name="login" Orientation="Vertical" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="0,50,0,0" Tapped="login_Tapped">
                                 <Ellipse Height="100" Width="100" HorizontalAlignment="Center">
@@ -120,7 +119,7 @@
                                 <TextBlock Text="{Binding User_Name}" Foreground="{Binding User_Name_Foreground}" FontSize="{Binding Source={StaticResource APPTheme},Path=Content_Size}" HorizontalAlignment="Center" Margin="0,10,0,0"></TextBlock>
                             </StackPanel>
                             <Image x:Name="side_set" Height="40" Width="40" Source="Assets/side_set.png" RelativePanel.LeftOf="login" RelativePanel.AlignVerticalCenterWith="login" Margin="0,20,50,0"></Image>
-                            <Image x:Name="side_message" Height="40" Width="40" RelativePanel.RightOf="login" RelativePanel.AlignVerticalCenterWith="login" Margin="50,20,0,0" Source="Assets/side_message.png"></Image>
+                            <Image x:Name="side_message" Height="40" Width="40" RelativePanel.RightOf="login" RelativePanel.AlignVerticalCenterWith="login" Margin="50,20,0,0" Source="Assets/side_message.png" Tapped="side_message_Tapped"></Image>
                         </RelativePanel>
                         <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
@@ -129,24 +128,30 @@
                                 <ColumnDefinition Width="*"></ColumnDefinition>
                             </Grid.ColumnDefinitions>
                             <RelativePanel Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                <StackPanel RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Tapped="Pages_StackPanel_Tapped">
-                                    <Image Height="25" Width="25" Source="Assets/side_subscribe.png"></Image>
-                                    <TextBlock Text="我的订阅" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" Margin="0,5,0,0"></TextBlock>
-                                </StackPanel>
+                                <Button Style="{StaticResource NullButtonStyle}" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Click="Pages_Button_Click">
+                                    <StackPanel>
+                                        <Image Height="25" Width="25" Source="Assets/side_subscribe.png"></Image>
+                                        <TextBlock Text="我的订阅" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" Margin="0,5,0,0"></TextBlock>
+                                    </StackPanel>
+                                </Button>
                                 <Line X1="0" X2="0" Y1="0" Y2="23" Opacity="0.3" Stroke="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" StrokeThickness="1" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"></Line>
                             </RelativePanel>
                             <RelativePanel Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                <StackPanel RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True">
-                                    <Image Height="25" Width="25" Source="Assets/side_cache.png"></Image>
-                                    <TextBlock Text="我的缓存" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" Margin="0,5,0,0"></TextBlock>
-                                </StackPanel>
+                                <Button Style="{StaticResource NullButtonStyle}" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Click="Pages_Button_Click">
+                                    <StackPanel>
+                                        <Image Height="25" Width="25" Source="Assets/side_cache.png"></Image>
+                                        <TextBlock Text="我的缓存" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" Margin="0,5,0,0"></TextBlock>
+                                    </StackPanel>
+                                </Button>
                                 <Line X1="0" X2="0" Y1="0" Y2="23" Opacity="0.3" Stroke="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" StrokeThickness="1" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"></Line>
                             </RelativePanel>
                             <RelativePanel Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                <StackPanel RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True">
-                                    <Image Height="25" Width="25" Source="Assets/side_likes.png"></Image>
-                                    <TextBlock Text="我喜欢的" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" Margin="0,5,0,0"></TextBlock>
-                                </StackPanel>
+                                <Button Style="{StaticResource NullButtonStyle}" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Click="Pages_Button_Click">
+                                    <StackPanel>
+                                        <Image Height="25" Width="25" Source="Assets/side_likes.png"></Image>
+                                        <TextBlock Text="我喜欢的" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" Margin="0,5,0,0"></TextBlock>
+                                    </StackPanel>
+                                </Button>
                             </RelativePanel>
                         </Grid>
                         <ListView x:Name="pages_listview" Grid.Row="2" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollMode="Disabled" ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollMode="Enabled" Style="{StaticResource ListViewStyle1}" Margin="0,30,0,0" ItemContainerStyle="{StaticResource ListViewItemStyle2}" IsItemClickEnabled="True" Loaded="ListView_Loaded" SelectionChanged="ListView_SelectionChanged" ItemClick="pages_listview_ItemClick">
@@ -198,9 +203,9 @@
             <Grid.RenderTransform>
                 <TranslateTransform x:Name="second_frame_tt" X="0"></TranslateTransform>
             </Grid.RenderTransform>
-            <Grid Grid.Row="0" Background="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}">
-                <Button x:Name="back_but" HorizontalAlignment="Left" VerticalAlignment="Center" Height="30" Margin="10" Style="{StaticResource BackButtonStyle}" Visibility="Collapsed" Click="back_but_Click">
-                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE00E;" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}"></FontIcon>
+            <Grid x:Name="second_grid_title" Grid.Row="0" Background="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}">
+                <Button x:Name="back_but" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" Margin="10" Style="{StaticResource BackButtonStyle}" Visibility="Collapsed" Click="back_but_Click">
+                    <Image Source="Assets/back_icon.png"></Image>
                 </Button>
                 <TextBlock x:Name="second_frame_title" Text="内容" FontSize="{Binding Source={StaticResource APPTheme},Path=Header_Size}" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,13,10,13"></TextBlock>
             </Grid>

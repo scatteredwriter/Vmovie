@@ -14,22 +14,28 @@ namespace V电影.ViewModel
         {
             get
             {
-                if (_behind_data != null)
+                try
                 {
-                    for (int i = 0; i < _behind_data.Count; i++)
+                    if (_behind_data != null)
                     {
-                        if (_behind_data[i].Image_Sbs != null)
+                        for (int i = 0; i < _behind_data.Count; i++)
                         {
-                            for (int j = 0; j < _behind_data[i].Image_Sbs.Count; j++)
+                            if (_behind_data[i].Image_Sbs != null)
                             {
-                                if (j > _behind_data[i].Behind_Info.Count - 1)
+                                for (int j = 0; j < _behind_data[i].Image_Sbs.Count; j++)
                                 {
-                                    break;
+                                    if (j > _behind_data[i].Behind_Info.Count - 1)
+                                    {
+                                        break;
+                                    }
+                                    _behind_data[i].Behind_Info[j].image_source = _behind_data[i].Image_Sbs[j];
                                 }
-                                _behind_data[i].Behind_Info[j].image_source = _behind_data[i].Image_Sbs[j];
                             }
                         }
                     }
+                }
+                catch (Exception)
+                {
                 }
                 return _behind_data;
             }

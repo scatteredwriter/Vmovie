@@ -1,0 +1,103 @@
+﻿<Page
+    x:Class="V电影.Pages.Share.LikePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:V电影.Pages.Share"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converter="using:V电影.Converter"
+    xmlns:viewmodel="using:V电影.ViewModel"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <converter:During_Converter x:Key="During_Converter"></converter:During_Converter>
+        <converter:Rating_Stars_Converter x:Key="Rating_Stars_Converter"></converter:Rating_Stars_Converter>
+    </Page.Resources>
+
+    <Page.DataContext>
+        <viewmodel:LikePageViewModel></viewmodel:LikePageViewModel>
+    </Page.DataContext>
+    
+    <Grid Background="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}">
+        <Pivot x:Name="pivot" Style="{StaticResource PivotStyle1}" SelectionChanged="pivot_SelectionChanged">
+            <PivotItem Background="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" Margin="0,0,0,0">
+                <PivotItem.Header>
+                    <Grid BorderBrush="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" Padding="0,0,0,12">
+                        <Grid.RenderTransform>
+                            <TranslateTransform X="0" Y="7"></TranslateTransform>
+                        </Grid.RenderTransform>
+                        <TextBlock Text="影片" Opacity="0.5" FontSize="{Binding Source={StaticResource APPTheme},Path=Header_Size}" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" VerticalAlignment="Center"></TextBlock>
+                    </Grid>
+                </PivotItem.Header>
+                <Grid>
+                    <ListView x:Name="film_listview" IsItemClickEnabled="True" ItemsSource="{Binding Collect_Film}" ItemContainerStyle="{StaticResource ListViewItemStyle1}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollMode="Enabled"  Style="{StaticResource ListViewStyle1}" Loaded="film_listview_Loaded" ItemClick="ListView_ItemClick">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                                        <ColumnDefinition Width="6*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <RelativePanel Grid.Column="0" Padding="0,10,0,10">
+                                        <Image x:Name="image" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Margin="10,0,0,0" Source="{Binding image}" Stretch="UniformToFill"></Image>
+                                        <TextBlock x:Name="movie_time" Text="{Binding duration, Converter={StaticResource During_Converter}}" Opacity="0.7" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" RelativePanel.AlignBottomWith="image" RelativePanel.AlignRightWith="image" Margin="10,10,10,10"></TextBlock>
+                                    </RelativePanel>
+                                    <RelativePanel Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="20,0,20,0">
+                                        <TextBlock x:Name="title" Text="{Binding title}" FontWeight="Medium" MaxHeight="40" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignTopWithPanel="True" Margin="0,0,0,40"></TextBlock>
+                                        <StackPanel x:Name="rating_stars" RelativePanel.Below="title" RelativePanel.AlignLeftWithPanel="True" Orientation="Horizontal" Visibility="{Binding type}">
+                                            <Image Height="12" Width="12" Source="{Binding star[0],Converter={StaticResource Rating_Stars_Converter}}"></Image>
+                                            <Image Height="12" Width="12" Source="{Binding star[1],Converter={StaticResource Rating_Stars_Converter}}"></Image>
+                                            <Image Height="12" Width="12" Source="{Binding star[2],Converter={StaticResource Rating_Stars_Converter}}"></Image>
+                                            <Image Height="12" Width="12" Source="{Binding star[3],Converter={StaticResource Rating_Stars_Converter}}"></Image>
+                                            <Image Height="12" Width="12" Source="{Binding star[4],Converter={StaticResource Rating_Stars_Converter}}"></Image>
+                                        </StackPanel>
+                                        <TextBlock x:Name="rating" Text="{Binding rating}" FontSize="13" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" RelativePanel.RightOf="rating_stars" RelativePanel.Below="title" Margin="5,-5,20,0" Visibility="{Binding type}"></TextBlock>
+                                        <Image x:Name="share_img" Height="15" Width="15" RelativePanel.RightOf="rating" RelativePanel.Below="title" Margin="0,-3,5,0" Source="ms-appx:///Assets/black_share_icon.png"></Image>
+                                        <TextBlock x:Name="share_num" Text="{Binding count_share}" FontSize="13" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" RelativePanel.RightOf="share_img" RelativePanel.AlignBottomWith="share_img"></TextBlock>
+                                    </RelativePanel>
+                                    <Line Grid.Column="0" Grid.ColumnSpan="2" X1="0" X2="20" Y1="0" Y2="0" Stroke="{Binding Source={StaticResource APPTheme},Path=Second_White_Color_Brush}" StrokeThickness="1" Stretch="Fill" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"></Line>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </PivotItem>
+            <PivotItem Background="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" Margin="0,0,0,0">
+                <PivotItem.Header>
+                    <Grid BorderBrush="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" Padding="0,0,0,14">
+                        <Grid.RenderTransform>
+                            <TranslateTransform X="0" Y="7"></TranslateTransform>
+                        </Grid.RenderTransform>
+                        <TextBlock Text="幕后" Opacity="0.5" FontSize="{Binding Source={StaticResource APPTheme},Path=Header_Size}" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" VerticalAlignment="Center"></TextBlock>
+                    </Grid>
+                </PivotItem.Header>
+                <Grid>
+                    <ListView x:Name="behind_listview" IsItemClickEnabled="True" ItemsSource="{Binding Collect_Behind}" ItemContainerStyle="{StaticResource ListViewItemStyle1}" ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollMode="Enabled"  Style="{StaticResource ListViewStyle1}" Loaded="behind_listview_Loaded" ItemClick="ListView_ItemClick">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Padding="0,10,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="4*"></ColumnDefinition>
+                                        <ColumnDefinition Width="6*"></ColumnDefinition>
+                                    </Grid.ColumnDefinitions>
+                                    <Image x:Name="image" Grid.Column="0" Source="{Binding image}" Stretch="UniformToFill" HorizontalAlignment="Left" VerticalAlignment="Stretch" Margin="10,0,0,10"></Image>
+                                    <RelativePanel Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20,0,10,10">
+                                        <TextBlock x:Name="content" MaxHeight="40" Text="{Binding title}" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" FontWeight="Medium" Foreground="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}" RelativePanel.AlignTopWithPanel="True" Margin="0,0,0,15"></TextBlock>
+                                        <Image x:Name="share_img" Height="15" Width="15" RelativePanel.AlignLeftWithPanel="True" RelativePanel.Below="content" Margin="0,0,5,0" Source="ms-appx:///Assets/black_share_icon.png"></Image>
+                                        <TextBlock x:Name="share_num" Text="{Binding count_share}" FontSize="11" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" RelativePanel.RightOf="share_img" RelativePanel.AlignVerticalCenterWith="share_img" Margin="0,0,40,0"></TextBlock>
+                                        <Image x:Name="like_img" Height="15" Width="15" RelativePanel.RightOf="share_num" RelativePanel.Below="content" Margin="0,0,5,0" Source="ms-appx:///Assets/home_like.png"></Image>
+                                        <TextBlock x:Name="like_num" Text="{Binding count_like}" FontSize="11" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" RelativePanel.RightOf="like_img" RelativePanel.AlignVerticalCenterWith="like_img"></TextBlock>
+                                    </RelativePanel>
+                                    <Line Grid.Column="0" Grid.ColumnSpan="2" X1="0" X2="20" Y1="0" Y2="0" Stroke="{Binding Source={StaticResource APPTheme},Path=Second_White_Color_Brush}" StrokeThickness="1" Stretch="Fill" HorizontalAlignment="Stretch" VerticalAlignment="Bottom"></Line>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </Grid>
+            </PivotItem>
+        </Pivot>
+        <Button x:Name="back_but" Height="28" Width="28" Style="{StaticResource BackButtonStyle}" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" Click="back_but_Click">
+            <Image Source="ms-appx:///Assets/back_icon.png"></Image>
+        </Button>
+    </Grid>
+</Page>

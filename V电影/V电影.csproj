@@ -16,10 +16,11 @@
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>V电影_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>V电影_StoreKey.pfx</PackageCertificateKeyFile>
     <AppxAutoIncrementPackageRevision>False</AppxAutoIncrementPackageRevision>
     <AppxBundle>Always</AppxBundle>
-    <AppxBundlePlatforms>x86|x64|arm</AppxBundlePlatforms>
+    <AppxBundlePlatforms>x86|x64</AppxBundlePlatforms>
+    <PackageCertificateThumbprint>8EDC4CFCCAD87E09BEFEE37E49CF494803E9BBE0</PackageCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -102,6 +103,9 @@
     <Compile Include="Cache\ImageCache.cs" />
     <Compile Include="Cache\JsonCache.cs" />
     <Compile Include="Composition\Animation.cs" />
+    <Compile Include="Control\CommentView.xaml.cs">
+      <DependentUpon>CommentView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Control\ShowMessage.xaml.cs">
       <DependentUpon>ShowMessage.xaml</DependentUpon>
     </Compile>
@@ -118,9 +122,12 @@
     <Compile Include="Model\behind_data.cs" />
     <Compile Include="Model\behind_info.cs" />
     <Compile Include="Model\cate.cs" />
+    <Compile Include="Model\comment_data.cs" />
     <Compile Include="Model\DeviceInfo.cs" />
     <Compile Include="Model\flipview.cs" />
     <Compile Include="Model\lastest_info.cs" />
+    <Compile Include="Model\collect.cs" />
+    <Compile Include="Model\notice.cs" />
     <Compile Include="Model\order.cs" />
     <Compile Include="Model\search.cs" />
     <Compile Include="Model\series.cs" />
@@ -144,8 +151,14 @@
     <Compile Include="Pages\Share\CatePage.xaml.cs">
       <DependentUpon>CatePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\Share\LikePage.xaml.cs">
+      <DependentUpon>LikePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Share\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Share\MessagePage.xaml.cs">
+      <DependentUpon>MessagePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Share\OrderPage.xaml.cs">
       <DependentUpon>OrderPage.xaml</DependentUpon>
@@ -172,8 +185,11 @@
     <Compile Include="ViewModel\BasePageViewModel.cs" />
     <Compile Include="ViewModel\BehindPageViewModel.cs" />
     <Compile Include="ViewModel\CatePageViewModel.cs" />
+    <Compile Include="ViewModel\CommentViewViewModel.cs" />
     <Compile Include="ViewModel\HomePageViewModel.cs" />
+    <Compile Include="ViewModel\LikePageViewModel.cs" />
     <Compile Include="ViewModel\MainPageViewModel.cs" />
+    <Compile Include="ViewModel\MessagePageViewModel.cs" />
     <Compile Include="ViewModel\OrderPageViewModel.cs" />
     <Compile Include="ViewModel\SearchPageViewModel.cs" />
     <Compile Include="ViewModel\SeriesPageViewModel.cs" />
@@ -184,15 +200,28 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
+    <None Include="V电影_StoreKey.pfx" />
     <None Include="V电影_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\attention.png" />
     <Content Include="Assets\attention_finish.png" />
+    <Content Include="Assets\back_icon.png" />
+    <Content Include="Assets\BadgeLogo.png" />
+    <Content Include="Assets\BadgeLogo.scale-400.png" />
     <Content Include="Assets\black_share_icon.png" />
+    <Content Include="Assets\comment_down_arrow.png" />
+    <Content Include="Assets\comment_handle.png" />
+    <Content Include="Assets\comment_handle_.png" />
     <Content Include="Assets\default_avatar.png" />
+    <Content Include="Assets\details_cache.png" />
+    <Content Include="Assets\details_cache_finish.png" />
+    <Content Include="Assets\details_cache_ing.png" />
+    <Content Include="Assets\details_like.png" />
+    <Content Include="Assets\details_like_finish.png" />
     <Content Include="Assets\dropdown.png" />
     <Content Include="Assets\dropup.png" />
+    <Content Include="Assets\footer_comment_icon.png" />
     <Content Include="Assets\home_like.png" />
     <Content Include="Assets\home_search.png" />
     <Content Include="Assets\home_search_disable.png" />
@@ -200,6 +229,7 @@
     <Content Include="Assets\login_bg.jpg" />
     <Content Include="Assets\login_input_del.png" />
     <Content Include="Assets\main_pic_shadow.png" />
+    <Content Include="Assets\movie_detail_bottom_share_icon.png" />
     <Content Include="Assets\search_input_del.png" />
     <Content Include="Assets\side_behind.png" />
     <Content Include="Assets\side_behind_.png" />
@@ -215,26 +245,39 @@
     <Content Include="Assets\side_set.png" />
     <Content Include="Assets\side_subscribe.png" />
     <Content Include="Assets\slide_bg.9.png" />
+    <Content Include="Assets\SplashScreen.png" />
+    <Content Include="Assets\SplashScreen.scale-200.png" />
+    <Content Include="Assets\Square150x150Logo.png" />
+    <Content Include="Assets\Square150x150Logo.scale-400.png" />
+    <Content Include="Assets\Square310x310Logo.png" />
+    <Content Include="Assets\Square310x310Logo.scale-400.png" />
+    <Content Include="Assets\Square44x44Logo.png" />
+    <Content Include="Assets\Square44x44Logo.scale-400.png" />
+    <Content Include="Assets\Square71x71Logo.png" />
+    <Content Include="Assets\Square71x71Logo.scale-400.png" />
     <Content Include="Assets\star.png" />
     <Content Include="Assets\star_1.png" />
     <Content Include="Assets\star_2.png" />
+    <Content Include="Assets\StoreLogo.png" />
+    <Content Include="Assets\StoreLogo.scale-400.png" />
     <Content Include="Assets\title_logo.png" />
+    <Content Include="Assets\Wide310x150Logo.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-400.png" />
     <Content Include="Html\app-vmovier.css" />
     <Content Include="Html\app_vmovier.html" />
+    <Content Include="Html\JavaScript1.js" />
+    <None Include="Package.StoreAssociation.xml" />
     <Content Include="Properties\Default.rd.xml" />
-    <Content Include="Assets\LockScreenLogo.scale-200.png" />
-    <Content Include="Assets\SplashScreen.scale-200.png" />
-    <Content Include="Assets\Square150x150Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="Assets\StoreLogo.png" />
-    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Control\CommentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Control\ShowMessage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -271,7 +314,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Share\LikePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Share\LoginPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Share\MessagePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

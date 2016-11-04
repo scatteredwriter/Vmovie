@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -16,6 +17,9 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.Web.Http;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Windows.UI.Xaml.Media.Imaging;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上有介绍
 
@@ -39,21 +43,14 @@ namespace V电影.Pages.Share
         {
             this.InitializeComponent();
             webview.Settings.IsJavaScriptEnabled = true;
-            webview.NavigationStarting += Webview_NavigationStarting;
-            webview.NavigationCompleted += Webview_NavigationCompleted;
-            webview.ScriptNotify += Webview_ScriptNotify;
-            bridge.MessageQueue_Changed += Bridge_MessageQueue_Changed;
             transport = new MediaTransportControls();
             transport.IsCompact = true;
             transport.IsVolumeButtonVisible = true;
             transport.Style = MediaTransportStyle;
+            bridge.FpVideoFullScreenEvent += Bridge_FpVideoFullScreen;
+            CloseCommentView_sb.Completed += CloseCommentView_sb_Completed;
             this.DataContext = viewmodel;
             current = this;
-        }
-
-        private void Webview_ScriptNotify(object sender, NotifyEventArgs e)
-        {
-            Debug.WriteLine("收到消息了");
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -90,12 +87,12 @@ namespace V电影.Pages.Share
                     }
                     catch (Exception)
                     {
-                        return;
                     }
                 }
                 catch (Exception)
                 {
                     mediaelement_grid.Visibility = Visibility.Collapsed;
+                    command_grid.Visibility = Visibility.Collapsed;
                     Grid.SetRow(webview_grid, 0);
                     Grid.SetRowSpan(webview_grid, 2);
                     uri = new Uri(e.Parameter.ToString());
@@ -109,22 +106,73 @@ namespace V电影.Pages.Share
             viewmodel.View_Info = JsonToObject.JsonToObject.Convert_View_Json(json);
         }
 
-        private void Webview_NavigationCompleted(WebView sender, WebViewNavigationCompletedEventArgs args)
+        private async void webview_DOMContentLoaded(WebView sender, WebViewDOMContentLoadedEventArgs args)
         {
-            //await webview.InvokeScriptAsync("connectWebViewJavascriptBridge", null);
+            string js = "";
+            js = "var obj = document.createElement(\"script\");";
+            js += "obj.type = \"text/javascript\"; ";
+            js += "obj.src = \"ms-appx-web:///Html/JavaScript1.js\";";
+            js += "document.body.appendChild(obj);";
+            await webview.InvokeScriptAsync("eval", new string[] { js });
         }
 
-        private void Bridge_MessageQueue_Changed(object sender, int e)
+        private void webview_Loaded(object sender, RoutedEventArgs e)
         {
-            for (int i = 0; i < e; i++)
+            if (postid != 0)
             {
-                Debug.WriteLine(bridge.StartUp_MessageQueue[i].handlerName);
+                string api = API.Vmovies_API.request_url_api;
+                api = api.Replace("{0}", postid.ToString());
+                uri = new Uri(api);
             }
+            HttpRequestMessage request = Get_Default_Header(uri);
+            webview.NavigateWithHttpRequestMessage(request);
         }
 
         private void Webview_NavigationStarting(WebView sender, WebViewNavigationStartingEventArgs args)
         {
             webview.AddWebAllowedObject("WebViewJavascriptBridge", bridge);
+        }
+
+        private void webview_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (App.DeviceInfo.Device_type != Model.DeviceType.Mobile)
+            {
+                if (ApplicationView.GetForCurrentView().IsFullScreenMode)
+                {
+                    MainPage.mainpage.EnterFullScreenMode(1);
+                }
+                else
+                {
+                    MainPage.mainpage.EnterFullScreenMode(0);
+                }
+            }
+        }
+
+        private void Bridge_FpVideoFullScreen(object sender, bool e)
+        {
+            if (e)
+            {
+                if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
+                {
+                    Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.Landscape;
+                }
+                else
+                {
+                    MainPage.mainpage.EnterFullScreenMode(1);
+                }
+
+            }
+            else
+            {
+                if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
+                {
+                    Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.Portrait;
+                }
+                else
+                {
+                    MainPage.mainpage.EnterFullScreenMode(0);
+                }
+            }
         }
 
         private HttpRequestMessage Get_Default_Header(Uri uri)
@@ -141,18 +189,6 @@ namespace V电影.Pages.Share
             return request;
         }
 
-        private void webview_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (postid != 0)
-            {
-                string api = API.Vmovies_API.request_url_api;
-                api = api.Replace("{0}", postid.ToString());
-                uri = new Uri(api);
-            }
-            HttpRequestMessage request = Get_Default_Header(uri);
-            webview.NavigateWithHttpRequestMessage(request);
-        }
-
         public void Accept_Uri(string uri, string title)
         {
             mediaelement.Source = new Uri(uri);
@@ -167,7 +203,7 @@ namespace V电影.Pages.Share
         {
             if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
             {
-                if (Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().IsFullScreenMode)
+                if (ApplicationView.GetForCurrentView().IsFullScreenMode)
                 {
                     Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.Portrait;
                 }
@@ -184,6 +220,72 @@ namespace V电影.Pages.Share
             //{
             //    ((sender as Canvas).Parent as Grid).Blur(10, 1, 0).Start();
             //});
+        }
+
+        private void comment_num_Click(object sender, RoutedEventArgs e)
+        {
+            comment_view_grid.Visibility = Visibility.Visible;
+            (OpenCommentView_sb.Children[0] as Windows.UI.Xaml.Media.Animation.DoubleAnimation).From = comment_view_grid.ActualHeight;
+            OpenCommentView_sb.Begin();
+        }
+
+        private void comment_view_CommentViewColsing(object sender, bool e)
+        {
+            (CloseCommentView_sb.Children[0] as Windows.UI.Xaml.Media.Animation.DoubleAnimation).To = comment_view_grid.ActualHeight;
+            CloseCommentView_sb.Begin();
+        }
+
+        private void CloseCommentView_sb_Completed(object sender, object e)
+        {
+            comment_view_grid.Visibility = Visibility.Collapsed;
+        }
+
+        private async void like_num_Click(object sender, RoutedEventArgs e)
+        {
+            DateTime startTime = TimeZoneInfo.ConvertTime(new DateTime(1970, 1, 1), TimeZoneInfo.Utc, TimeZoneInfo.Local);
+            Int64 timeStamp = (Int64)(DateTime.Now - startTime).TotalSeconds;
+            string data = "[{\"postid\": \"{0}\",\"iscollect\": \"{1}\",\"addtime\": \"{2}\"}]";
+            data = data.Replace("{0}", viewmodel.View_Info.postid.ToString());
+            data = data.Replace("{1}", Convert.ToInt32(!viewmodel.View_Info.is_collect).ToString());
+            data = data.Replace("{2}", timeStamp.ToString());
+            string json = await HttpRequest.VmovieRequset.Set_Collect_Request(data);
+            if (!String.IsNullOrEmpty(json))
+            {
+                try
+                {
+                    JObject json_jobject = (JObject)JsonConvert.DeserializeObject(json);
+                    string msg = json_jobject["msg"].ToString();
+                    if (msg == "ok")
+                    {
+                        viewmodel.View_Info.is_collect = !viewmodel.View_Info.is_collect;
+                        if (viewmodel.View_Info.is_collect)
+                        {
+                            ((like_num.Content as StackPanel).Children[0] as Image).Source = new BitmapImage(new Uri("ms-appx:///Assets/details_like_finish.png", UriKind.Absolute));
+                            ((like_num.Content as StackPanel).Children[1] as TextBlock).Text = (Convert.ToInt32(((like_num.Content as StackPanel).Children[1] as TextBlock).Text) + 1).ToString();
+                        }
+                        else
+                        {
+                            ((like_num.Content as StackPanel).Children[0] as Image).Source = new BitmapImage(new Uri("ms-appx:///Assets/details_like.png", UriKind.Absolute));
+                            ((like_num.Content as StackPanel).Children[1] as TextBlock).Text = (Convert.ToInt32(((like_num.Content as StackPanel).Children[1] as TextBlock).Text) - 1).ToString();
+                        }
+                    }
+                    else
+                    {
+                        Control.ShowMessage showmessage = new Control.ShowMessage("收藏", msg, "重试", "", 1);
+                        showmessage._popup.IsOpen = true;
+                    }
+                }
+                catch (Exception)
+                {
+                    Control.ShowMessage showmessage = new Control.ShowMessage("收藏", "操作失败", "重试", "", 1);
+                    showmessage._popup.IsOpen = true;
+                }
+            }
+            else
+            {
+                Control.ShowMessage showmessage = new Control.ShowMessage("收藏", "操作失败", "重试", "", 1);
+                showmessage._popup.IsOpen = true;
+            }
         }
     }
 }

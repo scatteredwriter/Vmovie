@@ -53,7 +53,7 @@ namespace V电影.Pages.Share
         {
             string json = await HttpRequest.VmovieRequset.Order_Request(order_p);
             viewmodel.Order_Info = JsonToObject.JsonToObject.Convert_Order_Json(json);
-            if (viewmodel.Order_Info.Count == 0)
+            if (viewmodel.Order_Info == null || (viewmodel.Order_Info != null && viewmodel.Order_Info.Count == 0))
             {
                 has_null_grid.Visibility = Visibility.Visible;
             }
