@@ -120,7 +120,7 @@
         </Grid.RowDefinitions>
         <Grid x:Name="title" Grid.Row="0" BorderBrush="{Binding Source={StaticResource APPTheme},Path=Second_White_Color_Brush}" BorderThickness="0,0,0,2">
             <TextBlock x:Name="comment_num" CharacterSpacing="80" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="25,0,0,0"></TextBlock>
-            <Button x:Name="close_but" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource NullButtonStyle}" Margin="0,0,25,0" Click="close_but_Click">
+            <Button x:Name="close_but" Height="55" Width="55" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource NullButtonStyle}" Click="close_but_Click">
                 <Image Height="17" Width="17" Source="ms-appx:///Assets/comment_down_arrow.png"></Image>
             </Button>
         </Grid>

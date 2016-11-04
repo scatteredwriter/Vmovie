@@ -299,7 +299,7 @@
             </Frame>
         </Grid>
         <Grid x:Name="splitview_grid">
-            <SplitView x:Name="splitview" PaneBackground="Transparent" OpenPaneLength="362" IsPaneOpen="False" Template="{StaticResource SplitViewControlTemplate1}" PaneClosing="splitview_PaneClosing">
+            <SplitView x:Name="splitview" PaneBackground="Transparent" IsPaneOpen="False" Template="{StaticResource SplitViewControlTemplate1}" PaneClosing="splitview_PaneClosing">
                 <SplitView.Pane>
                     <Grid>
                         <Grid.Background>
@@ -339,7 +339,7 @@
                                 <Line X1="0" X2="0" Y1="0" Y2="23" Opacity="0.3" Stroke="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" StrokeThickness="1" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"></Line>
                             </RelativePanel>
                             <RelativePanel Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                <Button Style="{StaticResource NullButtonStyle}" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True">
+                                <Button Style="{StaticResource NullButtonStyle}" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Click="Pages_Button_Click">
                                     <StackPanel>
                                         <Image Height="18" Width="18" Source="ms-appx:///Assets/side_cache.png"></Image>
                                         <TextBlock Text="我的缓存" FontSize="12" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" Margin="0,5,0,0"></TextBlock>
@@ -348,7 +348,7 @@
                                 <Line X1="0" X2="0" Y1="0" Y2="23" Opacity="0.3" Stroke="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" StrokeThickness="1" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True"></Line>
                             </RelativePanel>
                             <RelativePanel Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                <Button Style="{StaticResource NullButtonStyle}" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True">
+                                <Button Style="{StaticResource NullButtonStyle}" RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Click="Pages_Button_Click">
                                     <StackPanel>
                                         <Image Height="18" Width="18" Source="ms-appx:///Assets/side_likes.png"></Image>
                                         <TextBlock Text="我喜欢的" FontSize="12" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" Margin="0,5,0,0"></TextBlock>

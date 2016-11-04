@@ -23,7 +23,7 @@ using Windows.UI.Xaml.Shapes;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上有介绍
 
-namespace V电影.Pages.PC
+namespace V电影.Pages.Mobile
 {
     /// <summary>
     /// 可用于自身或导航至 Frame 内部的空白页。
@@ -142,15 +142,14 @@ namespace V电影.Pages.PC
             double height = 0.0;
             double width = this.ActualWidth;
             int items_count = cates_gridview.ItemsPanelRoot.Children.Count;
-            int row_count = (int)width / 250;
-            width /= row_count;
+            width /= 2;
             height = width;
             for (int i = 0; i < items_count; i++)
             {
                 item = new GridViewItem();
                 item = cates_gridview.ItemsPanelRoot.Children[i] as GridViewItem;
-                (item.ContentTemplateRoot as Grid).Height = (int)height;
-                (item.ContentTemplateRoot as Grid).Width = (int)width;
+                (item.ContentTemplateRoot as Grid).Height = height;
+                (item.ContentTemplateRoot as Grid).Width = width;
             }
         }
 
@@ -178,6 +177,8 @@ namespace V电影.Pages.PC
                     }
                     sp.Children.Add(line);
                 }
+                if (flipview.ItemsPanelRoot.Children != null)
+                    viewmodel.Max_Height = (flipview.ItemsPanelRoot.Children[0] as FlipViewItem).ActualHeight;
             });
         }
 
@@ -518,9 +519,8 @@ namespace V电影.Pages.PC
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.WriteLine(ex.Message);
             }
         }
 

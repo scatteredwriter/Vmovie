@@ -49,13 +49,14 @@ namespace V电影.Pages.Mobile
             base.OnNavigatedTo(e);
             if (e.NavigationMode == NavigationMode.New)
             {
-                page_frame.Navigate(typeof(Pages.PC.HomePage));
+                page_frame.Navigate(typeof(Pages.Mobile.HomePage));
                 second_frame.Navigate(typeof(Pages.Mobile.WelcomePage), new DrillInNavigationTransitionInfo());
             }
         }
 
         private void MainPage_SizeChanged(object sender, SizeChangedEventArgs e)
         {
+            splitview.OpenPaneLength = this.ActualWidth;
             viewmodel.Windows_Width = e.NewSize.Width;
             if (second_frame.CurrentSourcePageType == typeof(Pages.Mobile.WelcomePage))
             {
@@ -203,6 +204,16 @@ namespace V电影.Pages.Mobile
                             return;
                         }
                         page_frame.Navigate(typeof(Pages.Share.OrderPage));
+                    }; break;
+                case "我喜欢的":
+                    {
+                        if (!App.settings.Values.ContainsKey(Resource.APPTheme.user_email))
+                        {
+                            second_frame_title.Text = "登录";
+                            Navigate_To_LoginPage();
+                            return;
+                        }
+                        page_frame.Navigate(typeof(Pages.Share.LikePage));
                     }; break;
             }
         }

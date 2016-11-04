@@ -155,5 +155,19 @@ namespace V电影.ViewModel
                 _cis = value;
             }
         }
+
+        private double _max_height;
+        public double Max_Height
+        {
+            get
+            {
+                return _max_height;
+            }
+            set
+            {
+                _max_height = value;
+                RaisePropertyChanged(nameof(Max_Height));
+            }
+        }
     }
 }
