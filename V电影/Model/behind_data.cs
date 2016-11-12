@@ -49,18 +49,5 @@ namespace V电影.Model
                 RaisePropertyChanged(nameof(Behind_Info));
             }
         }
-
-        private ObservableCollection<ImageSource> _isb;
-        public ObservableCollection<ImageSource> Image_Sbs
-        {
-            get
-            {
-                return _isb;
-            }
-            set
-            {
-                _isb = value;
-            }
-        }
     }
 }

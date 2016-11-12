@@ -81,4 +81,19 @@ namespace V电影.Model
             }
         }
     }
+
+    public class series_video_info : basemodel
+    {
+        public string title { get; set; }
+        public int seriesid { get; set; }
+        public int series_postid { get; set; }
+        public string video_link { get; set; }
+        public int episode { get; set; }
+        public int count_comment { get; set; }
+        public string thumbnail { get; set; }
+        public string qiniu_url { get; set; }
+        public string share_sub_title { get; set; }
+        public string weibo_share_image { get; set; }
+        public int count_share { get; set; }
+    }
 }

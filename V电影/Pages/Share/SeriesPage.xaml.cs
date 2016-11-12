@@ -17,6 +17,8 @@ using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Microsoft.Toolkit.Uwp.UI;
+using Windows.Storage;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上有介绍
 
@@ -73,12 +75,13 @@ namespace V电影.Pages.Share
         {
             string json = await HttpRequest.VmovieRequset.Series_Request(series_p);
             viewmodel.Series_Info = JsonToObject.JsonToObject.Convert_Series_Json(json);
-            Cache.ImageCache imagecache = new Cache.ImageCache();
-            viewmodel.Series_Image_Sbs = new ObservableCollection<ImageSource>();
+            ImageCache imagecache = new ImageCache();
+            await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.series_floder);
             for (int i = 0; i < viewmodel.Series_Info.Count; i++)
             {
-                ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Series_Info[i].app_image, "Series");
-                viewmodel.Series_Image_Sbs.Add(imagesource);
+                string uri = viewmodel.Series_Info[i].app_image;
+                ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                viewmodel.Series_Info[i].image_source = imagesource;
             }
             viewmodel.Series_New_Count = viewmodel.Series_Info.Count;
         }
@@ -89,12 +92,13 @@ namespace V电影.Pages.Share
             {
                 string json = await HttpRequest.VmovieRequset.Series_Request(series_p = 1);
                 viewmodel.Series_Info = JsonToObject.JsonToObject.Convert_Series_Json(json);
-                Cache.ImageCache imagecache = new Cache.ImageCache();
-                viewmodel.Series_Image_Sbs = new ObservableCollection<ImageSource>();
+                ImageCache imagecache = new ImageCache();
+                await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.series_floder);
                 for (int i = 0; i < viewmodel.Series_Info.Count; i++)
                 {
-                    ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Series_Info[i].app_image, "Series");
-                    viewmodel.Series_Image_Sbs.Add(imagesource);
+                    string uri = viewmodel.Series_Info[i].app_image;
+                    ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                    viewmodel.Series_Info[i].image_source = imagesource;
                 }
                 viewmodel.Series_New_Count = viewmodel.Series_Info.Count;
                 await Task.Delay(1000);
@@ -115,16 +119,8 @@ namespace V电影.Pages.Share
             series_listview_sc.ViewChanged += Series_listview_sc_ViewChanged;
         }
 
-        private async void Series_listview_sc_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        private void Series_listview_sc_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
-            if (series_listview_sc.VerticalOffset == series_listview_sc.ScrollableHeight)
-            {
-                viewmodel.Series_New_Count = 0;
-                series_new_border.Visibility = Visibility.Visible;
-                await Task.Delay(2000);
-                series_new_border.Visibility = Visibility.Collapsed;
-                return;
-            }
             if (!e.IsIntermediate)
             {
                 Series_Refresh();
@@ -180,11 +176,13 @@ namespace V电影.Pages.Share
                     viewmodel.Series_Info.Add(lists[i]);
                 }
                 viewmodel.Series_New_Count = viewmodel.Series_Info.Count - viewmodel.Series_New_Count;
-                Cache.ImageCache imagecache = new Cache.ImageCache();
+                ImageCache imagecache = new ImageCache();
+                await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.series_floder);
                 for (int i = (viewmodel.Series_Info.Count - viewmodel.Series_New_Count); i < viewmodel.Series_Info.Count; i++)
                 {
-                    ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Series_Info[i].app_image, "Series");
-                    viewmodel.Series_Image_Sbs.Add(imagesource);
+                    string uri = viewmodel.Series_Info[i].app_image;
+                    ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                    viewmodel.Series_Info[i].image_source = imagesource;
                 }
                 series_new_border.Visibility = Visibility.Visible;
                 await Task.Delay(2000);

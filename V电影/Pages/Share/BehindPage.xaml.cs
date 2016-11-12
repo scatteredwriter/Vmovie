@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Toolkit.Uwp.UI;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -68,10 +69,6 @@ namespace V电影.Pages.Share
         {
             string json = await HttpRequest.VmovieRequset.Behind_Cates_Request();
             viewmodel.Behind_Data = JsonToObject.JsonToObject.Convert_Behind_Cates_Json(json);
-            for (int i = 0; i < viewmodel.Behind_Data.Count; i++)
-            {
-                viewmodel.Behind_Data[i].Image_Sbs = new ObservableCollection<ImageSource>();
-            }
         }
 
         private UIElementCollection Get_Header()
@@ -88,12 +85,13 @@ namespace V电影.Pages.Share
 
         private async void pivot_PivotItemLoaded(Pivot sender, PivotItemEventArgs args)
         {
-            Cache.ImageCache cache = new Cache.ImageCache();
+            ImageCache imagecache = new ImageCache();
+            await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.behind_floder);
             if (pivot_selectedindex < 0)
             {
                 return;
             }
-            if (viewmodel.Behind_Data[pivot_selectedindex].Is_Loaded)
+            if (viewmodel.Behind_Data[pivot_selectedindex].Is_Loaded && (args.Item.ContentTemplateRoot as ListView) != null)
             {
                 return;
             }
@@ -103,13 +101,14 @@ namespace V电影.Pages.Share
                 viewmodel.Behind_Data[pivot_selectedindex].Behind_Info = JsonToObject.JsonToObject.Convert_Behind_Info_Json(json);
                 for (int i = 0; i < viewmodel.Behind_Data[pivot_selectedindex].Behind_Info.Count; i++)
                 {
-                    ImageSource imagesource = await cache.Get_Image_Source(viewmodel.Behind_Data[pivot_selectedindex].Behind_Info[i].image, "Behind");
-                    if (viewmodel.Behind_Data[pivot_selectedindex].Image_Sbs != null)
-                        viewmodel.Behind_Data[pivot_selectedindex].Image_Sbs.Add(imagesource);
-                    else
+                    try
                     {
-                        viewmodel.Behind_Data[pivot_selectedindex].Image_Sbs = new ObservableCollection<ImageSource>();
-                        viewmodel.Behind_Data[pivot_selectedindex].Image_Sbs.Add(imagesource);
+                        string uri = viewmodel.Behind_Data[pivot_selectedindex].Behind_Info[i].image;
+                        ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                        viewmodel.Behind_Data[pivot_selectedindex].Behind_Info[i].image_source = imagesource;
+                    }
+                    catch (Exception)
+                    {
                     }
                 }
                 viewmodel.Behind_Data[pivot_selectedindex].Behind_Info_New_Count = viewmodel.Behind_Data[pivot_selectedindex].Behind_Info.Count;
@@ -140,28 +139,6 @@ namespace V电影.Pages.Share
         {
             Get_Child((DependencyObject)sender, 1);
             viewmodel.Behind_Data[pivot_selectedindex].Listview_Scrollviewer.ViewChanging += Listview_Scrollviewer_ViewChanging;
-            viewmodel.Behind_Data[pivot_selectedindex].Listview_Scrollviewer.ViewChanged += Listview_Scrollviewer_ViewChanged;
-        }
-
-        private async void Listview_Scrollviewer_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
-        {
-            int index = 0;
-            for (int i = 0; i < viewmodel.Behind_Data.Count; i++)
-            {
-                if (((sender as ScrollViewer).DataContext as Model.behind_data).cateid == viewmodel.Behind_Data[i].cateid)
-                {
-                    index = i;
-                }
-            }
-            if (viewmodel.Behind_Data[index].Listview_Scrollviewer.VerticalOffset == viewmodel.Behind_Data[index].Listview_Scrollviewer.ScrollableHeight)
-            {
-                viewmodel.Behind_Data[index].Behind_Info_New_Count = 0;
-                behind_info_new_border.Visibility = Visibility.Visible;
-                behind_new_count_tb.Text = "没有新内容啦";
-                await Task.Delay(2000);
-                behind_info_new_border.Visibility = Visibility.Collapsed;
-                return;
-            }
         }
 
         private async void Listview_Scrollviewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
@@ -180,30 +157,38 @@ namespace V电影.Pages.Share
             }
             if (e.FinalView.VerticalOffset > (viewmodel.Behind_Data[index].Listview_Scrollviewer.ScrollableHeight * 2.0) / 3.0)
             {
-                viewmodel.Behind_Data[index].Is_Behind_Loading = true;
-                string json = await HttpRequest.VmovieRequset.Behind_Content_Request(++viewmodel.Behind_Data[index].Behind_Info_P, viewmodel.Behind_Data[index].cateid);
-                ObservableCollection<Model.behind_info> lists = JsonToObject.JsonToObject.Convert_Behind_Info_Json(json);
-                ObservableCollection<ImageSource> sources = new ObservableCollection<ImageSource>();
-                if (lists.Count == 0)
+                try
                 {
-                    return;
+                    viewmodel.Behind_Data[index].Is_Behind_Loading = true;
+                    string json = await HttpRequest.VmovieRequset.Behind_Content_Request(++viewmodel.Behind_Data[index].Behind_Info_P, viewmodel.Behind_Data[index].cateid);
+                    ObservableCollection<Model.behind_info> lists = JsonToObject.JsonToObject.Convert_Behind_Info_Json(json);
+                    ObservableCollection<ImageSource> sources = new ObservableCollection<ImageSource>();
+                    if (lists.Count == 0)
+                    {
+                        return;
+                    }
+                    for (int i = 0; i < lists.Count; i++)
+                    {
+                        viewmodel.Behind_Data[index].Behind_Info.Add(lists[i]);
+                    }
+                    viewmodel.Behind_Data[index].Behind_Info_New_Count = lists.Count;
+                    ImageCache imagecache = new ImageCache();
+                    await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.behind_floder);
+                    for (int i = (viewmodel.Behind_Data[index].Behind_Info.Count - viewmodel.Behind_Data[index].Behind_Info_New_Count); i < viewmodel.Behind_Data[index].Behind_Info.Count; i++)
+                    {
+                        string uri = viewmodel.Behind_Data[pivot_selectedindex].Behind_Info[i].image;
+                        ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                        viewmodel.Behind_Data[pivot_selectedindex].Behind_Info[i].image_source = imagesource;
+                    }
+                    behind_info_new_border.Visibility = Visibility.Visible;
+                    behind_new_count_tb.Text = "本次加载了" + viewmodel.Behind_Data[index].Behind_Info_New_Count.ToString() + "条新内容";
+                    await Task.Delay(2000);
+                    behind_info_new_border.Visibility = Visibility.Collapsed;
+                    viewmodel.Behind_Data[index].Behind_Info_New_Count = viewmodel.Behind_Data[index].Behind_Info.Count;
                 }
-                for (int i = 0; i < lists.Count; i++)
+                catch (Exception)
                 {
-                    viewmodel.Behind_Data[index].Behind_Info.Add(lists[i]);
                 }
-                viewmodel.Behind_Data[index].Behind_Info_New_Count = lists.Count;
-                Cache.ImageCache imagecache = new Cache.ImageCache();
-                for (int i = (viewmodel.Behind_Data[index].Behind_Info.Count - viewmodel.Behind_Data[index].Behind_Info_New_Count); i < viewmodel.Behind_Data[index].Behind_Info.Count; i++)
-                {
-                    ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Behind_Data[index].Behind_Info[i].image, "Behind");
-                    viewmodel.Behind_Data[index].Image_Sbs.Add(imagesource);
-                }
-                behind_info_new_border.Visibility = Visibility.Visible;
-                behind_new_count_tb.Text = "本次加载了" + viewmodel.Behind_Data[index].Behind_Info_New_Count.ToString() + "条新内容";
-                await Task.Delay(2000);
-                behind_info_new_border.Visibility = Visibility.Collapsed;
-                viewmodel.Behind_Data[index].Behind_Info_New_Count = viewmodel.Behind_Data[index].Behind_Info.Count;
             }
             viewmodel.Behind_Data[index].Is_Behind_Loading = false;
         }

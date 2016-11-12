@@ -1,0 +1,25 @@
+﻿<Page
+    x:Class="V电影.Pages.PC.SplashPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:V电影.Pages.PC"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Page.Resources>
+        <Storyboard x:Name="Title_SB" FillBehavior="HoldEnd" Completed="Title_SB_Completed">
+            <DoubleAnimation Storyboard.TargetName="title" Storyboard.TargetProperty="Opacity" From="0" To="1" Duration="0:0:1"></DoubleAnimation>
+        </Storyboard>
+    </Page.Resources>
+
+    <Grid Background="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}">
+        <Canvas x:Name="background_canvas">
+            <Image x:Name="background" Source="ms-appx:///Assets/SplashScreen.png"></Image>
+        </Canvas>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,115">
+            <ProgressRing Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" IsActive="True" Height="50" Width="50"></ProgressRing>
+            <Image x:Name="title" Height="22" Opacity="0" Margin="0,20,0,0" Source="ms-appx:///Assets/splash_title.png"></Image>
+        </StackPanel>
+    </Grid>
+</Page>

@@ -34,6 +34,9 @@ namespace V电影.Model
             }
             set
             {
+                _image_source = null;
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
                 _image_source = value;
                 RaisePropertyChanged(nameof(image_source));
             }

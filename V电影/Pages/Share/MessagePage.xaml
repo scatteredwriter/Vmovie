@@ -65,8 +65,8 @@
                                 <TextBlock x:Name="addtime" Text="{Binding addtime,Converter={StaticResource TimeStamp_Converter},ConverterParameter=ymd}" FontSize="11" Foreground="#FFC5C5C5" RelativePanel.Below="username"></TextBlock>
                                 <TextBlock x:Name="is_zan" Text="赞了你" Visibility="{Binding type,Converter={StaticResource Is_Display_Comment_Converter},ConverterParameter=zan}" FontSize="10" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" RelativePanel.AlignBottomWith="username" RelativePanel.RightOf="username" Margin="5,0,0,1"></TextBlock>
                             </RelativePanel>
-                            <StackPanel x:Name="content_grid" Visibility="{Binding type,Converter={StaticResource Is_Display_Comment_Converter},ConverterParameter=content_grid}" RelativePanel.Below="avatar" RelativePanel.AlignLeftWith="user_title" RelativePanel.AlignRightWithPanel="True" Margin="15,8,0,0">
-                                <TextBlock x:Name="content" Text="{Binding message.reply.content}" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" Foreground="#FF303030" CharacterSpacing="50" Loaded="content_Loaded"></TextBlock>
+                            <StackPanel x:Name="content_sp" Visibility="{Binding type,Converter={StaticResource Is_Display_Comment_Converter},ConverterParameter=content_grid}" RelativePanel.Below="avatar" RelativePanel.AlignLeftWith="user_title" RelativePanel.AlignRightWithPanel="True" Margin="15,8,0,0">
+                                <TextBlock x:Name="content" Text="{Binding message.reply.content}" TextAlignment="Left" TextWrapping="WrapWholeWords" TextTrimming="CharacterEllipsis" Foreground="#FF303030" CharacterSpacing="50" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SizeChanged="content_SizeChanged"></TextBlock>
                                 <Button x:Name="more_content_but" HorizontalAlignment="Center" Style="{StaticResource NullButtonStyle}" Visibility="Collapsed" Margin="15,15,15,15" Click="more_content_but_Click">
                                     <Button.Content>
                                         <StackPanel Orientation="Horizontal">
@@ -76,12 +76,12 @@
                                     </Button.Content>
                                 </Button>
                             </StackPanel>
-                            <Button x:Name="comment_content_but" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Style="{StaticResource NullButtonStyle}" RelativePanel.Below="content_grid" RelativePanel.AlignLeftWith="user_title" RelativePanel.AlignRightWithPanel="True" Margin="15,8,0,0" Click="comment_content_but_Click">
+                            <Button x:Name="comment_content_but" HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Style="{StaticResource NullButtonStyle}" RelativePanel.Below="content_sp" RelativePanel.AlignLeftWith="user_title" RelativePanel.AlignRightWithPanel="True" Margin="15,8,0,0" Click="comment_content_but_Click">
                                 <Grid Padding="15,10,15,10" Background="{Binding Source={StaticResource APPTheme},Path=Second_White_Color_Brush}">
                                     <TextBlock Text="{Binding message.comment.content}" TextWrapping="Wrap" CharacterSpacing="50" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}"></TextBlock>
                                 </Grid>
                             </Button>
-                            <TextBlock x:Name="object_content" Text="{Binding message.m_object.content}" FontSize="12" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" RelativePanel.Below="comment_content_but" RelativePanel.AlignLeftWith="user_title" Margin="15,8,0,0"></TextBlock>
+                            <TextBlock x:Name="object_content" Text="{Binding message.m_object.content}" TextTrimming="CharacterEllipsis" FontSize="12" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" RelativePanel.Below="comment_content_but" RelativePanel.AlignLeftWith="user_title" Margin="15,8,0,0"></TextBlock>
                         </RelativePanel>
                         <Line X1="0" Y1="0" X2="10" Y2="0" Stroke="{Binding Source={StaticResource APPTheme},Path=Second_White_Color_Brush}" StrokeThickness="1" Stretch="Fill" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"></Line>
                     </Grid>

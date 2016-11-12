@@ -16,41 +16,12 @@ namespace V电影.ViewModel
         {
             get
             {
-                if (_sis != null)
-                {
-                    int count;
-                    if (_sis.Count <= _series_info.Count)
-                    {
-                        count = _sis.Count;
-                    }
-                    else
-                    {
-                        count = _series_info.Count;
-                    }
-                    for (int i = 0; i < count; i++)
-                    {
-                        _series_info[i].image_source = _sis[i];
-                    }
-                }
                 return _series_info;
             }
             set
             {
                 _series_info = value;
                 RaisePropertyChanged(nameof(Series_Info));
-            }
-        }
-
-        private ObservableCollection<ImageSource> _sis;
-        public ObservableCollection<ImageSource> Series_Image_Sbs
-        {
-            get
-            {
-                return _sis;
-            }
-            set
-            {
-                _sis = value;
             }
         }
 

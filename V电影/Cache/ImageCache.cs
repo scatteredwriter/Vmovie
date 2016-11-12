@@ -14,7 +14,7 @@ using Windows.Web.Http;
 
 namespace V电影.Cache
 {
-    public class ImageCache
+    public class ImageCache : IDisposable
     {
         private const string image_cache_folder_name = "ImageCache";
         private StorageFolder _localFolder;
@@ -26,11 +26,14 @@ namespace V电影.Cache
         /// <returns>图片位图的List集合</returns>
         public async Task<ImageSource> Get_Image_Source(string Url, string foldername)
         {
-            await Create_FoldName(foldername);
             string filename = "";
+            ImageSource result = null;
             SoftwareBitmapSource source = new SoftwareBitmapSource();
             SoftwareBitmap bitmap;
             filename = Url.Substring(Url.LastIndexOf('/') + 1);
+            //Task.Factory.StartNew(async () =>
+            // {
+            await Create_FoldName(foldername);
             bool is_contain = await Is_Contain_File(filename);
             if (is_contain)
             {
@@ -44,12 +47,58 @@ namespace V电影.Cache
             if (bitmap != null)
             {
                 await source.SetBitmapAsync(bitmap);
-                return source;
+                result = source;
             }
             else
             {
-                return new BitmapImage(new Uri("ms-appx:///Assets/main_pic_shadow.png", UriKind.Absolute));
+                result = new BitmapImage(new Uri("ms-appx:///Assets/main_pic_shadow.png", UriKind.Absolute));
             }
+            //});
+            Dispose();
+            return result;
+        }
+
+        public async Task<WeakReference> Get_Image_Source2(string Url, string foldername)
+        {
+            string filename = "";
+            WeakReference result = null;
+            ImageSource image_result = null;
+            SoftwareBitmapSource source = new SoftwareBitmapSource();
+            SoftwareBitmap bitmap;
+            filename = Url.Substring(Url.LastIndexOf('/') + 1);
+            await Task.Factory.StartNew(async () =>
+             {
+                 await Create_FoldName(foldername);
+                 bool is_contain = await Is_Contain_File(filename);
+                 if (is_contain)
+                 {
+                     bitmap = await ReadFromFile(filename);
+                 }
+                 else
+                 {
+                     await WriteToFile(await DownloadImage(Url), filename);
+                     bitmap = await ReadFromFile(filename);
+                 }
+                 if (bitmap != null)
+                 {
+                     await source.SetBitmapAsync(bitmap);
+                     image_result = source;
+                 }
+                 else
+                 {
+                     image_result = new BitmapImage(new Uri("ms-appx:///Assets/main_pic_shadow.png", UriKind.Absolute));
+                 }
+             });
+            if (result == null)
+            {
+                result = new WeakReference(image_result);
+            }
+            else
+            {
+                result.Target = image_result;
+            }
+            Dispose();
+            return result;
         }
 
         private async Task Create_FoldName(string foldername)
@@ -84,12 +133,14 @@ namespace V电影.Cache
                 HttpClient hc = new HttpClient();
                 HttpResponseMessage resp = await hc.GetAsync(new Uri(url));
                 resp.EnsureSuccessStatusCode();
-                IInputStream inputStream = await resp.Content.ReadAsInputStreamAsync();
-                IRandomAccessStream memStream = new InMemoryRandomAccessStream();
-                await RandomAccessStream.CopyAsync(inputStream, memStream);
-                BitmapDecoder decoder = await BitmapDecoder.CreateAsync(memStream);
-                SoftwareBitmap softBmp = await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
-                return softBmp;
+                using (IInputStream inputStream = await resp.Content.ReadAsInputStreamAsync())
+                {
+                    IRandomAccessStream memStream = new InMemoryRandomAccessStream();
+                    await RandomAccessStream.CopyAsync(inputStream, memStream);
+                    BitmapDecoder decoder = await BitmapDecoder.CreateAsync(memStream);
+                    SoftwareBitmap softBmp = await decoder.GetSoftwareBitmapAsync(BitmapPixelFormat.Bgra8, BitmapAlphaMode.Premultiplied);
+                    return softBmp;
+                }
             }
             catch (Exception)
             {
@@ -143,6 +194,10 @@ namespace V电影.Cache
             }
         }
 
-
+        public void Dispose()
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+        }
     }
 }

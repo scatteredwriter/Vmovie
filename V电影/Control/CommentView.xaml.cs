@@ -84,7 +84,7 @@ namespace V电影.Control
 
         private async void FirstStep()
         {
-            string json = await HttpRequest.VmovieRequset.Get_Comment_Request(PostId, p, Type);
+            string json = await HttpRequest.VmovieRequset.Get_Comment_Request(PostId, p = 1, Type);
             viewmodel.Comment_Data = JsonToObject.JsonToObject.Convert_Comment_Data_Json(json);
         }
 
@@ -111,7 +111,7 @@ namespace V电影.Control
             CommentViewColsing?.Invoke(this, true);
         }
 
-        private async void Approve_Click(object sender, RoutedEventArgs e)
+        private async void Approve_Click(object sender, RoutedEventArgs e) //点赞或取消点赞
         {
             string json = await HttpRequest.VmovieRequset.Approve_Request(((sender as Button).DataContext as Model.comment_data).commentid, ((sender as Button).DataContext as Model.comment_data).has_approve);
             if (!String.IsNullOrEmpty(json))
@@ -175,7 +175,7 @@ namespace V电影.Control
 
         public event EventHandler<bool> CommentViewColsing;
 
-        private async void add_comment_but_Click(object sender, RoutedEventArgs e)
+        private async void add_comment_but_Click(object sender, RoutedEventArgs e) //添加新评论
         {
             string json = "";
             int commentid = -1;
@@ -196,34 +196,25 @@ namespace V电影.Control
                 if (msg == "评论成功")
                 {
                     CommentNum++;
+                    if (Type == 0)
+                    {
+                        ((((((this.Parent as Grid).Parent as Grid).Children[2] as Grid).Children[2] as Button).Content as StackPanel).Children[1] as TextBlock).Text = (Convert.ToInt32(((((((this.Parent as Grid).Parent as Grid).Children[2] as Grid).Children[2] as Button).Content as StackPanel).Children[1] as TextBlock).Text) + 1).ToString();
+                    }
+                    else if (Type == 1)
+                        ((((((this.Parent as Grid).Parent as Grid).Children[2] as Grid).Children[1] as Button).Content as StackPanel).Children[1] as TextBlock).Text = (Convert.ToInt32(((((((this.Parent as Grid).Parent as Grid).Children[2] as Grid).Children[1] as Button).Content as StackPanel).Children[1] as TextBlock).Text) + 1).ToString();
                     try
                     {
                         p = 1;
                         json = await HttpRequest.VmovieRequset.Get_Comment_Request(PostId, p, Type);
                         viewmodel.Comment_Data = JsonToObject.JsonToObject.Convert_Comment_Data_Json(json);
-                        //double ver_offest = comment_listview_sv.VerticalOffset;
-                        //ObservableCollection<Model.comment_data> lists = new ObservableCollection<Model.comment_data>();
-                        //for (int i = 1; i <= p; i++)
-                        //{
-                        //    json = await HttpRequest.VmovieRequset.Get_Comment_Request(PostId, i, Type);
-                        //    ObservableCollection<Model.comment_data> list = JsonToObject.JsonToObject.Convert_Comment_Data_Json(json);
-                        //    if (list.Count == 0)
-                        //    {
-                        //        break;
-                        //    }
-                        //    for (int j = 0; j < list.Count; j++)
-                        //    {
-                        //        lists.Add(list[j]);
-                        //    }
-                        //}
-                        //viewmodel.Comment_Data = lists;
-                        //comment_listview_sv.ChangeView(null, ver_offest + 50, null, true);
                     }
                     catch (Exception)
                     {
                     }
                     comment_tb.PlaceholderText = "我来说两句...";
                     comment_tb.Text = "";
+                    Reply_Info = null;
+                    Comment_Type = 0;
                 }
                 else
                 {
@@ -249,9 +240,9 @@ namespace V电影.Control
             }
         }
 
-        private void comment_lisview_ItemClick(object sender, ItemClickEventArgs e)
+        private void comment_lisview_ItemClick(object sender, ItemClickEventArgs e) //点击评论
         {
-            if(comment_tb.IsEnabled)
+            if (comment_tb.IsEnabled)
             {
                 Comment_Type = 1;
                 Reply_User_Changed(e.ClickedItem as Model.comment_data);

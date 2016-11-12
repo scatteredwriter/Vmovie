@@ -82,12 +82,31 @@ namespace V电影.Pages.Share
             }
         }
 
-        private void content_Loaded(object sender, RoutedEventArgs e)
+        private async void content_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if ((sender as TextBlock).ActualHeight > 40)
+            try
             {
-                (sender as TextBlock).MaxHeight = 40;
-                (((sender as TextBlock).Parent as StackPanel).Children[1] as Button).Visibility = Visibility.Visible;
+                if (((sender as TextBlock).DataContext as Model.notice).message.reply == null)
+                    return;
+                await (sender as TextBlock).Dispatcher?.RunAsync(CoreDispatcherPriority.Normal, () =>
+                {
+                    if ((sender as TextBlock).ActualHeight > 55.0 && (((((sender as TextBlock).Parent as StackPanel).Children[1] as Button).Content as StackPanel).Children[0] as TextBlock).Text == "查看全部")
+                    {
+                        ((sender as TextBlock).DataContext as Model.notice).message.is_comment_overflow = true;
+                        (sender as TextBlock).MaxLines = 2;
+                        (((sender as TextBlock).Parent as StackPanel).Children[1] as Button).Visibility = Visibility.Visible;
+                    }
+                    else if ((sender as TextBlock).ActualHeight <= 55.0 && !(((sender as TextBlock).DataContext as Model.notice).message.is_comment_overflow) && (((sender as TextBlock).Parent as StackPanel).Children[1] as Button).Visibility == Visibility.Visible || (e.NewSize.Width != e.PreviousSize.Width && ((sender as TextBlock).DataContext as Model.notice).message.is_comment_overflow))
+                    {
+                        (sender as TextBlock).MaxLines = 0;
+                        (((((sender as TextBlock).Parent as StackPanel).Children[1] as Button).Content as StackPanel).Children[0] as TextBlock).Text = "查看全部";
+                        (((((sender as TextBlock).Parent as StackPanel).Children[1] as Button).Content as StackPanel).Children[1] as Image).Source = new BitmapImage(new Uri("ms-appx:///Assets/dropdown.png", UriKind.Absolute));
+                        (((sender as TextBlock).Parent as StackPanel).Children[1] as Button).Visibility = Visibility.Collapsed;
+                    }
+                });
+            }
+            catch (Exception)
+            {
             }
         }
 
@@ -95,14 +114,14 @@ namespace V电影.Pages.Share
         {
             if ((((sender as Button).Content as StackPanel).Children[0] as TextBlock).Text == "查看全部")
             {
-                (((sender as Button).Parent as StackPanel).Children[0] as TextBlock).MaxHeight = double.PositiveInfinity;
                 (((sender as Button).Content as StackPanel).Children[0] as TextBlock).Text = "收起简介";
+                (((sender as Button).Parent as StackPanel).Children[0] as TextBlock).MaxLines = 0;
                 (((sender as Button).Content as StackPanel).Children[1] as Image).Source = new BitmapImage(new Uri("ms-appx:///Assets/dropup.png", UriKind.Absolute));
             }
             else if ((((sender as Button).Content as StackPanel).Children[0] as TextBlock).Text == "收起简介")
             {
-                (((sender as Button).Parent as StackPanel).Children[0] as TextBlock).MaxHeight = 40;
                 (((sender as Button).Content as StackPanel).Children[0] as TextBlock).Text = "查看全部";
+                (((sender as Button).Parent as StackPanel).Children[0] as TextBlock).MaxLines = 2;
                 (((sender as Button).Content as StackPanel).Children[1] as Image).Source = new BitmapImage(new Uri("ms-appx:///Assets/dropdown.png", UriKind.Absolute));
             }
         }
@@ -296,6 +315,27 @@ namespace V电影.Pages.Share
                 is_inputing = false;
                 comment_tb.Focus(FocusState.Pointer);
             }
+        }
+
+        private void content_Loaded(object sender, RoutedEventArgs e)
+        {
+            //try
+            //{
+            //    await this.Dispatcher?.RunAsync(CoreDispatcherPriority.Normal, () =>
+            //    {
+            //        if (((sender as TextBlock).DataContext as Model.notice).message.reply == null)
+            //            return;
+            //        if ((sender as TextBlock).ActualHeight > 40.0 && (sender as TextBlock).MaxHeight == double.PositiveInfinity)
+            //        {
+            //            (sender as TextBlock).MaxHeight = 40.0;
+            //            (((sender as TextBlock).Parent as StackPanel).Children[1] as Button).Visibility = Visibility.Visible;
+            //            (sender as TextBlock).UpdateLayout();
+            //        }
+            //    });
+            //}
+            //catch (Exception)
+            //{
+            //}
         }
     }
 }

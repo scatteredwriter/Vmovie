@@ -151,6 +151,32 @@ namespace V电影.JsonToObject
             }
         }
 
+        public static Model.series_video_info Convert_Series_Video_Info(string json)
+        {
+            Model.series_video_info item = new Model.series_video_info();
+            try
+            {
+                JObject json_object = (JObject)JsonConvert.DeserializeObject(json);
+                JObject data = (JObject)json_object["data"];
+                item.title = data["title"].ToString();
+                item.seriesid = Convert.ToInt32(data["seriesid"].ToString());
+                item.series_postid = Convert.ToInt32(data["series_postid"].ToString());
+                item.video_link = data["video_link"].ToString();
+                item.episode = Convert.ToInt32(data["episode"].ToString());
+                item.count_comment = Convert.ToInt32(data["count_comment"].ToString());
+                item.thumbnail = data["thumbnail"].ToString();
+                item.qiniu_url = data["qiniu_url"].ToString();
+                item.share_sub_title = data["share_sub_title"].ToString();
+                item.weibo_share_image = data["weibo_share_image"].ToString();
+                item.count_share = Convert.ToInt32(data["count_share"].ToString());
+                return item;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
         public static ObservableCollection<Model.behind_data> Convert_Behind_Cates_Json(string json)
         {
             ObservableCollection<Model.behind_data> lists = new ObservableCollection<Model.behind_data>();
@@ -548,14 +574,6 @@ namespace V电影.JsonToObject
                     notice.noticeid = Convert.ToInt32(list[i]["noticeid"].ToString());
                     notice.isread = Convert.ToBoolean(Convert.ToInt32(list[i]["isread"].ToString()));
                     notice.addtime = Convert.ToInt64(list[i]["addtime"].ToString());
-                    if (list[i]["type"].ToString() == "101") //评论
-                    {
-                        notice.type = "评论";
-                    }
-                    else if(list[i]["type"].ToString()=="301")
-                    {
-                        notice.type = "点赞";
-                    }
                     JObject m_object = (JObject)JsonConvert.DeserializeObject(list[i]["json"].ToString());
                     try
                     {
@@ -595,9 +613,21 @@ namespace V电影.JsonToObject
                         notice.message.m_object.id = Convert.ToInt32(m_o["id"].ToString());
                         notice.message.m_object.content = m_o["content"].ToString();
                         notice.message.m_object.image = m_o["image"].ToString();
-                        JObject info = (JObject)m_o["info"];
-                        notice.message.m_object.is_album = Convert.ToBoolean(Convert.ToInt32(info["is_album"].ToString()));
-                        notice.message.m_object.app_fu_title = info["app_fu_title"].ToString();
+                        try
+                        {
+                            JObject info = (JObject)m_o["info"];
+                            notice.message.m_object.is_album = Convert.ToBoolean(Convert.ToInt32(info["is_album"].ToString()));
+                            notice.message.m_object.app_fu_title = info["app_fu_title"].ToString();
+                        }
+                        catch (Exception)
+                        {
+                        }
+
+                        //判断评论或点赞
+                        if (notice.message.reply == null)
+                            notice.type = "点赞";
+                        else
+                            notice.type = "评论";
                     }
                     catch (Exception)
                     {

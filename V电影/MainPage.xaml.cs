@@ -67,7 +67,7 @@ namespace V电影
                 Grid.SetColumnSpan(second_frame_grid, 2);
                 is_card_mode = true;
             }
-            else
+            else if (e.NewSize.Width > 1000)
             {
                 Grid.SetColumn(second_frame_grid, 1);
                 Grid.SetColumnSpan(second_frame_grid, 1);
@@ -145,11 +145,19 @@ namespace V电影
 
         public void EnterFullScreenMode(int status)
         {
+            if (is_card_mode)
+            {
+                Grid.SetColumn(second_frame_grid, 0);
+                Grid.SetColumnSpan(second_frame_grid, 2);
+            }
+            else
+            {
+                Grid.SetColumn(second_frame_grid, 1);
+                Grid.SetColumnSpan(second_frame_grid, 1);
+            }
             if (status == 0) //退出全屏
             {
                 ApplicationView.GetForCurrentView().ExitFullScreenMode();
-                Grid.SetColumn(second_frame_grid, 1);
-                Grid.SetColumnSpan(second_frame_grid, 1);
                 second_grid_title.Visibility = Visibility.Visible;
             }
             else if (status == 1) //进入全屏
@@ -175,8 +183,6 @@ namespace V电影
 
         public void Navigate_To_SearchPage()
         {
-            is_tapped_close_but = true;
-            splitview.IsPaneOpen = false;
             (second_frame.ContentTransitions[0] as PaneThemeTransition).Edge = EdgeTransitionLocation.Bottom;
             Back_Button_Visible(1);
             second_frame.Navigate(typeof(Pages.Share.SearchPage), new DrillInNavigationTransitionInfo());
@@ -207,9 +213,7 @@ namespace V电影
 
         public void View_Series_Content(int series_id, int number = -1)
         {
-            Model.series_param param = new Model.series_param();
-            param.series_id = series_id;
-            param.number = number;
+            Model.series_param param = new Model.series_param() { series_id = series_id, number = number };
             (second_frame.ContentTransitions[0] as PaneThemeTransition).Edge = EdgeTransitionLocation.Right;
             Back_Button_Visible(1);
             second_frame.Navigate(typeof(Pages.Share.SeriesViewPage), param, new DrillInNavigationTransitionInfo());
@@ -241,7 +245,7 @@ namespace V电影
                             return;
                         }
                         page_frame.Navigate(typeof(Pages.Share.LikePage));
-                    };break;
+                    }; break;
             }
         }
 

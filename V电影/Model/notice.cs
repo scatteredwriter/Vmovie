@@ -21,6 +21,7 @@ namespace V电影.Model
         public message_comment reply { get; set; }
         public message_comment comment { get; set; }
         public message_object m_object { get; set; }
+        public bool is_comment_overflow { get; set; }
     }
 
     public class message_user

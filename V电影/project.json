@@ -1,8 +1,13 @@
 ﻿{
   "dependencies": {
+    "Microsoft.AspNet.WebApi.Client": "5.2.3",
+    "Microsoft.Azure.Mobile.Client": "3.0.3",
+    "Microsoft.Net.Http": "2.2.29",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.2",
+    "Microsoft.Toolkit.Uwp.UI": "1.1.0",
     "Newtonsoft.Json": "9.0.1",
-    "SQLitePCL": "3.8.7.2"
+    "SQLitePCL": "3.8.7.2",
+    "WindowsAzure.Messaging.Managed": "0.1.7.9"
   },
   "frameworks": {
     "uap10.0": {}

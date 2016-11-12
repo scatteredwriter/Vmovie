@@ -271,27 +271,29 @@
             <RowDefinition Height="6*"></RowDefinition>
         </Grid.RowDefinitions>
         <Image Grid.Row="0" Source="ms-appx:///Assets/login_bg.jpg" Stretch="UniformToFill"></Image>
-        <StackPanel Grid.Row="1" Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="20,30,20,20">
-            <TextBox x:Name="email_tb" Grid.Row="0" PlaceholderText="邮箱" IsSpellCheckEnabled="False" MaxWidth="300" HorizontalAlignment="Stretch" Margin="20,0,20,0" Style="{StaticResource TextBoxStyle1}" GotFocus="Got_Focus" KeyUp="email_tb_KeyUp">
-                <TextBox.InputScope>
-                    <InputScope>
-                        <InputScope.Names>
-                            <InputScopeName NameValue="EmailNameOrAddress"></InputScopeName>
-                        </InputScope.Names>
-                    </InputScope>
-                </TextBox.InputScope>
-            </TextBox>
-            <PasswordBox x:Name="password_pb" Grid.Row="1" PlaceholderText="密码" MaxWidth="300" HorizontalAlignment="Stretch" Margin="20,15,20,0" Style="{StaticResource PasswordBoxStyle1}" GotFocus="Got_Focus" KeyUp="password_pb_KeyUp"></PasswordBox>
-            <Grid x:Name="login_but" Margin="0,60,0,0" Tapped="login_but_Tapped">
-                <Canvas x:Name="login_but_shadow" HorizontalAlignment="Center" VerticalAlignment="Center" Height="40" MinWidth="200"></Canvas>
-                <Rectangle x:Name="login_rectangle" Height="40" MaxWidth="200" RadiusX="20" RadiusY="20" Fill="{Binding Source={StaticResource APPTheme},Path=Blue_Color_Brush}"></Rectangle>
-                <TextBlock Text="登录" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
-            </Grid>
-            <StackPanel x:Name="sign_in" HorizontalAlignment="Center" Margin="20,60,20,0" Orientation="Horizontal" Tapped="sign_in_Tapped">
-                <Line X1="0" X2="100" Y1="0" Y2="0" MaxWidth="80" Stroke="{Binding Source={StaticResource APPTheme},Path=Second_White_Color_Brush}" StrokeThickness="3" VerticalAlignment="Center"></Line>
-                <TextBlock Text="前往V电影注册" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" FontSize="13" CharacterSpacing="70" HorizontalAlignment="Center" Margin="10,0,10,0"></TextBlock>
-                <Line X1="0" X2="100" Y1="0" Y2="0" MaxWidth="80" Stroke="{Binding Source={StaticResource APPTheme},Path=Second_White_Color_Brush}" StrokeThickness="3" VerticalAlignment="Center"></Line>
+        <ScrollViewer Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Hidden">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="20,30,20,20">
+                <TextBox x:Name="email_tb" Grid.Row="0" PlaceholderText="邮箱" IsSpellCheckEnabled="False" MaxWidth="300" HorizontalAlignment="Stretch" Margin="20,0,20,0" Style="{StaticResource TextBoxStyle1}" GotFocus="Got_Focus" KeyUp="email_tb_KeyUp">
+                    <TextBox.InputScope>
+                        <InputScope>
+                            <InputScope.Names>
+                                <InputScopeName NameValue="EmailNameOrAddress"></InputScopeName>
+                            </InputScope.Names>
+                        </InputScope>
+                    </TextBox.InputScope>
+                </TextBox>
+                <PasswordBox x:Name="password_pb" Grid.Row="1" PlaceholderText="密码" MaxWidth="300" HorizontalAlignment="Stretch" Margin="20,15,20,0" Style="{StaticResource PasswordBoxStyle1}" GotFocus="Got_Focus" KeyUp="password_pb_KeyUp"></PasswordBox>
+                <Grid x:Name="login_but" Margin="0,60,0,0" Tapped="login_but_Tapped">
+                    <Canvas x:Name="login_but_shadow" HorizontalAlignment="Center" VerticalAlignment="Center" Height="40" MinWidth="200"></Canvas>
+                    <Rectangle x:Name="login_rectangle" Height="40" MaxWidth="200" RadiusX="20" RadiusY="20" Fill="{Binding Source={StaticResource APPTheme},Path=Blue_Color_Brush}"></Rectangle>
+                    <TextBlock Text="登录" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                </Grid>
+                <StackPanel x:Name="sign_in" HorizontalAlignment="Center" Margin="20,60,20,0" Orientation="Horizontal" Tapped="sign_in_Tapped">
+                    <Line X1="0" X2="100" Y1="0" Y2="0" MaxWidth="80" Stroke="{Binding Source={StaticResource APPTheme},Path=Second_White_Color_Brush}" StrokeThickness="3" VerticalAlignment="Center"></Line>
+                    <TextBlock Text="前往V电影注册" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" FontSize="13" CharacterSpacing="70" HorizontalAlignment="Center" Margin="10,0,10,0"></TextBlock>
+                    <Line X1="0" X2="100" Y1="0" Y2="0" MaxWidth="80" Stroke="{Binding Source={StaticResource APPTheme},Path=Second_White_Color_Brush}" StrokeThickness="3" VerticalAlignment="Center"></Line>
+                </StackPanel>
             </StackPanel>
-        </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Page>

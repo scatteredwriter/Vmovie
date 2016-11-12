@@ -69,43 +69,24 @@
                 <Grid>
                     <ListView x:Name="lastest_listview" IsItemClickEnabled="True" ItemsSource="{Binding Lastest_Info}" ScrollViewer.IsScrollInertiaEnabled="True" ScrollViewer.IsDeferredScrollingEnabled="True" ScrollViewer.VerticalScrollBarVisibility="Hidden" ScrollViewer.VerticalScrollMode="Enabled" ItemContainerStyle="{StaticResource ListViewItemStyle1}" Style="{StaticResource ListViewStyle2}" Loaded="ListView_Loaded" ItemClick="lastest_listview_ItemClick">
                         <ListView.Header>
-                            <ListViewHeaderItem Style="{StaticResource ListViewHeaderItemStyle1}" Margin="0,-25,0,0" Padding="0,0,0,-24">
-                                <Grid HorizontalAlignment="Center" ManipulationMode="TranslateX,System" ManipulationDelta="Grid_ManipulationDelta" ManipulationCompleted="Grid_ManipulationCompleted">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="0"></ColumnDefinition>
-                                        <ColumnDefinition Width="auto"></ColumnDefinition>
-                                        <ColumnDefinition Width="0"></ColumnDefinition>
-                                    </Grid.ColumnDefinitions>
-                                    <FlipView x:Name="l_flipview" Grid.Column="0" MaxHeight="250" ItemsSource="{Binding Flipview_Lists}">
+                            <ListViewHeaderItem Style="{StaticResource ListViewHeaderItemStyle1}">
+                                <Grid MaxHeight="{Binding Max_Height}">
+                                    <FlipView x:Name="flipview" ItemsSource="{Binding Flipview_Lists}" SelectionChanged="flipview_SelectionChanged" Style="{StaticResource FlipViewStyle1}">
                                         <FlipView.ItemTemplate>
                                             <DataTemplate>
-                                                <Grid Background="Black" Opacity="0.5">
-                                                    <Image Source="{Binding image_source}" Tapped="View_Content_Tapped"></Image>
+                                                <Grid>
+                                                    <Image Source="{Binding image_source}" Tapped="View_Content_Tapped">
+                                                        <Image.Transitions>
+                                                            <TransitionCollection>
+                                                                <AddDeleteThemeTransition></AddDeleteThemeTransition>
+                                                            </TransitionCollection>
+                                                        </Image.Transitions>
+                                                    </Image>
                                                 </Grid>
                                             </DataTemplate>
                                         </FlipView.ItemTemplate>
                                     </FlipView>
-                                    <Grid Grid.Column="1" MaxHeight="{Binding Max_Height}">
-                                        <FlipView x:Name="flipview" ItemsSource="{Binding Flipview_Lists}" SelectionChanged="flipview_SelectionChanged" Style="{StaticResource FlipViewStyle1}">
-                                            <FlipView.ItemTemplate>
-                                                <DataTemplate>
-                                                    <Grid>
-                                                        <Image Source="{Binding image_source}" Tapped="View_Content_Tapped"></Image>
-                                                    </Grid>
-                                                </DataTemplate>
-                                            </FlipView.ItemTemplate>
-                                        </FlipView>
-                                        <StackPanel x:Name="sp" HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Horizontal" Margin="0,0,0,15"></StackPanel>
-                                    </Grid>
-                                    <FlipView x:Name="r_flipview" Grid.Column="2" MaxHeight="250" ItemsSource="{Binding Flipview_Lists}" SelectionChanged="r_flipview_SelectionChanged">
-                                        <FlipView.ItemTemplate>
-                                            <DataTemplate>
-                                                <Grid Background="Black" Opacity="0.5">
-                                                    <Image Source="{Binding image_source}" Tapped="View_Content_Tapped"></Image>
-                                                </Grid>
-                                            </DataTemplate>
-                                        </FlipView.ItemTemplate>
-                                    </FlipView>
+                                    <StackPanel x:Name="sp" HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Horizontal" Margin="0,0,0,10"></StackPanel>
                                 </Grid>
                             </ListViewHeaderItem>
                         </ListView.Header>
@@ -113,20 +94,32 @@
                             <DataTemplate>
                                 <RelativePanel>
                                     <Grid x:Name="image_grid" Background="Black" Opacity="0.7" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True">
-                                        <Image x:Name="lastest_image" Source="{Binding image_source}" Stretch="UniformToFill"></Image>
+                                        <Image x:Name="lastest_image" Source="{Binding image_source}" Stretch="UniformToFill">
+                                            <Image.Transitions>
+                                                <TransitionCollection>
+                                                    <AddDeleteThemeTransition></AddDeleteThemeTransition>
+                                                </TransitionCollection>
+                                            </Image.Transitions>
+                                        </Image>
                                     </Grid>
                                     <TextBlock x:Name="lastest_second_content" Text="{Binding Converter={StaticResource lastest_second_content_converter}}" TextWrapping="Wrap" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" RelativePanel.AlignLeftWith="image_grid" RelativePanel.AlignBottomWith="image_grid" Margin="20,0,20,20"></TextBlock>
                                     <TextBlock x:Name="lastset_title" Text="{Binding title}" FontWeight="Medium" FontSize="{Binding Source={StaticResource APPTheme},Path=Content_Size}" TextWrapping="Wrap" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" RelativePanel.Above="lastest_second_content" RelativePanel.AlignLeftWith="image_grid" Margin="20,0,20,20"></TextBlock>
                                 </RelativePanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>
+                        <ListView.ItemContainerTransitions>
+                            <TransitionCollection>
+                                <AddDeleteThemeTransition></AddDeleteThemeTransition>
+                                <PaneThemeTransition Edge="Right"></PaneThemeTransition>
+                            </TransitionCollection>
+                        </ListView.ItemContainerTransitions>
                     </ListView>
                     <Border x:Name="lastest_new_border" Padding="10,10,10,10" Opacity="0.8" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}" Visibility="Collapsed">
                         <TextBlock Text="{Binding Lastest_New_Count, Converter={StaticResource get_new_converter}}" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
                     </Border>
                 </Grid>
             </PivotItem>
-            <PivotItem Margin="0,0,0,0" LayoutUpdated="PivotItem_LayoutUpdated">
+            <PivotItem Margin="0,0,0,0">
                 <PivotItem.Header>
                     <Grid BorderBrush="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" Padding="0,0,0,14">
                         <Grid.RenderTransform>
@@ -135,14 +128,26 @@
                         <TextBlock Text="频道" Opacity="0.5" FontSize="{Binding Source={StaticResource APPTheme},Path=Header_Size}" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" VerticalAlignment="Center"></TextBlock>
                     </Grid>
                 </PivotItem.Header>
-                <GridView x:Name="cates_gridview" IsItemClickEnabled="True" ItemsSource="{Binding Cate_Lists}" HorizontalAlignment="Stretch" Style="{StaticResource GridViewStyle1}" ItemContainerStyle="{StaticResource GridViewItemStyle1}" ItemClick="cates_gridview_ItemClick">
+                <GridView x:Name="cates_gridview" IsItemClickEnabled="True" ItemsSource="{Binding Cate_Lists}" HorizontalAlignment="Stretch" Style="{StaticResource GridViewStyle1}" ItemContainerStyle="{StaticResource GridViewItemStyle1}" SizeChanged="cates_gridview_SizeChanged" ItemClick="cates_gridview_ItemClick">
                     <GridView.ItemTemplate>
                         <DataTemplate>
-                            <Grid Height="250" Width="250">
+                            <Grid>
                                 <Grid Background="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}" Opacity="0.7">
-                                    <Image Source="{Binding image_source}"></Image>
+                                    <Image Source="{Binding image_source}">
+                                        <Image.Transitions>
+                                            <TransitionCollection>
+                                                <AddDeleteThemeTransition></AddDeleteThemeTransition>
+                                            </TransitionCollection>
+                                        </Image.Transitions>
+                                    </Image>
                                 </Grid>
-                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Converter={StaticResource cate_catename_converter}}" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" FontWeight="Medium" FontSize="{Binding Source={StaticResource APPTheme},Path=Content_Size}"></TextBlock>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Converter={StaticResource cate_catename_converter}}" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" FontWeight="Medium" FontSize="{Binding Source={StaticResource APPTheme},Path=Content_Size}">
+                                    <TextBlock.Transitions>
+                                        <TransitionCollection>
+                                            <AddDeleteThemeTransition></AddDeleteThemeTransition>
+                                        </TransitionCollection>
+                                    </TextBlock.Transitions>
+                                </TextBlock>
                             </Grid>
                         </DataTemplate>
                     </GridView.ItemTemplate>

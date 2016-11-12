@@ -34,7 +34,13 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <RelativePanel Background="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}">
-                            <Image x:Name="series_image" Source="{Binding image_source}" Stretch="UniformToFill" RelativePanel.AlignTopWithPanel="True" Margin="0,0,0,20"></Image>
+                            <Image x:Name="series_image" Source="{Binding image_source}" Stretch="UniformToFill" RelativePanel.AlignTopWithPanel="True" Margin="0,0,0,20">
+                                <Image.Transitions>
+                                    <TransitionCollection>
+                                        <AddDeleteThemeTransition></AddDeleteThemeTransition>
+                                    </TransitionCollection>
+                                </Image.Transitions>
+                            </Image>
                             <StackPanel x:Name="series_info" Orientation="Vertical" RelativePanel.Below="series_image" Margin="20,0,20,0">
                                 <TextBlock Text="{Binding title}" Foreground="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}" FontWeight="Medium" FontSize="{Binding Source={StaticResource APPTheme},Path=Content_Size}"></TextBlock>
                                 <TextBlock Text="{Binding Converter={StaticResource series_info_converter}}" Foreground="{Binding Source={StaticResource APPTheme},Path=Gary_Color_Brush}" FontSize="12" Margin="0,7,0,0"></TextBlock>
@@ -48,6 +54,12 @@
                         </RelativePanel>
                     </DataTemplate>
                 </ListView.ItemTemplate>
+                <ListView.ItemContainerTransitions>
+                    <TransitionCollection>
+                        <AddDeleteThemeTransition></AddDeleteThemeTransition>
+                        <PaneThemeTransition Edge="Bottom"></PaneThemeTransition>
+                    </TransitionCollection>
+                </ListView.ItemContainerTransitions>
             </ListView>
             <Border x:Name="series_new_border" Padding="10,10,10,10" Opacity="0.8" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}" Visibility="Collapsed">
                 <TextBlock Text="{Binding Series_New_Count, Converter={StaticResource get_new_converter}}" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>

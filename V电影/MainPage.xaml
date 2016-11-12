@@ -79,7 +79,6 @@
                         <Setter Target="page_frame_grid.Grid.ColumnSpan" Value="1"></Setter>
                         <Setter Target="page_frame_grid.Margin" Value="0,15,0,0"></Setter>
                         <Setter Target="splitview_grid.Grid.ColumnSpan" Value="1"></Setter>
-                        <Setter Target="second_frame_grid.Visibility" Value="Visible"></Setter>
                         <Setter Target="splitview.OpenPaneLength" Value="400"></Setter>
                     </VisualState.Setters>
                 </VisualState>
@@ -195,7 +194,7 @@
                 </SplitView.Pane>
             </SplitView>
         </Grid>
-        <Grid x:Name="second_frame_grid" Grid.Column="1" Margin="0,15,0,0">
+        <Grid x:Name="second_frame_grid" Margin="0,15,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto"></RowDefinition>
                 <RowDefinition Height="*"></RowDefinition>

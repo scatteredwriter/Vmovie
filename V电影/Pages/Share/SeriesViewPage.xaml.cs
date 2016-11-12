@@ -15,8 +15,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上有介绍
 
@@ -41,6 +39,7 @@ namespace V电影.Pages.Share
             transport.IsCompact = true;
             transport.IsVolumeButtonVisible = true;
             transport.Style = MediaTransportStyle;
+            CloseCommentView_sb.Completed += CloseCommentView_sb_Completed;
             this.DataContext = viewmodel;
             seriesviewpage = this;
         }
@@ -108,16 +107,9 @@ namespace V电影.Pages.Share
 
         private async Task Get_Video_Source()
         {
-            try
-            {
-                string json = await HttpRequest.VmovieRequset.Series_Video_Request(viewmodel.Current_Playing_Item.series_postid);
-                JObject json_object = (JObject)JsonConvert.DeserializeObject(json);
-                JObject data = (JObject)json_object["data"];
-                viewmodel.Current_Item_Video = data["qiniu_url"].ToString();
-            }
-            catch (Exception)
-            {
-            }
+            string json = await HttpRequest.VmovieRequset.Series_Video_Request(viewmodel.Current_Playing_Item.series_postid);
+            viewmodel.Current_Video_Info = JsonToObject.JsonToObject.Convert_Series_Video_Info(json);
+            ((comment_num.Content as StackPanel).Children[1] as TextBlock).Text = viewmodel.Current_Video_Info.count_comment.ToString();
         }
 
         private async void Change_Playing_Item(Model.series_view_item item)
@@ -240,6 +232,24 @@ namespace V电影.Pages.Share
             //{
             //    ((sender as Canvas).Parent as Grid).Blur(10, 1, 0).Start();
             //});
+        }
+
+        private void comment_num_Click(object sender, RoutedEventArgs e)
+        {
+            comment_view_grid.Visibility = Visibility.Visible;
+            (OpenCommentView_sb.Children[0] as Windows.UI.Xaml.Media.Animation.DoubleAnimation).From = comment_view_grid.ActualHeight;
+            OpenCommentView_sb.Begin();
+        }
+
+        private void CloseCommentView_sb_Completed(object sender, object e)
+        {
+            comment_view_grid.Visibility = Visibility.Collapsed;
+        }
+
+        private void comment_view_CommentViewColsing(object sender, bool e)
+        {
+            (CloseCommentView_sb.Children[0] as Windows.UI.Xaml.Media.Animation.DoubleAnimation).To = comment_view_grid.ActualHeight;
+            CloseCommentView_sb.Begin();
         }
     }
 }

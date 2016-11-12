@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Toolkit.Uwp.UI;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -8,7 +9,6 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.Graphics.Imaging;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -17,7 +17,6 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
-using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Shapes;
 
@@ -77,23 +76,25 @@ namespace V电影.Pages.PC
 
             string json = await HttpRequest.VmovieRequset.Flipview_Requset();
             viewmodel.Flipview_Lists = JsonToObject.JsonToObject.Convert_Flipview_Json(json);
-            Cache.ImageCache imagecache = new Cache.ImageCache();
-            viewmodel.Flipview_Image_Sbs = new ObservableCollection<ImageSource>();
+            ImageCache imagecache = new ImageCache();
+            await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.flipview_floder);
             for (int i = 0; i < viewmodel.Flipview_Lists.Count; i++)
             {
-                ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Flipview_Lists[i].imageurl, "FlipView");
-                viewmodel.Flipview_Image_Sbs.Add(imagesource);
+                string uri = viewmodel.Flipview_Lists[i].imageurl;
+                ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                viewmodel.Flipview_Lists[i].image_source = imagesource;
             }
-
             Add_FlipView_Lines();
 
             json = await HttpRequest.VmovieRequset.Lastest_Requset(lastest_p);
             viewmodel.Lastest_Info = JsonToObject.JsonToObject.Convert_Lastest_Json(json);
-            viewmodel.Lastest_Image_Sbs = new ObservableCollection<ImageSource>();
+            imagecache = new ImageCache();
+            await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.lastest_floder);
             for (int i = 0; i < viewmodel.Lastest_Info.Count; i++)
             {
-                ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Lastest_Info[i].image, "Lastest");
-                viewmodel.Lastest_Image_Sbs.Add(imagesource);
+                string uri = viewmodel.Lastest_Info[i].image;
+                ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                viewmodel.Lastest_Info[i].image_source = imagesource;
             }
             viewmodel.Lastest_New_Count = viewmodel.Lastest_Info.Count;
 
@@ -116,11 +117,13 @@ namespace V电影.Pages.PC
             cate.icon = "http://cs.vmoiver.com/Uploads/Activity/2016-04-26/571ed9b5d2e44.jpg";
             cate.tab = "hot";
             viewmodel.Cate_Lists.Insert(0, cate);
-            viewmodel.Cate_Image_Sbs = new ObservableCollection<ImageSource>();
+            imagecache = new ImageCache();
+            await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.cate_floder);
             for (int i = 0; i < viewmodel.Cate_Lists.Count; i++)
             {
-                ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Cate_Lists[i].icon, "Cates");
-                viewmodel.Cate_Image_Sbs.Add(imagesource);
+                string uri = viewmodel.Cate_Lists[i].icon;
+                ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                viewmodel.Cate_Lists[i].image_source = imagesource;
             }
         }
 
@@ -132,22 +135,24 @@ namespace V电影.Pages.PC
             }
             catch (Exception)
             {
-                return;
             }
         }
 
         private void Changed_GridView_Item_Size()
         {
-            GridViewItem item = new GridViewItem();
+            if (cates_gridview.Items == null)
+                return;
+            GridViewItem item = null;
             double height = 0.0;
             double width = this.ActualWidth;
             int items_count = cates_gridview.ItemsPanelRoot.Children.Count;
             int row_count = (int)width / 250;
+            if (row_count < 2)
+                row_count = 2;
             width /= row_count;
             height = width;
             for (int i = 0; i < items_count; i++)
             {
-                item = new GridViewItem();
                 item = cates_gridview.ItemsPanelRoot.Children[i] as GridViewItem;
                 (item.ContentTemplateRoot as Grid).Height = (int)height;
                 (item.ContentTemplateRoot as Grid).Width = (int)width;
@@ -162,12 +167,12 @@ namespace V电影.Pages.PC
                 {
                     Line line = new Line();
                     line.X1 = 0;
-                    line.X2 = 25;
+                    line.X2 = 20;
                     line.Y1 = 0;
                     line.Y2 = 0;
                     line.Margin = new Thickness(0, 0, 5, 0);
-                    line.Opacity = 0.3;
-                    line.StrokeThickness = 2.5;
+                    line.Opacity = 0.5;
+                    line.StrokeThickness = 2.0;
                     if (i == 0)
                     {
                         line.Stroke = apptheme.Foreground_Color_Brush;
@@ -189,12 +194,13 @@ namespace V电影.Pages.PC
 
                 string json = await HttpRequest.VmovieRequset.Flipview_Requset();
                 viewmodel.Flipview_Lists = JsonToObject.JsonToObject.Convert_Flipview_Json(json);
-                Cache.ImageCache imagecache = new Cache.ImageCache();
-                viewmodel.Flipview_Image_Sbs = new ObservableCollection<ImageSource>();
+                ImageCache imagecache = new ImageCache();
+                await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.flipview_floder);
                 for (int i = 0; i < viewmodel.Flipview_Lists.Count; i++)
                 {
-                    ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Flipview_Lists[i].imageurl, "FlipView");
-                    viewmodel.Flipview_Image_Sbs.Add(imagesource);
+                    string uri = viewmodel.Flipview_Lists[i].imageurl;
+                    ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                    viewmodel.Flipview_Lists[i].image_source = imagesource;
                 }
 
                 if (temp_flipview_count != viewmodel.Flipview_Lists.Count)
@@ -205,11 +211,13 @@ namespace V电影.Pages.PC
 
                 json = await HttpRequest.VmovieRequset.Lastest_Requset(lastest_p = 1);
                 viewmodel.Lastest_Info = JsonToObject.JsonToObject.Convert_Lastest_Json(json);
-                viewmodel.Lastest_Image_Sbs = new ObservableCollection<ImageSource>();
+                imagecache = new ImageCache();
+                await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.lastest_floder);
                 for (int i = 0; i < viewmodel.Lastest_Info.Count; i++)
                 {
-                    ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Lastest_Info[i].image, "Lastest");
-                    viewmodel.Lastest_Image_Sbs.Add(imagesource);
+                    string uri = viewmodel.Lastest_Info[i].image;
+                    ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                    viewmodel.Lastest_Info[i].image_source = imagesource;
                 }
                 viewmodel.Lastest_New_Count = viewmodel.Lastest_Info.Count;
 
@@ -243,7 +251,6 @@ namespace V电影.Pages.PC
             }
             catch (Exception)
             {
-                return;
             }
         }
 
@@ -261,7 +268,6 @@ namespace V电影.Pages.PC
             }
             catch (Exception)
             {
-                return;
             }
         }
 
@@ -287,7 +293,6 @@ namespace V电影.Pages.PC
                 }
                 catch (Exception)
                 {
-                    return;
                 }
             }
             else if (delta_x <= -100)
@@ -352,9 +357,8 @@ namespace V电影.Pages.PC
                     {
                         r_flipview.SelectedIndex = 1;
                     }
-                    catch (Exception ex)
+                    catch (Exception)
                     {
-                        Debug.WriteLine(ex.Message);
                     }
                 }
                 else if (flipview.SelectedIndex == 1)
@@ -380,7 +384,6 @@ namespace V电影.Pages.PC
             }
             catch (Exception)
             {
-                return;
             }
         }
 
@@ -392,6 +395,11 @@ namespace V电影.Pages.PC
             }
         }
 
+        private void cates_gridview_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            Changed_GridView_Item_Size();
+        }
+
         private void ListView_Loaded(object sender, RoutedEventArgs e)
         {
             Get_Child((DependencyObject)sender, 0);
@@ -399,16 +407,8 @@ namespace V电影.Pages.PC
             lastest_listview_sc.ViewChanged += Lastest_listview_sc_ViewChanged;
         }
 
-        private async void Lastest_listview_sc_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e) //下拉刷新
+        private void Lastest_listview_sc_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e) //下拉刷新
         {
-            if (lastest_listview_sc.VerticalOffset == lastest_listview_sc.ScrollableHeight)
-            {
-                viewmodel.Lastest_New_Count = 0;
-                lastest_new_border.Visibility = Visibility.Visible;
-                await Task.Delay(2000);
-                lastest_new_border.Visibility = Visibility.Collapsed;
-                return;
-            }
             if (!e.IsIntermediate)
             {
                 Lastest_Refresh();
@@ -464,11 +464,13 @@ namespace V电影.Pages.PC
                     viewmodel.Lastest_Info.Add(lists[i]);
                 }
                 viewmodel.Lastest_New_Count = viewmodel.Lastest_Info.Count - viewmodel.Lastest_New_Count;
-                Cache.ImageCache imagecache = new Cache.ImageCache();
+                ImageCache imagecache = new ImageCache();
+                await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.lastest_floder);
                 for (int i = (viewmodel.Lastest_Info.Count - viewmodel.Lastest_New_Count); i < viewmodel.Lastest_Info.Count; i++)
                 {
-                    ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Lastest_Info[i].image, "Lastest");
-                    viewmodel.Lastest_Image_Sbs.Add(imagesource);
+                    string uri = viewmodel.Lastest_Info[i].image;
+                    ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                    viewmodel.Lastest_Info[i].image_source = imagesource;
                 }
                 lastest_new_border.Visibility = Visibility.Visible;
                 await Task.Delay(2000);
@@ -476,18 +478,6 @@ namespace V电影.Pages.PC
                 viewmodel.Lastest_New_Count = viewmodel.Lastest_Info.Count;
             }
             is_lastest_loading = false;
-        }
-
-        private void PivotItem_LayoutUpdated(object sender, object e)
-        {
-            try
-            {
-                Changed_GridView_Item_Size();
-            }
-            catch (Exception)
-            {
-                return;
-            }
         }
 
         private void Get_Child(DependencyObject o, int n)
@@ -518,9 +508,8 @@ namespace V电影.Pages.PC
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.WriteLine(ex.Message);
             }
         }
 

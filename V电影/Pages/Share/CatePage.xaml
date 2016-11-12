@@ -35,7 +35,13 @@
                     <DataTemplate x:Key="Album_DataTemplate">
                         <RelativePanel Tapped="View_Content_Tapped">
                             <Grid x:Name="image_grid" Background="Black" Opacity="0.7" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True">
-                                <Image x:Name="cate_image" Source="{Binding image_source}" Stretch="UniformToFill"></Image>
+                                <Image x:Name="cate_image" Source="{Binding image_source}" Stretch="UniformToFill">
+                                    <Image.Transitions>
+                                        <TransitionCollection>
+                                            <AddDeleteThemeTransition></AddDeleteThemeTransition>
+                                        </TransitionCollection>
+                                    </Image.Transitions>
+                                </Image>
                             </Grid>
                             <TextBlock x:Name="fu_title" Text="{Binding app_fu_title}" FontWeight="Light" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" RelativePanel.AlignLeftWith="image_grid" RelativePanel.AlignBottomWith="image_grid" Margin="20,0,20,20"></TextBlock>
                             <TextBlock x:Name="cate_title" Text="{Binding title}" FontWeight="Medium" FontSize="{Binding Source={StaticResource APPTheme},Path=Content_Size}" TextWrapping="Wrap" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" RelativePanel.Above="fu_title" RelativePanel.AlignLeftWith="image_grid" Margin="20,0,20,15"></TextBlock>
@@ -47,7 +53,13 @@
                     <DataTemplate x:Key="Normal_DataTemplate">
                         <RelativePanel Tapped="View_Content_Tapped">
                             <Grid x:Name="image_grid" Background="Black" Opacity="0.7" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True">
-                                <Image x:Name="cate_image" Source="{Binding image_source}" Stretch="UniformToFill"></Image>
+                                <Image x:Name="cate_image" Source="{Binding image_source}" Stretch="UniformToFill">
+                                    <Image.Transitions>
+                                        <TransitionCollection>
+                                            <AddDeleteThemeTransition></AddDeleteThemeTransition>
+                                        </TransitionCollection>
+                                    </Image.Transitions>
+                                </Image>
                             </Grid>
                             <TextBlock x:Name="cate_second_content" Text="{Binding Converter={StaticResource lastest_second_content_converter}}" TextWrapping="Wrap" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" RelativePanel.AlignLeftWith="image_grid" RelativePanel.AlignBottomWith="image_grid" Margin="20,0,20,20"></TextBlock>
                             <TextBlock x:Name="cate_title" Text="{Binding title}" FontWeight="Medium" FontSize="{Binding Source={StaticResource APPTheme},Path=Content_Size}" TextWrapping="Wrap" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" RelativePanel.Above="cate_second_content" RelativePanel.AlignLeftWith="image_grid" Margin="20,0,20,20"></TextBlock>
@@ -57,6 +69,12 @@
                 <ListView.ItemTemplateSelector>
                     <local:ListViewItemTemplateSelector Album_DataTemplate="{StaticResource Album_DataTemplate}" Normal_DataTemplate="{StaticResource Normal_DataTemplate}"></local:ListViewItemTemplateSelector>
                 </ListView.ItemTemplateSelector>
+                <ListView.ItemContainerTransitions>
+                    <TransitionCollection>
+                        <AddDeleteThemeTransition></AddDeleteThemeTransition>
+                        <PaneThemeTransition Edge="Bottom"></PaneThemeTransition>
+                    </TransitionCollection>
+                </ListView.ItemContainerTransitions>
             </ListView>
             <Border x:Name="cate_new_border" Padding="10,10,10,10" Opacity="0.8" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}" Visibility="Collapsed">
                 <TextBlock Text="{Binding Cate_New_Count, Converter={StaticResource get_new_converter}}" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>

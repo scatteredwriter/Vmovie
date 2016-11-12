@@ -37,17 +37,17 @@ namespace V电影.ViewModel
             }
         }
 
-        private string _current_item_video;
-        public string Current_Item_Video
+        private Model.series_video_info _current_video_info;
+        public Model.series_video_info Current_Video_Info
         {
             get
             {
-                return _current_item_video;
+                return _current_video_info;
             }
             set
             {
-                _current_item_video = value;
-                RaisePropertyChanged(nameof(Current_Item_Video));
+                _current_video_info = value;
+                RaisePropertyChanged(nameof(Current_Video_Info));
             }
         }
     }

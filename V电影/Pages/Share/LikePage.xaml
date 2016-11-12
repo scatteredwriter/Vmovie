@@ -43,7 +43,7 @@
                                         <TextBlock x:Name="movie_time" Text="{Binding duration, Converter={StaticResource During_Converter}}" Opacity="0.7" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" RelativePanel.AlignBottomWith="image" RelativePanel.AlignRightWith="image" Margin="10,10,10,10"></TextBlock>
                                     </RelativePanel>
                                     <RelativePanel Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="20,0,20,0">
-                                        <TextBlock x:Name="title" Text="{Binding title}" FontWeight="Medium" MaxHeight="40" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignTopWithPanel="True" Margin="0,0,0,40"></TextBlock>
+                                        <TextBlock x:Name="title" Text="{Binding title}" FontWeight="Medium" MaxHeight="40" TextWrapping="Wrap" TextTrimming="CharacterEllipsis" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignTopWithPanel="True" Margin="0,0,0,35"></TextBlock>
                                         <StackPanel x:Name="rating_stars" RelativePanel.Below="title" RelativePanel.AlignLeftWithPanel="True" Orientation="Horizontal" Visibility="{Binding type}">
                                             <Image Height="12" Width="12" Source="{Binding star[0],Converter={StaticResource Rating_Stars_Converter}}"></Image>
                                             <Image Height="12" Width="12" Source="{Binding star[1],Converter={StaticResource Rating_Stars_Converter}}"></Image>

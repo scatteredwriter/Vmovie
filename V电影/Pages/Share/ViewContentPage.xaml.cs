@@ -37,7 +37,7 @@ namespace V电影.Pages.Share
         public static ViewContentPage current;
 
         private MediaTransportControls transport;
-        private ViewModel.ViewContentPageViewModel viewmodel = new ViewModel.ViewContentPageViewModel();
+        public ViewModel.ViewContentPageViewModel viewmodel = new ViewModel.ViewContentPageViewModel();
 
         public ViewContentPage()
         {

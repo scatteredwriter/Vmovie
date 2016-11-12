@@ -1,8 +1,10 @@
-﻿using System;
+﻿using Microsoft.WindowsAzure.MobileServices;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using V电影.Model;
 using V电影.Resource;
 using Windows.ApplicationModel;
@@ -18,6 +20,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
 namespace V电影
@@ -42,6 +45,7 @@ namespace V电影
         public static int listview_old_selectedindex = 0;
 
         public static ApplicationDataContainer settings = ApplicationData.Current.LocalSettings;
+        public static MobileServiceClient MobileService = new MobileServiceClient("https://vmoverforwindowsbackend.azurewebsites.net");
 
         protected override void OnActivated(IActivatedEventArgs args)
         {
@@ -114,8 +118,6 @@ namespace V电影
                     //TODO: 从之前挂起的应用程序加载状态
                 }
 
-                // 将框架放在当前窗口中
-                Window.Current.Content = rootFrame;
             }
 
             if (e.PrelaunchActivated == false)
@@ -127,11 +129,17 @@ namespace V电影
                     // 参数
                     if (DeviceInfo.Device_type == DeviceType.Mobile)
                     {
-                        rootFrame.Navigate(typeof(Pages.Mobile.MainPage), e.Arguments);
+                        // 将框架放在当前窗口中
+                        Window.Current.Content = rootFrame;
+                        rootFrame.ContentTransitions = new TransitionCollection();
+                        rootFrame.ContentTransitions.Add(new AddDeleteThemeTransition());
+                        rootFrame.Navigate(typeof(Pages.Mobile.SplashPage), e.Arguments);
                     }
                     else
                     {
-                        rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                        Pages.PC.SplashPage splashpage = new Pages.PC.SplashPage(e.SplashScreen);
+                        Window.Current.Content = splashpage;
+                        //rootFrame.Navigate(typeof(MainPage), e.Arguments);
                     }
                 }
                 // 确保当前窗口处于活动状态

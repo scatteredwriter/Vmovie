@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Toolkit.Uwp.UI;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -60,12 +61,13 @@ namespace V电影.Pages.Share
         {
             string json = await HttpRequest.VmovieRequset.Cate_Content_Requset(cate_p, cateid, tab);
             viewmodel.Cate_Info = JsonToObject.JsonToObject.Convert_Lastest_Json(json);
-            Cache.ImageCache imagecache = new Cache.ImageCache();
-            viewmodel.Cate_Content_Image_Sbs = new ObservableCollection<ImageSource>();
+            ImageCache imagecache = new ImageCache();
+            await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.cate_content_floder);
             for (int i = 0; i < viewmodel.Cate_Info.Count; i++)
             {
-                ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Cate_Info[i].image, "Cate_Content");
-                viewmodel.Cate_Content_Image_Sbs.Add(imagesource);
+                string uri = viewmodel.Cate_Info[i].image;
+                ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                viewmodel.Cate_Info[i].image_source = imagesource;
             }
             viewmodel.Cate_New_Count = viewmodel.Cate_Info.Count;
 
@@ -79,12 +81,13 @@ namespace V电影.Pages.Share
             {
                 string json = await HttpRequest.VmovieRequset.Cate_Content_Requset(cate_p = 1, cateid, tab);
                 viewmodel.Cate_Info = JsonToObject.JsonToObject.Convert_Lastest_Json(json);
-                Cache.ImageCache imagecache = new Cache.ImageCache();
-                viewmodel.Cate_Content_Image_Sbs = new ObservableCollection<ImageSource>();
+                ImageCache imagecache = new ImageCache();
+                await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.cate_content_floder);
                 for (int i = 0; i < viewmodel.Cate_Info.Count; i++)
                 {
-                    ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Cate_Info[i].image, "Cate_Content");
-                    viewmodel.Cate_Content_Image_Sbs.Add(imagesource);
+                    string uri = viewmodel.Cate_Info[i].image;
+                    ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                    viewmodel.Cate_Info[i].image_source = imagesource;
                 }
                 viewmodel.Cate_New_Count = viewmodel.Cate_Info.Count;
 
@@ -155,11 +158,13 @@ namespace V电影.Pages.Share
                     viewmodel.Cate_Info.Add(lists[i]);
                 }
                 viewmodel.Cate_New_Count = viewmodel.Cate_Info.Count - viewmodel.Cate_New_Count;
-                Cache.ImageCache imagecache = new Cache.ImageCache();
+                ImageCache imagecache = new ImageCache();
+                await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.cate_content_floder);
                 for (int i = (viewmodel.Cate_Info.Count - viewmodel.Cate_New_Count); i < viewmodel.Cate_Info.Count; i++)
                 {
-                    ImageSource imagesource = await imagecache.Get_Image_Source(viewmodel.Cate_Info[i].image, "Cate_Content");
-                    viewmodel.Cate_Content_Image_Sbs.Add(imagesource);
+                    string uri = viewmodel.Cate_Info[i].image;
+                    ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                    viewmodel.Cate_Info[i].image_source = imagesource;
                 }
                 cate_new_border.Visibility = Visibility.Visible;
                 await Task.Delay(2000);
@@ -169,16 +174,8 @@ namespace V电影.Pages.Share
             is_cate_content_loading = false;
         }
 
-        private async void Lastest_listview_sc_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
+        private void Lastest_listview_sc_ViewChanged(object sender, ScrollViewerViewChangedEventArgs e)
         {
-            if (cate_listview_sc.VerticalOffset == cate_listview_sc.ScrollableHeight)
-            {
-                viewmodel.Cate_New_Count = 0;
-                cate_new_border.Visibility = Visibility.Visible;
-                await Task.Delay(2000);
-                cate_new_border.Visibility = Visibility.Collapsed;
-                return;
-            }
             if (!e.IsIntermediate)
             {
                 Lastest_Refresh();

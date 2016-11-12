@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.WindowsAzure.Messaging;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,6 +8,8 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Networking.PushNotifications;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -36,6 +39,7 @@ namespace V电影.Pages.Mobile
         public MainPage()
         {
             this.InitializeComponent();
+            SystemNavigationManager.GetForCurrentView().BackRequested += BackRequested;
             this.SizeChanged += MainPage_SizeChanged;
             this.second_frame.Navigating += Second_frame_Navigating;
             this.Back_In_Card_Mode.Completed += Back_In_Card_Mode_Completed;
@@ -44,13 +48,61 @@ namespace V电影.Pages.Mobile
             mainpage = this;
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        private void BackRequested(object sender, BackRequestedEventArgs e)
+        {
+            if (e.Handled == false)
+            {
+                e.Handled = true;
+                if (second_frame.Content != null && second_frame.CanGoBack && second_frame.CurrentSourcePageType != typeof(Pages.Mobile.WelcomePage))
+                {
+                    if (second_frame.CurrentSourcePageType == typeof(Pages.Share.LoginPage))
+                    {
+                        UpDate_User_Info();
+                        Second_Frame_Go_Back(1);
+                        return;
+                    }
+                    if (!(second_frame.CurrentSourcePageType == typeof(Pages.Share.SearchPage) && Pages.Share.SearchPage.current.viewmodel.Is_Go_Back == true))
+                    {
+                        Second_Frame_Go_Back();
+                        return;
+                    }
+                }
+                if (page_frame.CanGoBack)
+                {
+                    if (page_frame.CurrentSourcePageType == typeof(Pages.Mobile.HomePage) || page_frame.CurrentSourcePageType == typeof(Pages.Share.SeriesPage) || page_frame.CurrentSourcePageType == typeof(Pages.Share.BehindPage))
+                    {
+                        return;
+                    }
+                    if (page_frame.CurrentSourcePageType != typeof(Pages.Share.CatePage))
+                        Open_Pane();
+                    page_frame.GoBack();
+                }
+            }
+        }
+
+        private async Task InitNotificationsAsync()
+        {
+            try
+            {
+                var channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
+
+                var hub = new NotificationHub("VmovierNotificationHub", "Endpoint=sb://vmovierpush.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=lwvMUJDfBKjBB3CILySyCpXnnh7BOFZM/oXkQ3Bb2RA=");
+                await hub.RegisterNativeAsync(channel.Uri);
+            }
+            catch (Exception)
+            {
+                return;
+            }
+        }
+
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             if (e.NavigationMode == NavigationMode.New)
             {
                 page_frame.Navigate(typeof(Pages.Mobile.HomePage));
                 second_frame.Navigate(typeof(Pages.Mobile.WelcomePage), new DrillInNavigationTransitionInfo());
+                await InitNotificationsAsync();
             }
         }
 
@@ -105,6 +157,10 @@ namespace V电影.Pages.Mobile
             {
                 second_frame.Content = null;
             }
+            if (second_frame.CurrentSourcePageType == typeof(Pages.Share.LoginPage))
+            {
+                second_frame.Navigate(typeof(Pages.Mobile.WelcomePage));
+            }
             Back_Button_Visible(0);
         }
 
@@ -148,8 +204,6 @@ namespace V电影.Pages.Mobile
 
         public void Navigate_To_SearchPage()
         {
-            is_tapped_close_but = true;
-            splitview.IsPaneOpen = false;
             (second_frame.ContentTransitions[0] as PaneThemeTransition).Edge = EdgeTransitionLocation.Bottom;
             Back_Button_Visible(1);
             second_frame.Navigate(typeof(Pages.Share.SearchPage), new DrillInNavigationTransitionInfo());
@@ -180,9 +234,7 @@ namespace V电影.Pages.Mobile
 
         public void View_Series_Content(int series_id, int number = -1)
         {
-            Model.series_param param = new Model.series_param();
-            param.series_id = series_id;
-            param.number = number;
+            Model.series_param param = new Model.series_param() { series_id = series_id, number = number };
             (second_frame.ContentTransitions[0] as PaneThemeTransition).Edge = EdgeTransitionLocation.Right;
             Back_Button_Visible(1);
             second_frame.Navigate(typeof(Pages.Share.SeriesViewPage), param, new DrillInNavigationTransitionInfo());
@@ -303,7 +355,7 @@ namespace V电影.Pages.Mobile
             {
                 case "首页":
                     {
-                        page_frame.Navigate(typeof(Pages.PC.HomePage));
+                        page_frame.Navigate(typeof(Pages.Mobile.HomePage));
                     }; break;
                 case "系列":
                     {
