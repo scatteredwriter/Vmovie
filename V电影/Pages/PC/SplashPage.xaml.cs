@@ -52,10 +52,16 @@ namespace V电影.Pages.PC
 
         private async Task InitNotificationsAsync()
         {
-            var channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
+            try
+            {
+                PushNotificationChannel channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
 
-            var hub = new NotificationHub("VmovierNotificationHub", "Endpoint=sb://vmovierpush.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=lwvMUJDfBKjBB3CILySyCpXnnh7BOFZM/oXkQ3Bb2RA=");
-            await hub.RegisterNativeAsync(channel.Uri);
+                NotificationHub hub = new NotificationHub("VmovierNotificationHub", "Endpoint=sb://vmovierpush.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=lwvMUJDfBKjBB3CILySyCpXnnh7BOFZM/oXkQ3Bb2RA=");
+                await hub.RegisterNativeAsync(channel.Uri);
+            }
+            catch (Exception)
+            {
+            }
         }
 
         private void Current_SizeChanged(object sender, Windows.UI.Core.WindowSizeChangedEventArgs e)
@@ -69,7 +75,17 @@ namespace V电影.Pages.PC
             PositionImage();
             await Task.Delay(1000);
             Title_SB.Begin();
-            await InitNotificationsAsync();
+            for (int i = 0; i < 3; i++)
+            {
+                try
+                {
+                    await InitNotificationsAsync();
+                }
+                catch (Exception)
+                {
+                    await Task.Delay(10000);
+                }
+            }
         }
 
         private async void Title_SB_Completed(object sender, object e)

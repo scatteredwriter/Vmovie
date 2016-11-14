@@ -54,26 +54,65 @@ namespace V电影.Pages.Share
 
                 Model.series_param param = e.Parameter as Model.series_param;
                 series_id = param.series_id;
-                await FirstStep();
-                if (viewmodel != null && viewmodel.Series_View.posts != null)
+                if (param.number == -2)
                 {
-                    if (param.number == -1)
+                    await Get_Video_Source(param.series_id);
+                    await FirstStep(viewmodel.Current_Video_Info.seriesid);
+                    if (viewmodel != null && viewmodel.Series_View != null)
                     {
-                        Find_Current_Item(viewmodel.Series_View.update_to);
+                        int number = Get_Number(viewmodel.Current_Video_Info.series_postid);
+                        if (number != -1)
+                        {
+                            Find_Current_Item(number);
+                        }
                     }
-                    else
+                }
+                else
+                {
+                    await FirstStep();
+                    if (viewmodel != null && viewmodel.Series_View != null)
                     {
-                        Find_Current_Item(param.number);
+                        if (param.number == -1)
+                        {
+                            Find_Current_Item(viewmodel.Series_View.update_to);
+                        }
+                        else
+                        {
+                            Find_Current_Item(param.number);
+                        }
+                        await Get_Video_Source();
                     }
-                    await Get_Video_Source();
                 }
             }
         }
 
-        private async Task FirstStep()
+        private async Task FirstStep(int series_id = -1)
         {
-            string json = await HttpRequest.VmovieRequset.Series_View_Request(series_id);
+            string json = null;
+            if (series_id != -1)
+            {
+                json = await HttpRequest.VmovieRequset.Series_View_Request(series_id);
+            }
+            else
+            {
+                json = await HttpRequest.VmovieRequset.Series_View_Request(this.series_id);
+            }
             viewmodel.Series_View = JsonToObject.JsonToObject.Convert_Series_View_Json(json);
+        }
+
+        private int Get_Number(int series_postid)
+        {
+            for (int i = 0; i < viewmodel.Series_View.posts.Count; i++)
+            {
+                for (int j = 0; j < viewmodel.Series_View.posts[i].items.Count; j++)
+                {
+                    if (viewmodel.Series_View.posts[i].items[j].series_postid == series_postid)
+                    {
+                        return viewmodel.Series_View.posts[i].items[j].number;
+                    }
+                }
+            }
+            return -1;
         }
 
         private void Find_Current_Item(int number, int param = 1)
@@ -105,9 +144,17 @@ namespace V电影.Pages.Share
             }
         }
 
-        private async Task Get_Video_Source()
+        private async Task Get_Video_Source(int series_postid = -1)
         {
-            string json = await HttpRequest.VmovieRequset.Series_Video_Request(viewmodel.Current_Playing_Item.series_postid);
+            string json = null;
+            if (series_postid != -1)
+            {
+                json = await HttpRequest.VmovieRequset.Series_Video_Request(series_postid);
+            }
+            else
+            {
+                json = await HttpRequest.VmovieRequset.Series_Video_Request(viewmodel.Current_Playing_Item.series_postid);
+            }
             viewmodel.Current_Video_Info = JsonToObject.JsonToObject.Convert_Series_Video_Info(json);
             ((comment_num.Content as StackPanel).Children[1] as TextBlock).Text = viewmodel.Current_Video_Info.count_comment.ToString();
         }
@@ -206,6 +253,18 @@ namespace V电影.Pages.Share
             //}
         }
 
+        private void mediaelement_CurrentStateChanged(object sender, RoutedEventArgs e)
+        {
+            switch (mediaelement.CurrentState)
+            {
+                case MediaElementState.Playing:
+                    {
+                        if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.Phone.System.SystemProtection"))
+                            Windows.Phone.System.SystemProtection.RequestScreenUnlock();
+                    }; break;
+            }
+        }
+
         private void DownloadButton_Click(object sender, RoutedEventArgs e)
         {
 
@@ -213,16 +272,19 @@ namespace V电影.Pages.Share
 
         private void FullWindowButton_Click(object sender, RoutedEventArgs e)
         {
-            if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
+            if (!mediaelement.IsFullWindow)
             {
-                if (Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().IsFullScreenMode)
-                {
-                    Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.Portrait;
-                }
-                else
-                {
-                    Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.Landscape;
-                }
+                Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.Landscape;
+                mediaelement.SizeChanged += Mediaelement_SizeChanged;
+            }
+        }
+
+        private void Mediaelement_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize.Width <= e.PreviousSize.Width && !mediaelement.IsFullWindow)
+            {
+                Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.Portrait;
+                mediaelement.SizeChanged -= Mediaelement_SizeChanged;
             }
         }
 

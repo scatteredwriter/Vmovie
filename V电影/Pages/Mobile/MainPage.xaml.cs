@@ -1,5 +1,4 @@
-﻿using Microsoft.WindowsAzure.Messaging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,7 +7,6 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.Networking.PushNotifications;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -39,7 +37,7 @@ namespace V电影.Pages.Mobile
         public MainPage()
         {
             this.InitializeComponent();
-            SystemNavigationManager.GetForCurrentView().BackRequested += BackRequested;
+            Windows.Phone.UI.Input.HardwareButtons.BackPressed += HardwareButtons_BackPressed;
             this.SizeChanged += MainPage_SizeChanged;
             this.second_frame.Navigating += Second_frame_Navigating;
             this.Back_In_Card_Mode.Completed += Back_In_Card_Mode_Completed;
@@ -48,7 +46,7 @@ namespace V电影.Pages.Mobile
             mainpage = this;
         }
 
-        private void BackRequested(object sender, BackRequestedEventArgs e)
+        private void HardwareButtons_BackPressed(object sender, Windows.Phone.UI.Input.BackPressedEventArgs e)
         {
             if (e.Handled == false)
             {
@@ -80,29 +78,13 @@ namespace V电影.Pages.Mobile
             }
         }
 
-        private async Task InitNotificationsAsync()
-        {
-            try
-            {
-                var channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
-
-                var hub = new NotificationHub("VmovierNotificationHub", "Endpoint=sb://vmovierpush.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=lwvMUJDfBKjBB3CILySyCpXnnh7BOFZM/oXkQ3Bb2RA=");
-                await hub.RegisterNativeAsync(channel.Uri);
-            }
-            catch (Exception)
-            {
-                return;
-            }
-        }
-
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             if (e.NavigationMode == NavigationMode.New)
             {
                 page_frame.Navigate(typeof(Pages.Mobile.HomePage));
                 second_frame.Navigate(typeof(Pages.Mobile.WelcomePage), new DrillInNavigationTransitionInfo());
-                await InitNotificationsAsync();
             }
         }
 

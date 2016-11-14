@@ -229,9 +229,9 @@ namespace V电影.Pages.Share
             }
             if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
             {
-                if (((sender as Button).DataContext as Model.notice).message.m_object.is_album)
+                if (((sender as Button).DataContext as Model.notice).message.m_object.id < 5000)
                 {
-                    Pages.Mobile.MainPage.mainpage.View_Series_Content(((sender as Button).DataContext as Model.notice).message.m_object.id);
+                    Pages.Mobile.MainPage.mainpage.View_Series_Content(((sender as Button).DataContext as Model.notice).message.m_object.id, -2);
                 }
                 else
                 {
@@ -240,9 +240,9 @@ namespace V电影.Pages.Share
             }
             else
             {
-                if (((sender as Button).DataContext as Model.notice).message.m_object.is_album)
+                if (((sender as Button).DataContext as Model.notice).message.m_object.id < 5000)
                 {
-                    MainPage.mainpage.View_Series_Content(((sender as Button).DataContext as Model.notice).message.m_object.id);
+                    MainPage.mainpage.View_Series_Content(((sender as Button).DataContext as Model.notice).message.m_object.id, -2);
                 }
                 else
                 {

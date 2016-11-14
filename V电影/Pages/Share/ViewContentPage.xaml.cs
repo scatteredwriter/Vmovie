@@ -20,6 +20,7 @@ using Windows.Web.Http;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.Phone.UI.Input;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上有介绍
 
@@ -194,6 +195,18 @@ namespace V电影.Pages.Share
             mediaelement.Source = new Uri(uri);
         }
 
+        private void mediaelement_CurrentStateChanged(object sender, RoutedEventArgs e)
+        {
+            switch (mediaelement.CurrentState)
+            {
+                case MediaElementState.Playing:
+                    {
+                        if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.Phone.System.SystemProtection"))
+                            Windows.Phone.System.SystemProtection.RequestScreenUnlock();
+                    }; break;
+            }
+        }
+
         private void DownloadButton_Click(object sender, RoutedEventArgs e)
         {
 
@@ -201,16 +214,19 @@ namespace V电影.Pages.Share
 
         private void FullWindowButton_Click(object sender, RoutedEventArgs e)
         {
-            if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
+            if (!mediaelement.IsFullWindow)
             {
-                if (ApplicationView.GetForCurrentView().IsFullScreenMode)
-                {
-                    Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.Portrait;
-                }
-                else
-                {
-                    Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.Landscape;
-                }
+                Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.Landscape;
+                mediaelement.SizeChanged += Mediaelement_SizeChanged;
+            }
+        }
+
+        private void Mediaelement_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize.Width <= e.PreviousSize.Width && !mediaelement.IsFullWindow)
+            {
+                Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.Portrait;
+                mediaelement.SizeChanged -= Mediaelement_SizeChanged;
             }
         }
 

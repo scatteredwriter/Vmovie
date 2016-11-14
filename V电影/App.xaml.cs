@@ -1,5 +1,4 @@
-﻿using Microsoft.WindowsAzure.MobileServices;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -45,7 +44,6 @@ namespace V电影
         public static int listview_old_selectedindex = 0;
 
         public static ApplicationDataContainer settings = ApplicationData.Current.LocalSettings;
-        public static MobileServiceClient MobileService = new MobileServiceClient("https://vmoverforwindowsbackend.azurewebsites.net");
 
         protected override void OnActivated(IActivatedEventArgs args)
         {

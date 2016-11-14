@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.WindowsAzure.Messaging;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -30,7 +31,21 @@ namespace V电影.Pages.Mobile
             this.InitializeComponent();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        private async Task InitNotificationsAsync()
+        {
+            try
+            {
+                PushNotificationChannel channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync(Windows.ApplicationModel.Core.CoreApplication.Id);
+
+                NotificationHub hub = new NotificationHub("VmovierNotificationHub", "Endpoint=sb://vmovierpush.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=lwvMUJDfBKjBB3CILySyCpXnnh7BOFZM/oXkQ3Bb2RA=");
+                await hub.RegisterNativeAsync(channel.Uri);
+            }
+            catch (Exception)
+            {
+            }
+        }
+
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
 
@@ -41,6 +56,17 @@ namespace V电影.Pages.Mobile
                 background_scale.CenterX = Window.Current.Bounds.Width / 2;
                 background_scale.CenterY = Window.Current.Bounds.Height / 2;
                 Background_Scale_SB.Begin();
+                for (int i = 0; i < 3; i++)
+                {
+                    try
+                    {
+                        await InitNotificationsAsync();
+                    }
+                    catch (Exception)
+                    {
+                        await Task.Delay(10000);
+                    }
+                }
             }
         }
 
