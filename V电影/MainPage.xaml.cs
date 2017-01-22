@@ -441,5 +441,12 @@ namespace V电影
             }
             page_frame.Navigate(typeof(Pages.Share.MessagePage));
         }
+
+        private void side_set_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            is_tapped_close_but = true;
+            splitview.IsPaneOpen = false;
+            page_frame.Navigate(typeof(Pages.Share.SettingPage));
+        }
     }
 }

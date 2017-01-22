@@ -45,37 +45,8 @@ namespace V电影
 
         public static ApplicationDataContainer settings = ApplicationData.Current.LocalSettings;
 
-        protected override void OnActivated(IActivatedEventArgs args)
+        private void Changed_TitleBar_Or_StatusBar()
         {
-            base.OnActivated(args);
-
-            if (args.Kind == ActivationKind.Protocol)
-            {
-                ProtocolActivatedEventArgs protocolargs = args as ProtocolActivatedEventArgs;
-                string original_uri = protocolargs.Uri.OriginalString;
-                if (original_uri.Contains("play"))
-                {
-                    string uri = original_uri.Substring(original_uri.IndexOf("qiniu_url=") + 10, original_uri.LastIndexOf("&") - original_uri.IndexOf("qiniu_url=") - "qiniu_url=".Length);
-                    string title = original_uri.Substring(original_uri.IndexOf("title=") + "title=".Length);
-                    Pages.Share.ViewContentPage.current.Accept_Uri(uri, title);
-                }
-            }
-        }
-
-        /// <summary>
-        /// 在应用程序由最终用户正常启动时进行调用。
-        /// 将在启动应用程序以打开特定文件等情况下使用。
-        /// </summary>
-        /// <param name="e">有关启动请求和过程的详细信息。</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
-        {
-#if DEBUG
-            if (System.Diagnostics.Debugger.IsAttached)
-            {
-                this.DebugSettings.EnableFrameRateCounter = true;
-            }
-#endif
-
             if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar")) //手机状态栏
             {
                 StatusBar statusBar = StatusBar.GetForCurrentView();
@@ -99,7 +70,215 @@ namespace V电影
                 titleBar.InactiveBackgroundColor = APPTheme.APP_Color;//应用处于非活跃状态时的背景色
                 titleBar.InactiveForegroundColor = Colors.White;//应用处于非活跃状态时的前景色
             }
+        }
 
+        protected override void OnActivated(IActivatedEventArgs args)
+        {
+            base.OnActivated(args);
+
+            #region Toast启动
+            if (args.Kind == ActivationKind.ToastNotification)
+            {
+                ToastNotificationActivatedEventArgs toast_args = args as ToastNotificationActivatedEventArgs;
+                string arguments = toast_args.Argument;
+                string[] param = null;
+                string page = null;
+                string postid = null;
+                if (arguments.Contains('&'))
+                    param = arguments.Split('&');
+                else
+                    param = new string[] { arguments };
+                if (param != null)
+                {
+                    foreach (var item in param)
+                    {
+                        if (item.Contains(Resource.APPTheme.page_param) || item.Contains(Resource.APPTheme.login_page))
+                            page = item.Substring(item.IndexOf('=') + 1);
+                        else if (item.Contains(Resource.APPTheme.postid_param))
+                            postid = item.Substring(item.IndexOf('=') + 1);
+                    }
+                }
+                Frame rootFrame = Window.Current.Content as Frame;
+                Changed_TitleBar_Or_StatusBar();
+                if (DeviceInfo.Device_type == DeviceType.Mobile)
+                {
+                    if (Pages.Mobile.MainPage.mainpage != null && page != null && page == Resource.APPTheme.view_content_page && postid != null)
+                    {
+                        Pages.Mobile.MainPage.mainpage.View_Content(postid);
+                        return;
+                    }
+                    else if (Pages.Mobile.MainPage.mainpage != null && page != null && page == Resource.APPTheme.login_page)
+                    {
+                        Pages.Mobile.MainPage.mainpage.Navigate_To_LoginPage();
+                        return;
+                    }
+                    else
+                    {
+                        Window.Current.Activate();
+                    }
+                }
+                else
+                {
+                    if (MainPage.mainpage != null && page != null && page == Resource.APPTheme.view_content_page && postid != null)
+                    {
+                        MainPage.mainpage.View_Content(postid);
+                        return;
+                    }
+                    else if (Pages.Mobile.MainPage.mainpage != null && page != null && page == Resource.APPTheme.login_page)
+                    {
+                        MainPage.mainpage.Navigate_To_LoginPage();
+                        return;
+                    }
+                    else
+                    {
+                        Window.Current.Activate();
+                    }
+                }
+                if (rootFrame == null)
+                {
+                    rootFrame = new Frame();
+                    Window.Current.Content = rootFrame;
+                }
+                if (rootFrame.Content == null)
+                {
+                    if (DeviceInfo.Device_type == DeviceType.Mobile)
+                    {
+                        rootFrame.ContentTransitions = new TransitionCollection();
+                        rootFrame.ContentTransitions.Add(new AddDeleteThemeTransition());
+                        if (page != null && page == Resource.APPTheme.view_content_page && postid != null)
+                            rootFrame.Navigate(typeof(Pages.Mobile.SplashPage), new Model.ToastParam { page = page, postid = postid });
+                        else if (page != null && page == Resource.APPTheme.login_page)
+                            rootFrame.Navigate(typeof(Pages.Mobile.SplashPage), new Model.ToastParam { page = page });
+                        else
+                            rootFrame.Navigate(typeof(Pages.Mobile.SplashPage));
+                    }
+                    else
+                    {
+                        if (page != null && page == Resource.APPTheme.view_content_page && postid != null)
+                        {
+                            Pages.PC.SplashPage splashpage = new Pages.PC.SplashPage(toast_args.SplashScreen, new Model.ToastParam { page = page, postid = postid });
+                            Window.Current.Content = splashpage;
+                        }
+                        else if (page != null && page == Resource.APPTheme.login_page)
+                        {
+                            Pages.PC.SplashPage splashpage = new Pages.PC.SplashPage(toast_args.SplashScreen, new Model.ToastParam { page = page });
+                            Window.Current.Content = splashpage;
+                        }
+                        else
+                        {
+                            Pages.PC.SplashPage splashpage = new Pages.PC.SplashPage(toast_args.SplashScreen);
+                            Window.Current.Content = splashpage;
+                        }
+                    }
+                    Window.Current.Activate();
+                }
+            }
+            #endregion
+
+            #region 协议启动
+            else if (args.Kind == ActivationKind.Protocol)
+            {
+                ProtocolActivatedEventArgs protocolargs = args as ProtocolActivatedEventArgs;
+                string original_uri = protocolargs.Uri.OriginalString;
+                string postid = null;
+                string uri = null;
+                string title = null;
+                if (original_uri.Contains("vmovier://video/"))
+                {
+                    postid = original_uri.Substring(original_uri.LastIndexOf('/') + 1);
+                }
+                else if (original_uri.Contains("vmovier://play"))
+                {
+                    uri = original_uri.Substring(original_uri.IndexOf("qiniu_url=") + 10, original_uri.LastIndexOf("&") - original_uri.IndexOf("qiniu_url=") - "qiniu_url=".Length);
+                    title = original_uri.Substring(original_uri.IndexOf("title=") + "title=".Length);
+                }
+                Frame rootFrame = Window.Current.Content as Frame;
+                Changed_TitleBar_Or_StatusBar();
+                if (DeviceInfo.Device_type == DeviceType.Mobile)
+                {
+                    if (Pages.Mobile.MainPage.mainpage != null && postid != null)
+                    {
+                        Pages.Mobile.MainPage.mainpage.View_Content(postid);
+                        return;
+                    }
+                    else if (Pages.Mobile.MainPage.mainpage != null && Pages.Share.ViewContentPage.current != null && uri != null && title != null)
+                    {
+                        Pages.Share.ViewContentPage.current.Accept_Uri(uri, title);
+                        return;
+                    }
+                    else
+                    {
+                        Window.Current.Activate();
+                    }
+                }
+                else
+                {
+                    if (MainPage.mainpage != null && postid != null)
+                    {
+                        MainPage.mainpage.View_Content(postid);
+                        return;
+                    }
+                    else if (MainPage.mainpage != null && Pages.Share.ViewContentPage.current != null && uri != null && title != null)
+                    {
+                        Pages.Share.ViewContentPage.current.Accept_Uri(uri, title);
+                        return;
+                    }
+                    else
+                    {
+                        Window.Current.Activate();
+                    }
+                }
+                if (rootFrame == null)
+                {
+                    rootFrame = new Frame();
+                    Window.Current.Content = rootFrame;
+                }
+                if (rootFrame.Content == null)
+                {
+                    if (DeviceInfo.Device_type == DeviceType.Mobile)
+                    {
+                        rootFrame.ContentTransitions = new TransitionCollection();
+                        rootFrame.ContentTransitions.Add(new AddDeleteThemeTransition());
+                        if (postid != null)
+                        {
+                            rootFrame.Navigate(typeof(Pages.Mobile.SplashPage), new Model.ProtocolParam { postid = postid });
+                        }
+                        else
+                            rootFrame.Navigate(typeof(Pages.Mobile.SplashPage));
+                    }
+                    else
+                    {
+                        if (postid != null)
+                        {
+                            Pages.PC.SplashPage splashpage = new Pages.PC.SplashPage(protocolargs.SplashScreen, new Model.ProtocolParam { postid = postid });
+                            Window.Current.Content = splashpage;
+                        }
+                        else
+                        {
+                            Pages.PC.SplashPage splashpage = new Pages.PC.SplashPage(protocolargs.SplashScreen);
+                            Window.Current.Content = splashpage;
+                        }
+                    }
+                    Window.Current.Activate();
+                }
+            }
+            #endregion
+        }
+
+        /// <summary>
+        /// 在应用程序由最终用户正常启动时进行调用。
+        /// 将在启动应用程序以打开特定文件等情况下使用。
+        /// </summary>
+        /// <param name="e">有关启动请求和过程的详细信息。</param>
+        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        {
+#if DEBUG
+            if (System.Diagnostics.Debugger.IsAttached)
+            {
+                this.DebugSettings.EnableFrameRateCounter = true;
+            }
+#endif
+            Changed_TitleBar_Or_StatusBar();
             Frame rootFrame = Window.Current.Content as Frame;
 
             // 不要在窗口已包含内容时重复应用程序初始化，
@@ -131,13 +310,12 @@ namespace V电影
                         Window.Current.Content = rootFrame;
                         rootFrame.ContentTransitions = new TransitionCollection();
                         rootFrame.ContentTransitions.Add(new AddDeleteThemeTransition());
-                        rootFrame.Navigate(typeof(Pages.Mobile.SplashPage), e.Arguments);
+                        rootFrame.Navigate(typeof(Pages.Mobile.SplashPage));
                     }
                     else
                     {
                         Pages.PC.SplashPage splashpage = new Pages.PC.SplashPage(e.SplashScreen);
                         Window.Current.Content = splashpage;
-                        //rootFrame.Navigate(typeof(MainPage), e.Arguments);
                     }
                 }
                 // 确保当前窗口处于活动状态

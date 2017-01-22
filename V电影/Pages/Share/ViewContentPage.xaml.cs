@@ -21,6 +21,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Phone.UI.Input;
+using Windows.System.Display;
 
 // “空白页”项模板在 http://go.microsoft.com/fwlink/?LinkId=234238 上有介绍
 
@@ -34,6 +35,7 @@ namespace V电影.Pages.Share
         Uri uri;
         private int postid;
         private WVJBWebViewClient.Bridge bridge = new WVJBWebViewClient.Bridge();
+        private DisplayRequest displayrequest = new DisplayRequest();
 
         public static ViewContentPage current;
 
@@ -48,10 +50,115 @@ namespace V电影.Pages.Share
             transport.IsCompact = true;
             transport.IsVolumeButtonVisible = true;
             transport.Style = MediaTransportStyle;
-            bridge.FpVideoFullScreenEvent += Bridge_FpVideoFullScreen;
+            bridge.ChangedPlayVideo += Bridge_ChangedPlayVideo;
+            bridge.DownloadVideoRequest += Bridge_DownloadVideoRequest;
+            bridge.FPCommentRequest += Bridge_FPCommentRequest;
+            bridge.FpVideoFullScreenRequest += Bridge_FpVideoFullScreen;
+            bridge.NewViewRequest += Bridge_NewViewRequest;
+            bridge.OpenUrlRequest += Bridge_OpenUrlRequest;
             CloseCommentView_sb.Completed += CloseCommentView_sb_Completed;
             this.DataContext = viewmodel;
             current = this;
+        }
+
+        private void Bridge_OpenUrlRequest(object sender, string e)
+        {
+            this.Dispatcher?.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                try
+                {
+                    if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
+                        Pages.Mobile.MainPage.mainpage.View_Content(e.ToString());
+                    else
+                        MainPage.mainpage.View_Content(e.ToString());
+                }
+                catch (Exception)
+                {
+                }
+            });
+        }
+
+        private void Bridge_NewViewRequest(object sender, int e)
+        {
+            this.Dispatcher?.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                try
+                {
+                    if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
+                        Pages.Mobile.MainPage.mainpage.View_Content(e.ToString());
+                    else
+                        MainPage.mainpage.View_Content(e.ToString());
+                }
+                catch (Exception)
+                {
+                }
+            });
+        }
+
+        private void Bridge_FpVideoFullScreen(object sender, bool e)
+        {
+            this.Dispatcher?.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                if (e)
+                {
+                    if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
+                    {
+                        Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.Landscape;
+                    }
+                    else
+                    {
+                        MainPage.mainpage.EnterFullScreenMode(1);
+                    }
+
+                }
+                else
+                {
+                    if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
+                    {
+                        Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.Portrait;
+                    }
+                    else
+                    {
+                        MainPage.mainpage.EnterFullScreenMode(0);
+                    }
+                }
+            });
+        }
+
+        private void Bridge_FPCommentRequest(object sender, int e)
+        {
+            this.Dispatcher?.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                try
+                {
+                    if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
+                        Pages.Mobile.MainPage.mainpage.View_Content(e.ToString());
+                    else
+                        MainPage.mainpage.View_Content(e.ToString());
+                }
+                catch (Exception)
+                {
+                }
+            });
+        }
+
+        private void Bridge_DownloadVideoRequest(object sender, int e)
+        {
+            this.Dispatcher?.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+
+            });
+        }
+
+        private void Bridge_ChangedPlayVideo(object sender, int e)
+        {
+            this.Dispatcher?.RunAsync(CoreDispatcherPriority.Normal, () =>
+            {
+                if (viewmodel.View_Info.content.Count > 1)
+                {
+                    mediaelement.Source = new Uri(viewmodel.View_Info.content[e].qiniu_url);
+                }
+            });
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -99,6 +206,19 @@ namespace V电影.Pages.Share
                     uri = new Uri(e.Parameter.ToString());
                 }
             }
+        }
+
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            try
+            {
+                displayrequest.RequestRelease();
+            }
+            catch (Exception)
+            {
+            }
+            bridge.FpVideoFullScreenRequest -= Bridge_FpVideoFullScreen;
+            CloseCommentView_sb.Completed -= CloseCommentView_sb_Completed;
         }
 
         private async Task FirstStep()
@@ -149,33 +269,6 @@ namespace V电影.Pages.Share
             }
         }
 
-        private void Bridge_FpVideoFullScreen(object sender, bool e)
-        {
-            if (e)
-            {
-                if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
-                {
-                    Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.Landscape;
-                }
-                else
-                {
-                    MainPage.mainpage.EnterFullScreenMode(1);
-                }
-
-            }
-            else
-            {
-                if (App.DeviceInfo.Device_type == Model.DeviceType.Mobile)
-                {
-                    Windows.Graphics.Display.DisplayInformation.AutoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.Portrait;
-                }
-                else
-                {
-                    MainPage.mainpage.EnterFullScreenMode(0);
-                }
-            }
-        }
-
         private HttpRequestMessage Get_Default_Header(Uri uri)
         {
             HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Post, uri);
@@ -201,9 +294,21 @@ namespace V电影.Pages.Share
             {
                 case MediaElementState.Playing:
                     {
-                        if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.Phone.System.SystemProtection"))
-                            Windows.Phone.System.SystemProtection.RequestScreenUnlock();
+                        displayrequest.RequestActive();
                     }; break;
+                case MediaElementState.Closed:
+                    {
+                        displayrequest.RequestRelease();
+                    }; break;
+                case MediaElementState.Paused:
+                    {
+                        displayrequest.RequestRelease();
+                    }; break;
+                case MediaElementState.Stopped:
+                    {
+                        displayrequest.RequestRelease();
+                    }; break;
+
             }
         }
 

@@ -24,7 +24,7 @@ namespace V电影.Params
         #region Lastest请求参数
         public const int lastest_size = 20;
         public const string lastest_tab = "lastest";
-        public const string lastest_floder = "Lastest";
+        public const string lastest_floder = "Cate_Content";
         #endregion
 
         #region Cate参数请求

@@ -99,20 +99,26 @@ namespace V电影.Pages.Share
             {
                 string json = await HttpRequest.VmovieRequset.Behind_Content_Request(viewmodel.Behind_Data[pivot_selectedindex].Behind_Info_P, viewmodel.Behind_Data[pivot_selectedindex].cateid);
                 viewmodel.Behind_Data[pivot_selectedindex].Behind_Info = JsonToObject.JsonToObject.Convert_Behind_Info_Json(json);
-                for (int i = 0; i < viewmodel.Behind_Data[pivot_selectedindex].Behind_Info.Count; i++)
+                if (viewmodel.Behind_Data[pivot_selectedindex].Behind_Info != null)
                 {
-                    try
+                    for (int i = 0; i < viewmodel.Behind_Data[pivot_selectedindex].Behind_Info.Count; i++)
                     {
-                        string uri = viewmodel.Behind_Data[pivot_selectedindex].Behind_Info[i].image;
-                        ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
-                        viewmodel.Behind_Data[pivot_selectedindex].Behind_Info[i].image_source = imagesource;
+                        try
+                        {
+                            if (viewmodel.Behind_Data[pivot_selectedindex].Behind_Info != null)
+                            {
+                                string uri = viewmodel.Behind_Data[pivot_selectedindex].Behind_Info[i].image;
+                                ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                                viewmodel.Behind_Data[pivot_selectedindex].Behind_Info[i].image_source = imagesource;
+                            }
+                        }
+                        catch (Exception)
+                        {
+                        }
                     }
-                    catch (Exception)
-                    {
-                    }
+                    viewmodel.Behind_Data[pivot_selectedindex].Behind_Info_New_Count = viewmodel.Behind_Data[pivot_selectedindex].Behind_Info.Count;
+                    viewmodel.Behind_Data[pivot_selectedindex].Is_Loaded = true;
                 }
-                viewmodel.Behind_Data[pivot_selectedindex].Behind_Info_New_Count = viewmodel.Behind_Data[pivot_selectedindex].Behind_Info.Count;
-                viewmodel.Behind_Data[pivot_selectedindex].Is_Loaded = true;
             }
             catch (Exception)
             {
@@ -169,22 +175,29 @@ namespace V电影.Pages.Share
                     }
                     for (int i = 0; i < lists.Count; i++)
                     {
-                        viewmodel.Behind_Data[index].Behind_Info.Add(lists[i]);
+                        if (viewmodel.Behind_Data[index].Behind_Info != null)
+                            viewmodel.Behind_Data[index].Behind_Info.Add(lists[i]);
                     }
                     viewmodel.Behind_Data[index].Behind_Info_New_Count = lists.Count;
                     ImageCache imagecache = new ImageCache();
                     await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.behind_floder);
-                    for (int i = (viewmodel.Behind_Data[index].Behind_Info.Count - viewmodel.Behind_Data[index].Behind_Info_New_Count); i < viewmodel.Behind_Data[index].Behind_Info.Count; i++)
+                    if (viewmodel.Behind_Data[pivot_selectedindex].Behind_Info != null)
                     {
-                        string uri = viewmodel.Behind_Data[pivot_selectedindex].Behind_Info[i].image;
-                        ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
-                        viewmodel.Behind_Data[pivot_selectedindex].Behind_Info[i].image_source = imagesource;
+                        for (int i = (viewmodel.Behind_Data[index].Behind_Info.Count - viewmodel.Behind_Data[index].Behind_Info_New_Count); i < viewmodel.Behind_Data[index].Behind_Info.Count; i++)
+                        {
+                            if (viewmodel.Behind_Data[pivot_selectedindex].Behind_Info != null)
+                            {
+                                string uri = viewmodel.Behind_Data[pivot_selectedindex].Behind_Info[i].image;
+                                ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                                viewmodel.Behind_Data[pivot_selectedindex].Behind_Info[i].image_source = imagesource;
+                            }
+                        }
+                        behind_info_new_border.Visibility = Visibility.Visible;
+                        behind_new_count_tb.Text = "本次加载了" + viewmodel.Behind_Data[index].Behind_Info_New_Count.ToString() + "条新内容";
+                        await Task.Delay(2000);
+                        behind_info_new_border.Visibility = Visibility.Collapsed;
+                        viewmodel.Behind_Data[index].Behind_Info_New_Count = viewmodel.Behind_Data[index].Behind_Info.Count;
                     }
-                    behind_info_new_border.Visibility = Visibility.Visible;
-                    behind_new_count_tb.Text = "本次加载了" + viewmodel.Behind_Data[index].Behind_Info_New_Count.ToString() + "条新内容";
-                    await Task.Delay(2000);
-                    behind_info_new_border.Visibility = Visibility.Collapsed;
-                    viewmodel.Behind_Data[index].Behind_Info_New_Count = viewmodel.Behind_Data[index].Behind_Info.Count;
                 }
                 catch (Exception)
                 {

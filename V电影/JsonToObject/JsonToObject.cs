@@ -55,6 +55,7 @@ namespace V电影.JsonToObject
                     item.postid = Convert.ToInt32(data[i]["postid"].ToString());
                     item.title = data[i]["title"].ToString();
                     item.app_fu_title = data[i]["app_fu_title"].ToString();
+                    item.wx_small_app_title = data[i]["wx_small_app_title"].ToString();
                     item.recent_hot = Convert.ToBoolean(Convert.ToInt32(data[i]["recent_hot"].ToString()));
                     item.image = data[i]["image"].ToString();
                     item.is_album = Convert.ToBoolean(Convert.ToInt32(data[i]["is_album"].ToString()));

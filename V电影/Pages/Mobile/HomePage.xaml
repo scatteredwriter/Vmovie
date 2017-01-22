@@ -103,7 +103,7 @@
                                         </Image>
                                     </Grid>
                                     <TextBlock x:Name="lastest_second_content" Text="{Binding Converter={StaticResource lastest_second_content_converter}}" TextWrapping="Wrap" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" RelativePanel.AlignLeftWith="image_grid" RelativePanel.AlignBottomWith="image_grid" Margin="20,0,20,20"></TextBlock>
-                                    <TextBlock x:Name="lastset_title" Text="{Binding title}" FontWeight="Medium" FontSize="{Binding Source={StaticResource APPTheme},Path=Content_Size}" TextWrapping="Wrap" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" RelativePanel.Above="lastest_second_content" RelativePanel.AlignLeftWith="image_grid" Margin="20,0,20,20"></TextBlock>
+                                    <TextBlock x:Name="lastset_title" Text="{Binding wx_small_app_title}" FontWeight="Medium" FontSize="{Binding Source={StaticResource APPTheme},Path=Content_Size}" TextWrapping="Wrap" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" RelativePanel.Above="lastest_second_content" RelativePanel.AlignLeftWith="image_grid" Margin="20,0,20,20"></TextBlock>
                                 </RelativePanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>

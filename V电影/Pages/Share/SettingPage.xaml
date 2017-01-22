@@ -1,0 +1,30 @@
+﻿<Page
+    x:Class="V电影.Pages.Share.SettingPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:V电影.Pages.Share"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Background="{Binding Source={StaticResource APPTheme},Path=APP_Color_Brush}">
+            <Button x:Name="back_but" HorizontalAlignment="Left" VerticalAlignment="Center" Height="28" Width="28" Margin="11" Style="{StaticResource BackButtonStyle}" Click="back_but_Click">
+                <Image Source="ms-appx:///Assets/back_icon.png"></Image>
+            </Button>
+            <TextBlock Text="设置" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="{Binding Source={StaticResource APPTheme},Path=Header_Size}" Foreground="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}"></TextBlock>
+        </Grid>
+        <StackPanel Grid.Row="1" Background="#FFF6F6F6">
+            <StackPanel Margin="0,20,0,0" Background="{Binding Source={StaticResource APPTheme},Path=Foreground_Color_Brush}" BorderBrush="{Binding Source={StaticResource APPTheme},Path=Second_White_Color_Brush}" BorderThickness="0,1,0,1" Orientation="Vertical">
+                <Grid Margin="20,0,0,0" Padding="0,10,20,10" BorderBrush="{Binding Source={StaticResource APPTheme},Path=Second_White_Color_Brush}" BorderThickness="0,0,0,0">
+                    <TextBlock Text="每日精选推送" HorizontalAlignment="Left" VerticalAlignment="Center"></TextBlock>
+                    <ToggleSwitch x:Name="daily_push" HorizontalAlignment="Right" VerticalAlignment="Center" Style="{StaticResource ToggleSwitchStyle}"></ToggleSwitch>
+                </Grid>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Page>

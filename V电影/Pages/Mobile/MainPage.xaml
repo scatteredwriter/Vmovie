@@ -320,7 +320,7 @@
                                 </Ellipse>
                                 <TextBlock Text="{Binding User_Name}" Foreground="{Binding User_Name_Foreground}" FontSize="{Binding Source={StaticResource APPTheme},Path=Header_Size}" HorizontalAlignment="Center" Margin="0,10,0,0"></TextBlock>
                             </StackPanel>
-                            <Image x:Name="side_set" Height="35" Width="35" Source="ms-appx:///Assets/side_set.png" RelativePanel.LeftOf="login" RelativePanel.AlignVerticalCenterWith="login" Margin="0,20,40,0"></Image>
+                            <Image x:Name="side_set" Height="35" Width="35" Source="ms-appx:///Assets/side_set.png" RelativePanel.LeftOf="login" RelativePanel.AlignVerticalCenterWith="login" Margin="0,20,40,0" Tapped="side_set_Tapped"></Image>
                             <Image x:Name="side_message" Height="35" Width="35" RelativePanel.RightOf="login" RelativePanel.AlignVerticalCenterWith="login" Margin="40,20,0,0" Source="ms-appx:///Assets/side_message.png" Tapped="side_message_Tapped"></Image>
                         </RelativePanel>
                         <Grid Grid.Row="1">

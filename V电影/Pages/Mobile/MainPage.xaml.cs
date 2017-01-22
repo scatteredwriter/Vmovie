@@ -50,30 +50,50 @@ namespace V电影.Pages.Mobile
         {
             if (e.Handled == false)
             {
-                e.Handled = true;
                 if (second_frame.Content != null && second_frame.CanGoBack && second_frame.CurrentSourcePageType != typeof(Pages.Mobile.WelcomePage))
                 {
                     if (second_frame.CurrentSourcePageType == typeof(Pages.Share.LoginPage))
                     {
                         UpDate_User_Info();
-                        Second_Frame_Go_Back(1);
+                        if (second_frame.CanGoBack && second_frame.BackStack[second_frame.BackStack.Count - 1].SourcePageType != typeof(Pages.Mobile.WelcomePage))
+                        {
+                            second_frame.GoBack();
+                            second_frame_title.Text = "内容";
+                        }
+                        else
+                            Second_Frame_Go_Back(1);
+                        e.Handled = true;
                         return;
                     }
-                    if (!(second_frame.CurrentSourcePageType == typeof(Pages.Share.SearchPage) && Pages.Share.SearchPage.current.viewmodel.Is_Go_Back == true))
+                    else if (!(second_frame.CurrentSourcePageType == typeof(Pages.Share.SearchPage) && Pages.Share.SearchPage.current.viewmodel.Is_Go_Back == true))
                     {
-                        Second_Frame_Go_Back();
+                        if (second_frame.CurrentSourcePageType == typeof(Pages.Share.SearchPage) || second_frame.CanGoBack && second_frame.BackStack[second_frame.BackStack.Count - 1].SourcePageType != typeof(Pages.Mobile.WelcomePage))
+                        {
+                            if (second_frame.CurrentSourcePageType == typeof(Pages.Share.SearchPage) || second_frame.CanGoBack && second_frame.BackStack[second_frame.BackStack.Count - 1].SourcePageType == typeof(Pages.Share.SearchPage))
+                            {
+                                Pages.Share.SearchPage.current.viewmodel.Is_Go_Back = true;
+                                Second_Frame_Go_Back();
+                            }
+                            else
+                                second_frame.GoBack();
+                        }
+                        else
+                            Second_Frame_Go_Back();
+                        e.Handled = true;
                         return;
                     }
                 }
+                if (page_frame.CurrentSourcePageType == typeof(Pages.Mobile.HomePage) || page_frame.CurrentSourcePageType == typeof(Pages.Share.SeriesPage) || page_frame.CurrentSourcePageType == typeof(Pages.Share.BehindPage))
+                {
+                    return;
+                }
                 if (page_frame.CanGoBack)
                 {
-                    if (page_frame.CurrentSourcePageType == typeof(Pages.Mobile.HomePage) || page_frame.CurrentSourcePageType == typeof(Pages.Share.SeriesPage) || page_frame.CurrentSourcePageType == typeof(Pages.Share.BehindPage))
-                    {
-                        return;
-                    }
                     if (page_frame.CurrentSourcePageType != typeof(Pages.Share.CatePage))
                         Open_Pane();
                     page_frame.GoBack();
+                    e.Handled = true;
+                    return;
                 }
             }
         }
@@ -137,7 +157,8 @@ namespace V电影.Pages.Mobile
         {
             if (second_frame.CurrentSourcePageType == typeof(Pages.Share.SeriesViewPage) || second_frame.CurrentSourcePageType == typeof(Pages.Share.ViewContentPage))
             {
-                second_frame.Content = null;
+                second_frame.BackStack.Clear();
+                second_frame.Navigate(typeof(Pages.Mobile.WelcomePage), new DrillInNavigationTransitionInfo());
             }
             if (second_frame.CurrentSourcePageType == typeof(Pages.Share.LoginPage))
             {
@@ -427,6 +448,13 @@ namespace V电影.Pages.Mobile
                 return;
             }
             page_frame.Navigate(typeof(Pages.Share.MessagePage));
+        }
+
+        private void side_set_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            is_tapped_close_but = true;
+            splitview.IsPaneOpen = false;
+            page_frame.Navigate(typeof(Pages.Share.SettingPage));
         }
     }
 }

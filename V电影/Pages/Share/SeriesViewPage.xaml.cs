@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.System.Display;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -30,6 +31,7 @@ namespace V电影.Pages.Share
 
         private MediaTransportControls transport;
         public static SeriesViewPage seriesviewpage;
+        private DisplayRequest displayrequest = new DisplayRequest();
         private ViewModel.SeriesViewViewModel viewmodel = new ViewModel.SeriesViewViewModel();
 
         public SeriesViewPage()
@@ -84,6 +86,18 @@ namespace V电影.Pages.Share
                     }
                 }
             }
+        }
+
+        protected override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+        {
+            try
+            {
+                displayrequest.RequestRelease();
+            }
+            catch (Exception)
+            {
+            }
+            CloseCommentView_sb.Completed -= CloseCommentView_sb_Completed;
         }
 
         private async Task FirstStep(int series_id = -1)
@@ -237,20 +251,7 @@ namespace V电影.Pages.Share
 
         private void ScrollViewer_ViewChanging(object sender, ScrollViewerViewChangingEventArgs e)
         {
-            //if (mediaelement.CurrentState == MediaElementState.Paused || mediaelement.CurrentState == MediaElementState.Closed)
-            //{
-            //    Grid root_grid = this.Content as Grid;
-            //    if ((sender as ScrollViewer).VerticalOffset >= 48)
-            //    {
-            //        root_grid.RowDefinitions[0].Height = new GridLength(48, GridUnitType.Pixel);
-            //        root_grid.RowDefinitions[1].Height = new GridLength(0, GridUnitType.Auto);
-            //    }
-            //    else
-            //    {
-            //        root_grid.RowDefinitions[0].Height = new GridLength(3, GridUnitType.Star);
-            //        root_grid.RowDefinitions[1].Height = new GridLength(7, GridUnitType.Star);
-            //    }
-            //}
+
         }
 
         private void mediaelement_CurrentStateChanged(object sender, RoutedEventArgs e)
@@ -259,9 +260,21 @@ namespace V电影.Pages.Share
             {
                 case MediaElementState.Playing:
                     {
-                        if (Windows.Foundation.Metadata.ApiInformation.IsTypePresent("Windows.Phone.System.SystemProtection"))
-                            Windows.Phone.System.SystemProtection.RequestScreenUnlock();
+                        displayrequest.RequestActive();
                     }; break;
+                case MediaElementState.Closed:
+                    {
+                        displayrequest.RequestRelease();
+                    }; break;
+                case MediaElementState.Paused:
+                    {
+                        displayrequest.RequestRelease();
+                    }; break;
+                case MediaElementState.Stopped:
+                    {
+                        displayrequest.RequestRelease();
+                    }; break;
+
             }
         }
 

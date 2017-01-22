@@ -1,7 +1,6 @@
 ﻿{
   "dependencies": {
     "Microsoft.AspNet.WebApi.Client": "5.2.3",
-    "Microsoft.Azure.Mobile.Client": "3.0.3",
     "Microsoft.Net.Http": "2.2.29",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.2",
     "Microsoft.Toolkit.Uwp.UI": "1.1.0",

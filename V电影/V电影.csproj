@@ -129,10 +129,12 @@
     <Compile Include="Model\collect.cs" />
     <Compile Include="Model\notice.cs" />
     <Compile Include="Model\order.cs" />
+    <Compile Include="Model\ProtocolParam.cs" />
     <Compile Include="Model\search.cs" />
     <Compile Include="Model\series.cs" />
     <Compile Include="Model\series_param.cs" />
     <Compile Include="Model\series_view.cs" />
+    <Compile Include="Model\ToastParam.cs" />
     <Compile Include="Model\user.cs" />
     <Compile Include="Model\view.cs" />
     <Compile Include="Model\view_content.cs" />
@@ -180,6 +182,9 @@
     </Compile>
     <Compile Include="Pages\Share\SeriesViewPage.xaml.cs">
       <DependentUpon>SeriesViewPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Share\SettingPage.xaml.cs">
+      <DependentUpon>SettingPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Share\ViewContentPage.xaml.cs">
       <DependentUpon>ViewContentPage.xaml</DependentUpon>
@@ -358,6 +363,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Share\SettingPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Share\ViewContentPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -378,6 +387,10 @@
     </SDKReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\BackgroundTasks\BackgroundTasks.csproj">
+      <Project>{66211258-44d2-43b2-8452-967a7c66aa16}</Project>
+      <Name>BackgroundTasks</Name>
+    </ProjectReference>
     <ProjectReference Include="..\WVJBWebViewClient\WVJBWebViewClient.csproj">
       <Project>{7ce8d598-838a-4731-9c43-fd861dd8e4db}</Project>
       <Name>WVJBWebViewClient</Name>

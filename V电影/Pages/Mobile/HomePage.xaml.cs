@@ -70,58 +70,82 @@ namespace V电影.Pages.Mobile
 
         private async Task First_Step()
         {
-            ((pivot.Items[0] as PivotItem).Header as Grid).Padding = new Thickness(0, 0, 0, 13);
-
-            string json = await HttpRequest.VmovieRequset.Flipview_Requset();
-            viewmodel.Flipview_Lists = JsonToObject.JsonToObject.Convert_Flipview_Json(json);
-            ImageCache imagecache = new ImageCache();
-            await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.flipview_floder);
-            for (int i = 0; i < viewmodel.Flipview_Lists.Count; i++)
+            try
             {
-                string uri = viewmodel.Flipview_Lists[i].imageurl;
-                ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
-                viewmodel.Flipview_Lists[i].image_source = imagesource;
+                ((pivot.Items[0] as PivotItem).Header as Grid).Padding = new Thickness(0, 0, 0, 13);
+
+                string json = await HttpRequest.VmovieRequset.Flipview_Requset();
+                viewmodel.Flipview_Lists = JsonToObject.JsonToObject.Convert_Flipview_Json(json);
+                ImageCache imagecache = new ImageCache();
+                await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.flipview_floder);
+                if (viewmodel.Flipview_Lists != null)
+                {
+                    for (int i = 0; i < viewmodel.Flipview_Lists.Count; i++)
+                    {
+                        if (viewmodel.Flipview_Lists != null)
+                        {
+                            string uri = viewmodel.Flipview_Lists[i].imageurl;
+                            ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                            viewmodel.Flipview_Lists[i].image_source = imagesource;
+                        }
+                    }
+                    Add_FlipView_Lines();
+                }
+
+                json = await HttpRequest.VmovieRequset.Lastest_Requset(lastest_p);
+                viewmodel.Lastest_Info = JsonToObject.JsonToObject.Convert_Lastest_Json(json);
+                imagecache = new ImageCache();
+                await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.lastest_floder);
+                if (viewmodel.Lastest_Info != null)
+                {
+                    for (int i = 0; i < viewmodel.Lastest_Info.Count; i++)
+                    {
+                        if (viewmodel.Lastest_Info != null)
+                        {
+                            string uri = viewmodel.Lastest_Info[i].image;
+                            ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                            viewmodel.Lastest_Info[i].image_source = imagesource;
+                        }
+                    }
+                    viewmodel.Lastest_New_Count = viewmodel.Lastest_Info.Count;
+                }
+
+                await Task.Delay(500);
+                lastest_listview_sc.ChangeView(null, 30, null);
+
+                json = await HttpRequest.VmovieRequset.Cates_Request();
+                viewmodel.Cate_Lists = JsonToObject.JsonToObject.Convert_Cates_Json(json);
+                Model.cate cate = new Model.cate();
+                cate.alias = "Album";
+                cate.cate_type = true;
+                cate.catename = "专题";
+                cate.icon = "http://cs.vmoiver.com/Uploads/Activity/2016-04-27/5720601258d7f.jpg";
+                cate.tab = "album";
+                viewmodel.Cate_Lists.Insert(0, cate);
+                cate = new Model.cate();
+                cate.alias = "Hot";
+                cate.cate_type = true;
+                cate.catename = "热门";
+                cate.icon = "http://cs.vmoiver.com/Uploads/Activity/2016-04-26/571ed9b5d2e44.jpg";
+                cate.tab = "hot";
+                viewmodel.Cate_Lists.Insert(0, cate);
+                imagecache = new ImageCache();
+                await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.cate_floder);
+                if (viewmodel.Cate_Lists != null)
+                {
+                    for (int i = 0; i < viewmodel.Cate_Lists.Count; i++)
+                    {
+                        if (viewmodel.Cate_Lists != null)
+                        {
+                            string uri = viewmodel.Cate_Lists[i].icon;
+                            ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                            viewmodel.Cate_Lists[i].image_source = imagesource;
+                        }
+                    }
+                }
             }
-            Add_FlipView_Lines();
-
-            json = await HttpRequest.VmovieRequset.Lastest_Requset(lastest_p);
-            viewmodel.Lastest_Info = JsonToObject.JsonToObject.Convert_Lastest_Json(json);
-            imagecache = new ImageCache();
-            await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.lastest_floder);
-            for (int i = 0; i < viewmodel.Lastest_Info.Count; i++)
+            catch (Exception)
             {
-                string uri = viewmodel.Lastest_Info[i].image;
-                ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
-                viewmodel.Lastest_Info[i].image_source = imagesource;
-            }
-            viewmodel.Lastest_New_Count = viewmodel.Lastest_Info.Count;
-
-            await Task.Delay(500);
-            lastest_listview_sc.ChangeView(null, 30, null);
-
-            json = await HttpRequest.VmovieRequset.Cates_Request();
-            viewmodel.Cate_Lists = JsonToObject.JsonToObject.Convert_Cates_Json(json);
-            Model.cate cate = new Model.cate();
-            cate.alias = "Album";
-            cate.cate_type = true;
-            cate.catename = "专题";
-            cate.icon = "http://cs.vmoiver.com/Uploads/Activity/2016-04-27/5720601258d7f.jpg";
-            cate.tab = "album";
-            viewmodel.Cate_Lists.Insert(0, cate);
-            cate = new Model.cate();
-            cate.alias = "Hot";
-            cate.cate_type = true;
-            cate.catename = "热门";
-            cate.icon = "http://cs.vmoiver.com/Uploads/Activity/2016-04-26/571ed9b5d2e44.jpg";
-            cate.tab = "hot";
-            viewmodel.Cate_Lists.Insert(0, cate);
-            imagecache = new ImageCache();
-            await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.cate_floder);
-            for (int i = 0; i < viewmodel.Cate_Lists.Count; i++)
-            {
-                string uri = viewmodel.Cate_Lists[i].icon;
-                ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
-                viewmodel.Cate_Lists[i].image_source = imagesource;
             }
         }
 
@@ -186,47 +210,65 @@ namespace V电影.Pages.Mobile
 
         private async void Lastest_Refresh()
         {
-            if (lastest_listview_sc.VerticalOffset == 0.0)
+            try
             {
-                int temp_flipview_count = viewmodel.Flipview_Lists.Count;
-
-                string json = await HttpRequest.VmovieRequset.Flipview_Requset();
-                viewmodel.Flipview_Lists = JsonToObject.JsonToObject.Convert_Flipview_Json(json);
-                ImageCache imagecache = new ImageCache();
-                await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.flipview_floder);
-                for (int i = 0; i < viewmodel.Flipview_Lists.Count; i++)
+                if (lastest_listview_sc.VerticalOffset == 0.0)
                 {
-                    string uri = viewmodel.Flipview_Lists[i].imageurl;
-                    ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
-                    viewmodel.Flipview_Lists[i].image_source = imagesource;
-                }
+                    int temp_flipview_count = viewmodel.Flipview_Lists.Count;
 
-                if (temp_flipview_count != viewmodel.Flipview_Lists.Count)
-                {
-                    sp.Children.Clear();
-                    Add_FlipView_Lines();
-                }
+                    string json = await HttpRequest.VmovieRequset.Flipview_Requset();
+                    viewmodel.Flipview_Lists = JsonToObject.JsonToObject.Convert_Flipview_Json(json);
+                    ImageCache imagecache = new ImageCache();
+                    await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.flipview_floder);
+                    if (viewmodel.Flipview_Lists != null)
+                    {
+                        for (int i = 0; i < viewmodel.Flipview_Lists.Count; i++)
+                        {
+                            if (viewmodel.Flipview_Lists != null)
+                            {
+                                string uri = viewmodel.Flipview_Lists[i].imageurl;
+                                ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                                viewmodel.Flipview_Lists[i].image_source = imagesource;
+                            }
+                        }
 
-                json = await HttpRequest.VmovieRequset.Lastest_Requset(lastest_p = 1);
-                viewmodel.Lastest_Info = JsonToObject.JsonToObject.Convert_Lastest_Json(json);
-                imagecache = new ImageCache();
-                await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.lastest_floder);
-                for (int i = 0; i < viewmodel.Lastest_Info.Count; i++)
-                {
-                    string uri = viewmodel.Lastest_Info[i].image;
-                    ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
-                    viewmodel.Lastest_Info[i].image_source = imagesource;
-                }
-                viewmodel.Lastest_New_Count = viewmodel.Lastest_Info.Count;
+                        if (viewmodel.Flipview_Lists != null && temp_flipview_count != viewmodel.Flipview_Lists.Count)
+                        {
+                            sp.Children.Clear();
+                            Add_FlipView_Lines();
+                        }
+                    }
 
-                await Task.Delay(500);
+                    json = await HttpRequest.VmovieRequset.Lastest_Requset(lastest_p = 1);
+                    viewmodel.Lastest_Info = JsonToObject.JsonToObject.Convert_Lastest_Json(json);
+                    imagecache = new ImageCache();
+                    await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.lastest_floder);
+                    if (viewmodel.Lastest_Info != null)
+                    {
+                        for (int i = 0; i < viewmodel.Lastest_Info.Count; i++)
+                        {
+                            if (viewmodel.Lastest_Info != null)
+                            {
+                                string uri = viewmodel.Lastest_Info[i].image;
+                                ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                                viewmodel.Lastest_Info[i].image_source = imagesource;
+                            }
+                        }
+                        viewmodel.Lastest_New_Count = viewmodel.Lastest_Info.Count;
+                    }
 
-                //移动回顶部
-                for (double i = 0.0; i < (30 - lastest_listview_sc.VerticalOffset); i += 1)
-                {
-                    lastest_listview_sc.ChangeView(null, lastest_listview_sc.VerticalOffset + i, null);
+                    await Task.Delay(500);
+
+                    //移动回顶部
+                    for (double i = 0.0; i < (30 - lastest_listview_sc.VerticalOffset); i += 1)
+                    {
+                        lastest_listview_sc.ChangeView(null, lastest_listview_sc.VerticalOffset + i, null);
+                    }
+                    lastest_listview_sc.ChangeView(null, 30, null);
                 }
-                lastest_listview_sc.ChangeView(null, 30, null);
+            }
+            catch (Exception)
+            {
             }
         }
 
@@ -371,39 +413,55 @@ namespace V电影.Pages.Mobile
                     }
                 }
             }
-            if (is_lastest_loading)
+            try
             {
-                return;
-            }
-            if (e.FinalView.VerticalOffset > (lastest_listview_sc.ScrollableHeight * 2.0) / 3.0)
-            {
-                is_lastest_loading = true;
-                string json = await HttpRequest.VmovieRequset.Lastest_Requset(++lastest_p);
-                ObservableCollection<Model.lastest_info> lists = JsonToObject.JsonToObject.Convert_Lastest_Json(json);
-                ObservableCollection<ImageSource> sources = new ObservableCollection<ImageSource>();
-                if (lists.Count == 0)
+                if (is_lastest_loading)
                 {
                     return;
                 }
-                for (int i = 0; i < lists.Count; i++)
+                if (e.FinalView.VerticalOffset > (lastest_listview_sc.ScrollableHeight * 2.0) / 3.0)
                 {
-                    viewmodel.Lastest_Info.Add(lists[i]);
+                    is_lastest_loading = true;
+                    string json = await HttpRequest.VmovieRequset.Lastest_Requset(++lastest_p);
+                    ObservableCollection<Model.lastest_info> lists = JsonToObject.JsonToObject.Convert_Lastest_Json(json);
+                    ObservableCollection<ImageSource> sources = new ObservableCollection<ImageSource>();
+                    if (lists.Count == 0)
+                    {
+                        return;
+                    }
+                    for (int i = 0; i < lists.Count; i++)
+                    {
+                        viewmodel.Lastest_Info.Add(lists[i]);
+                    }
+                    if (viewmodel.Lastest_Info != null)
+                    {
+                        viewmodel.Lastest_New_Count = viewmodel.Lastest_Info.Count - viewmodel.Lastest_New_Count;
+                        ImageCache imagecache = new ImageCache();
+                        await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.lastest_floder);
+                        if (viewmodel.Lastest_Info != null)
+                        {
+                            for (int i = (viewmodel.Lastest_Info.Count - viewmodel.Lastest_New_Count); i < viewmodel.Lastest_Info.Count; i++)
+                            {
+                                if (viewmodel.Lastest_Info != null)
+                                {
+                                    string uri = viewmodel.Lastest_Info[i].image;
+                                    ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                                    viewmodel.Lastest_Info[i].image_source = imagesource;
+                                }
+                            }
+                        }
+                        lastest_new_border.Visibility = Visibility.Visible;
+                        await Task.Delay(2000);
+                        lastest_new_border.Visibility = Visibility.Collapsed;
+                        viewmodel.Lastest_New_Count = viewmodel.Lastest_Info.Count;
+                    }
                 }
-                viewmodel.Lastest_New_Count = viewmodel.Lastest_Info.Count - viewmodel.Lastest_New_Count;
-                ImageCache imagecache = new ImageCache();
-                await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.lastest_floder);
-                for (int i = (viewmodel.Lastest_Info.Count - viewmodel.Lastest_New_Count); i < viewmodel.Lastest_Info.Count; i++)
-                {
-                    string uri = viewmodel.Lastest_Info[i].image;
-                    ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
-                    viewmodel.Lastest_Info[i].image_source = imagesource;
-                }
-                lastest_new_border.Visibility = Visibility.Visible;
-                await Task.Delay(2000);
-                lastest_new_border.Visibility = Visibility.Collapsed;
-                viewmodel.Lastest_New_Count = viewmodel.Lastest_Info.Count;
+                is_lastest_loading = false;
+
             }
-            is_lastest_loading = false;
+            catch (Exception)
+            {
+            }
         }
 
         private void Get_Child(DependencyObject o, int n)

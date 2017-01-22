@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7CE8D598-838A-4731-9C43-FD861DD8E4DB}</ProjectGuid>
+    <ProjectGuid>{66211258-44D2-43B2-8452-967A7C66AA16}</ProjectGuid>
     <OutputType>winmdobj</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WVJBWebViewClient</RootNamespace>
-    <AssemblyName>WVJBWebViewClient</AssemblyName>
+    <RootNamespace>BackgroundTasks</RootNamespace>
+    <AssemblyName>BackgroundTasks</AssemblyName>
     <DefaultLanguage>zh-CN</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.10586.0</TargetPlatformVersion>
@@ -108,7 +108,10 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="WVJBWebViewClient.cs" />
+    <Compile Include="Helper\HttpRequestHelper.cs" />
+    <Compile Include="Helper\Resource.cs" />
+    <Compile Include="Helper\ToastHelper.cs" />
+    <Compile Include="NotificationsBackgroundTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

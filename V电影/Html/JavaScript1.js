@@ -26,14 +26,18 @@ for (var i = 0; i < ov.length; i++) {
     but.setAttribute("href", "javascript:void(0);");
     but.parentNode.setAttribute("href", "javascript:void(0);");
 }
+for (var i = 0; i < ov.length; i++) {
+    var dss = ov[i].getElementsByClassName("desc-title");
+    var ds = dss[0];
+    var as = ds.getElementsByTagName("a");
+    var a = as[0];
+    a.setAttribute("href", "javascript:void(0);");
+}
 
 //新链接跳转
 var eles1 = document.getElementsByClassName("new-view-link");
 for (var i = 0; i < eles1.length; i++) {
     eles1[i].addEventListener("click", function () {
-        var obj = document.createElement("div");
-        obj.innerHTML = "有得到消息";
-        document.body.appendChild(obj);
         var viewId = this.getAttribute("data-id");
         var viewType = this.getAttribute("data-type");
         window.WebViewJavascriptBridge.getMessage("NewView", viewId, viewType);
@@ -44,9 +48,6 @@ for (var i = 0; i < eles1.length; i++) {
 var eles6 = document.getElementsByClassName("open-url");
 for (var i = 0; i < eles6.length; i++) {
     eles6[i].addEventListener("click", function () {
-        var obj = document.createElement("div");
-        obj.innerHTML = "有得到消息";
-        document.body.appendChild(obj);
         var viewUrl = this.getAttribute("data-url");
         window.WebViewJavascriptBridge.getMessage("NewUrl", viewUrl, "");
     }, false);
@@ -93,17 +94,17 @@ for (var i = 0; i < eles2.length; i++) {
 }
 
 //视频下载
-var eles3 = document.getElementsByClassName("video-desc");
+var eles3 = document.getElementsByClassName("new-art-content fs");
 for (var i = 0; i < eles3.length; i++) {
     var buts = eles3[i].getElementsByTagName("i");
-    var but = buts[0];
-    but.parentNode.setAttribute("href", "javascript:void(0);");
-    but.removeEventListener("click", handler2, false);
-    but.addEventListener("click", function () {
-        var fov = but.parentNode.parentNode.parentNode;
-        var videoIdx = fov.getAttribute("data-index");
-        window.WebViewJavascriptBridge.getMessage("DownLoadVideo", videoIdx, "1");
-    }, false);
+    for (var j = 0; j < buts.length; j++) {
+        buts[j].parentNode.setAttribute("href", "javascript:void(0);");
+        buts[j].addEventListener("click", function () {
+            var fov = this.parentNode.parentNode.parentNode;
+            var videoIdx = fov.getAttribute("data-index");
+            window.WebViewJavascriptBridge.getMessage("DownLoadVideo", videoIdx, "1");
+        }, false);
+    }
 }
 
 //翻页视频点击
@@ -130,10 +131,9 @@ for (var i = 0; i < eles4.length; i++) {
 //翻页评论
 var eles5 = document.getElementsByClassName("fp-all");
 for (var i = 0; i < eles5.length; i++) {
+    var fp_id = document.getElementsByClassName("fp-id");
+    var viewId = fp_id[0].innerHTML;
     eles5[i].addEventListener("click", function () {
-        var obj = document.createElement("div");
-        obj.innerHTML = "有得到消息";
-        document.body.appendChild(obj);
-        n();
+        window.WebViewJavascriptBridge.getMessage("FPComment", viewId, "0");
     }, false);
 }

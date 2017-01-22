@@ -24,6 +24,7 @@ namespace V电影.Model
         public int share_num { get; set; }
         public string title { get; set; }
         public string app_fu_title { get; set; }
+        public string wx_small_app_title { get; set; }
 
         private ImageSource _image_source = new BitmapImage(new Uri("ms-appx:///Assets/main_pic_shadow.png", UriKind.Absolute));
         public ImageSource image_source

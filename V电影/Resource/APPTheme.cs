@@ -15,6 +15,12 @@ namespace V电影.Resource
         public const string user_avatar = "user_avatar"; //用户头像
         public const string user_auth_key = "user_auth_key"; //用户验证key
         public const string user_email = "user_email"; //用户邮箱
+        public const string is_open_daily_push = "is_open_daily_push"; //每日精选推送是否开启
+        
+        public const string page_param = "page";
+        public const string postid_param = "postid";
+        public const string view_content_page = "ViewContent";
+        public const string login_page = "Login";
 
         //APP主题颜色
         public SolidColorBrush APP_Color_Brush

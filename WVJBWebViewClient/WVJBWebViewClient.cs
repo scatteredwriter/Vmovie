@@ -12,33 +12,60 @@ namespace WVJBWebViewClient
     [AllowForWeb]
     public sealed class Bridge
     {
+        private const string NewView = "NewView"; //新链接跳转
+        private const string NewUrl = "NewUrl"; //网页跳转
+        private const string PlayVideo = "PlayVideo"; //视频播放
+        private const string DownLoadVideo = "DownLoadVideo"; //视频下载
+        private const string FPComment = "FPComment"; //翻页评论
 
-        public event EventHandler<bool> FpVideoFullScreenEvent;
+        public event EventHandler<bool> FpVideoFullScreenRequest;
+        public event EventHandler<int> ChangedPlayVideo;
+        public event EventHandler<int> NewViewRequest;
+        public event EventHandler<string> OpenUrlRequest;
+        public event EventHandler<int> DownloadVideoRequest;
+        public event EventHandler<int> FPCommentRequest;
 
         public async void showMessage(string msg)
         {
             await new MessageDialog(msg).ShowAsync();
         }
 
-        public async void getMessage(string paramString, string param1, string param2)
+        public void getMessage(string paramString, string param1, string param2)
         {
-            await new MessageDialog(paramString).ShowAsync();
-        }
-
-        public void elementResize(string param, string height, string width)
-        {
-
+            switch (paramString)
+            {
+                case NewView:
+                    {
+                        NewViewRequest?.Invoke(this, Convert.ToInt32(param1));
+                    }; break;
+                case NewUrl:
+                    {
+                        OpenUrlRequest?.Invoke(this, param1.ToString());
+                    }; break;
+                case PlayVideo:
+                    {
+                        ChangedPlayVideo?.Invoke(this, Convert.ToInt32(param1));
+                    }; break;
+                case DownLoadVideo:
+                    {
+                        DownloadVideoRequest?.Invoke(this, Convert.ToInt32(param1));
+                    }; break;
+                case FPComment:
+                    {
+                        FPCommentRequest?.Invoke(this, Convert.ToInt32(param1));
+                    };break;
+            }
         }
 
         public void fpVideoFullScreen(string is_fullscreen)
         {
             if (is_fullscreen == "1")
             {
-                FpVideoFullScreenEvent?.Invoke(this, true);
+                FpVideoFullScreenRequest?.Invoke(this, true);
             }
             else
             {
-                FpVideoFullScreenEvent?.Invoke(this, false);
+                FpVideoFullScreenRequest?.Invoke(this, false);
             }
         }
     }

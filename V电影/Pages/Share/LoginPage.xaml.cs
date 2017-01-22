@@ -95,7 +95,10 @@ namespace V电影.Pages.Share
 
         private async void sign_in_Tapped(object sender, TappedRoutedEventArgs e)
         {
-            await Launcher.LaunchUriAsync(new Uri("http://www.vmovier.com/user/register"));
+            string uri = "http://www.vmovier.com/user/register";
+            if (App.DeviceInfo.Device_type == DeviceType.Mobile)
+                uri += "?pc=1";
+            await Launcher.LaunchUriAsync(new Uri(uri));
         }
     }
 }

@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Background;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Networking.PushNotifications;
@@ -29,6 +30,9 @@ namespace V电影.Pages.PC
         private Windows.ApplicationModel.Activation.SplashScreen splashscreen;
         private Rect splashImageRect;
 
+        private Model.ToastParam toastparam;
+        private Model.ProtocolParam protocolparam;
+
         public SplashPage()
         {
             this.InitializeComponent();
@@ -40,6 +44,16 @@ namespace V电影.Pages.PC
         {
             this.splashscreen = splashscreen;
             this.splashImageRect = splashscreen.ImageLocation;
+        }
+
+        public SplashPage(Windows.ApplicationModel.Activation.SplashScreen splashscreen, Model.ToastParam toastparam) : this(splashscreen)
+        {
+            this.toastparam = toastparam;
+        }
+
+        public SplashPage(Windows.ApplicationModel.Activation.SplashScreen splashscreen, Model.ProtocolParam protocolparam) : this(splashscreen)
+        {
+            this.protocolparam = protocolparam;
         }
 
         private void PositionImage()
@@ -54,13 +68,56 @@ namespace V电影.Pages.PC
         {
             try
             {
-                PushNotificationChannel channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
+                PushNotificationChannel channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync(Windows.ApplicationModel.Core.CoreApplication.Id);
 
-                NotificationHub hub = new NotificationHub("VmovierNotificationHub", "Endpoint=sb://vmovierpush.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=lwvMUJDfBKjBB3CILySyCpXnnh7BOFZM/oXkQ3Bb2RA=");
-                await hub.RegisterNativeAsync(channel.Uri);
+                NotificationHub hub1 = new NotificationHub("VmovierForWindowsMessagePush", "Endpoint=sb://vmoviermessagepush.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=D2mi37/sK6PMrFc32bmekKw3oT8AJNLkJ+u+rJh0iBA=");
+                await hub1.RegisterNativeAsync(channel.Uri);
+
+                if (App.settings.Values.ContainsKey(Resource.APPTheme.is_open_daily_push) && (bool)App.settings.Values[Resource.APPTheme.is_open_daily_push] == true || !App.settings.Values.ContainsKey(Resource.APPTheme.is_open_daily_push))
+                {
+                    if (!App.settings.Values.ContainsKey(Resource.APPTheme.is_open_daily_push))
+                        App.settings.Values[Resource.APPTheme.is_open_daily_push] = true;
+                    NotificationHub hub2 = new NotificationHub("VmovierForWindowsDailyPush", "Endpoint=sb://vmoviermessagepush.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=AAZmQxwICokOozFoZ+XpC3l2FYvWWpOY11SdhQFKzgk=");
+                    await hub2.RegisterNativeAsync(channel.Uri);
+                }
+                else if (App.settings.Values.ContainsKey(Resource.APPTheme.is_open_daily_push) && (bool)App.settings.Values[Resource.APPTheme.is_open_daily_push] == false)
+                {
+                    try
+                    {
+                        NotificationHub hub = new NotificationHub("VmovierForWindowsDailyPush", "Endpoint=sb://vmoviermessagepush.servicebus.windows.net/;SharedAccessKeyName=DefaultListenSharedAccessSignature;SharedAccessKey=AAZmQxwICokOozFoZ+XpC3l2FYvWWpOY11SdhQFKzgk=");
+                        await hub.UnregisterNativeAsync();
+                    }
+                    catch (Exception)
+                    {
+                    }
+                }
             }
             catch (Exception)
             {
+            }
+        }
+
+        private async Task RegToastBackgroundTask()
+        {
+            // 判断一下是否允许访问后台任务
+            var res = await BackgroundExecutionManager.RequestAccessAsync();
+            if (res == BackgroundAccessStatus.Denied || res == BackgroundAccessStatus.Unspecified)
+            {
+                return;
+            }
+
+            Type taskType = typeof(BackgroundTasks.NotificationsBackgroundTask);
+            var task = BackgroundTaskRegistration.AllTasks.Values.FirstOrDefault(t => t.Name == taskType.Name);
+            if (task == null)
+            {
+                // 注册后台任务
+                BackgroundTaskBuilder bd = new BackgroundTaskBuilder();
+                bd.Name = taskType.Name;
+                bd.TaskEntryPoint = taskType.FullName;
+                // 声明触发器
+                ToastNotificationActionTrigger trigger = new ToastNotificationActionTrigger();
+                bd.SetTrigger(trigger);
+                task = bd.Register();
             }
         }
 
@@ -80,6 +137,7 @@ namespace V电影.Pages.PC
                 try
                 {
                     await InitNotificationsAsync();
+                    await RegToastBackgroundTask();
                 }
                 catch (Exception)
                 {
@@ -94,6 +152,20 @@ namespace V电影.Pages.PC
             await Task.Delay(1000);
             rootFrame.Navigate(typeof(MainPage), new DrillInNavigationTransitionInfo());
             Window.Current.Content = rootFrame;
+            if (toastparam != null)
+                switch (toastparam.page)
+                {
+                    case Resource.APPTheme.view_content_page:
+                        {
+                            MainPage.mainpage.View_Content(toastparam.postid);
+                        }; break;
+                    case Resource.APPTheme.login_page:
+                        {
+                            MainPage.mainpage.Navigate_To_LoginPage();
+                        }; break;
+                }
+            else if (protocolparam != null && protocolparam.postid != null)
+                MainPage.mainpage.View_Content(protocolparam.postid);
             Window.Current.SizeChanged -= Current_SizeChanged;
             this.Loaded -= SplashPage_Loaded;
         }
