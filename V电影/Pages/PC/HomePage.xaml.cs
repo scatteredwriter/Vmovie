@@ -117,20 +117,6 @@ namespace V电影.Pages.PC
 
                 json = await HttpRequest.VmovieRequset.Cates_Request();
                 viewmodel.Cate_Lists = JsonToObject.JsonToObject.Convert_Cates_Json(json);
-                Model.cate cate = new Model.cate();
-                cate.alias = "Album";
-                cate.cate_type = true;
-                cate.catename = "专题";
-                cate.icon = "http://cs.vmoiver.com/Uploads/Activity/2016-04-27/5720601258d7f.jpg";
-                cate.tab = "album";
-                viewmodel.Cate_Lists.Insert(0, cate);
-                cate = new Model.cate();
-                cate.alias = "Hot";
-                cate.cate_type = true;
-                cate.catename = "热门";
-                cate.icon = "http://cs.vmoiver.com/Uploads/Activity/2016-04-26/571ed9b5d2e44.jpg";
-                cate.tab = "hot";
-                viewmodel.Cate_Lists.Insert(0, cate);
                 imagecache = new ImageCache();
                 await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.cate_floder);
                 if (viewmodel.Cate_Lists != null)

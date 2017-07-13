@@ -27,13 +27,8 @@ namespace V电影.HttpRequest
         {
             HttpClient httpclient = new HttpClient();
             if (App.settings.Values.ContainsKey(Resource.APPTheme.user_auth_key))
-            {
-                httpclient.DefaultRequestHeaders.Connection.Add("Keep-Alive");
-                httpclient.DefaultRequestHeaders.AcceptEncoding.Add(new System.Net.Http.Headers.StringWithQualityHeaderValue("gzip"));
-                httpclient.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("VmovierApp", "5.0.9"));
-                httpclient.DefaultRequestHeaders.UserAgent.Add(new System.Net.Http.Headers.ProductInfoHeaderValue("Android", "6.0"));
                 httpclient.DefaultRequestHeaders.Add("Auth-Key", App.settings.Values[Resource.APPTheme.user_auth_key].ToString());
-            }
+            httpclient.DefaultRequestHeaders.Add("User-Agent", "VmovierApp 5.2.0.2 / Android 5.1");
             return httpclient;
         }
 
@@ -440,7 +435,7 @@ namespace V电影.HttpRequest
             }
         }
 
-        public static async Task<string> Collect_Request(int p,int pid) //我喜欢的请求
+        public static async Task<string> Collect_Request(int p, int pid) //我喜欢的请求
         {
             HttpClient httpclient = Default_HttpClient();
             HttpResponseMessage response = new HttpResponseMessage();

@@ -8,7 +8,7 @@ namespace V电影.API
 {
     public class Vmovies_API
     {
-        public const string cate_lists_api = "http://app.vmoiver.com/apiv3/cate/getList"; //频道列表API
+        public const string cate_lists_api = "https://app.vmovier.com/apiv3/cate/getList"; //频道列表API
         public const string cate_content_api = "http://app.vmoiver.com/apiv3/post/getPostInCate"; //频道内容API
         public const string flipview_api = "http://app.vmoiver.com/apiv3/index/getBanner"; //幻灯片API
         public const string get_by_tab_api = "http://app.vmoiver.com/apiv3/post/getPostByTab"; //通过Tab得到信息API
