@@ -13,6 +13,20 @@ namespace V电影.ViewModel
 {
     public class HomePageViewModel : BasePageViewModel
     {
+        private Model.Index _index;
+        public Model.Index Index
+        {
+            get
+            {
+                return _index;
+            }
+            set
+            {
+                _index = value;
+                RaisePropertyChanged(nameof(Index));
+            }
+        }
+
         private ObservableCollection<Model.flipview> _flipview_lists;
         public ObservableCollection<Model.flipview> Flipview_Lists
         {

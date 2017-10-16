@@ -11,6 +11,19 @@ namespace V电影.JsonToObject
 {
     public class JsonToObject
     {
+        public static Model.Index Convert_Index_Json(string json)
+        {
+            Model.Index index = null;
+            try
+            {
+                index = JsonConvert.DeserializeObject<Model.Index>(json);
+            }
+            catch (Exception)
+            {
+            }
+            return index;
+        }
+
         public static ObservableCollection<Model.flipview> Convert_Flipview_Json(string json)
         {
             ObservableCollection<Model.flipview> flipview_lists = new ObservableCollection<Model.flipview>();
@@ -353,52 +366,28 @@ namespace V电影.JsonToObject
             {
                 JObject json_object = (JObject)JsonConvert.DeserializeObject(json);
                 JObject data = (JObject)json_object["data"];
+                item.qiniu_url = data["qiniu_url"].ToString();
+                item.content_vids = data["content_vids"].ToString().Split(',');
                 item.postid = Convert.ToInt32(data["postid"].ToString());
                 item.title = data["title"].ToString();
-                item.app_fu_title = data["app_fu_title"].ToString();
+                item.app_title = data["app_title"].ToString();
                 item.intro = data["intro"].ToString();
                 item.count_comment = Convert.ToInt32(data["count_comment"].ToString());
-                item.is_album = Convert.ToBoolean(Convert.ToInt32(data["is_album"].ToString()));
-                item.is_collect = Convert.ToBoolean(Convert.ToInt32(data["is_collect"].ToString()));
-                JObject content = (JObject)data["content"];
-                JArray video = (JArray)content["video"];
-                item.content = new ObservableCollection<Model.view_content>();
-                for (int i = 0; i < video.Count; i++)
-                {
-                    Model.view_content view_content = new Model.view_content();
-                    try
-                    {
-                        view_content.image = video[i]["image"].ToString();
-                        view_content.title = video[i]["title"].ToString();
-                        view_content.duration = Convert.ToInt32(video[i]["duration"].ToString());
-                        view_content.filesize = Convert.ToInt64(video[i]["filesize"].ToString());
-                    }
-                    catch (Exception)
-                    {
-                    }
-                    view_content.source_link = video[i]["source_link"].ToString();
-                    view_content.qiniu_url = video[i]["qiniu_url"].ToString();
-                    item.content.Add(view_content);
-                }
+                item.isalbum = Convert.ToBoolean(Convert.ToInt32(data["isalbum"].ToString()));
+                item.iscollection = Convert.ToBoolean(Convert.ToInt32(data["iscollection"].ToString()));
                 item.image = data["image"].ToString();
                 item.rating = data["rating"].ToString();
                 try
                 {
                     item.publish_time = Convert.ToInt64(data["publish_time"].ToString());
+                    item.tags = data["tags"].ToString();
                 }
                 catch (Exception)
                 {
                 }
                 item.count_like = Convert.ToInt32(data["count_like"].ToString());
                 item.count_share = Convert.ToInt32(data["count_share"].ToString());
-                item.cate = data["cate"][0].ToString();
-                item.share_link_sweibo = data["share_link"]["sweibo"].ToString();
-                item.share_link_weixin = data["share_link"]["weixin"].ToString();
-                item.share_link_qzone = data["share_link"]["qzone"].ToString();
-                item.share_link_qq = data["share_link"]["qq"].ToString();
-                item.tags = data["tags"].ToString();
-                item.share_sub_title = data["share_sub_title"].ToString();
-                item.weibo_share_image = data["weibo_share_image"].ToString();
+                item.cate = data["categories"][0]["catename"].ToString();
                 return item;
             }
             catch (Exception)
@@ -488,21 +477,21 @@ namespace V电影.JsonToObject
                     comment_data.addtime = Convert.ToInt64(data[i]["addtime"].ToString());
                     JObject userinfo = (JObject)data[i]["userinfo"];
                     comment_data.userinfo = new Model.comment_user_info();
-                    comment_data.userinfo.userid = Convert.ToInt32(userinfo["userid"].ToString());
+                    comment_data.userinfo.useruid = Convert.ToInt32(userinfo["uid"].ToString());
                     comment_data.userinfo.username = userinfo["username"].ToString();
                     comment_data.userinfo.avatar = userinfo["avatar"].ToString();
                     comment_data.userinfo.isadmin = Convert.ToBoolean(Convert.ToInt32(userinfo["isadmin"].ToString()));
-                    comment_data.userinfo.is_xpc_author = Convert.ToBoolean(Convert.ToInt32(userinfo["is_xpc_author"].ToString()));
+                    comment_data.userinfo.isediter = Convert.ToBoolean(Convert.ToInt32(userinfo["is_editor"].ToString()));
                     if (!String.IsNullOrEmpty(data[i]["reply_username"].ToString()))
                     {
                         comment_data.reply_username = data[i]["reply_username"].ToString();
                         comment_data.reply_user_isadmin = Convert.ToBoolean(Convert.ToInt32(data[i]["reply_user_isadmin"].ToString()));
                         comment_data.reply_userinfo = new Model.comment_user_info();
-                        comment_data.reply_userinfo.userid = Convert.ToInt32(userinfo["userid"].ToString());
+                        comment_data.reply_userinfo.useruid = Convert.ToInt32(userinfo["uid"].ToString());
                         comment_data.reply_userinfo.username = userinfo["username"].ToString();
                         comment_data.reply_userinfo.avatar = userinfo["avatar"].ToString();
                         comment_data.reply_userinfo.isadmin = Convert.ToBoolean(Convert.ToInt32(userinfo["isadmin"].ToString()));
-                        comment_data.reply_userinfo.is_xpc_author = Convert.ToBoolean(Convert.ToInt32(userinfo["is_xpc_author"].ToString()));
+                        comment_data.reply_userinfo.isediter = Convert.ToBoolean(Convert.ToInt32(userinfo["is_editor"].ToString()));
                     }
                     JArray subcomment = (JArray)data[i]["subcomment"];
                     if (subcomment.Count != 0)
@@ -521,21 +510,21 @@ namespace V电影.JsonToObject
                                 comment_data_j.addtime = Convert.ToInt64(subcomment[j]["addtime"].ToString());
                                 JObject userinfo_j = (JObject)subcomment[j]["userinfo"];
                                 comment_data_j.userinfo = new Model.comment_user_info();
-                                comment_data_j.userinfo.userid = Convert.ToInt32(userinfo_j["userid"].ToString());
+                                comment_data_j.userinfo.useruid = Convert.ToInt32(userinfo_j["uid"].ToString());
                                 comment_data_j.userinfo.username = userinfo_j["username"].ToString();
                                 comment_data_j.userinfo.avatar = userinfo_j["avatar"].ToString();
                                 comment_data_j.userinfo.isadmin = Convert.ToBoolean(Convert.ToInt32(userinfo_j["isadmin"].ToString()));
-                                comment_data_j.userinfo.is_xpc_author = Convert.ToBoolean(Convert.ToInt32(userinfo_j["is_xpc_author"].ToString()));
+                                comment_data_j.userinfo.isediter = Convert.ToBoolean(Convert.ToInt32(userinfo_j["is_editor"].ToString()));
                                 if (!String.IsNullOrEmpty(subcomment[j]["reply_username"].ToString()))
                                 {
                                     comment_data_j.reply_username = subcomment[j]["reply_username"].ToString();
-                                    comment_data_j.reply_user_isadmin = Convert.ToBoolean(Convert.ToInt32(subcomment[j]["reply_user_isadmin"].ToString()));
+                                    //comment_data_j.reply_user_isadmin = Convert.ToBoolean(Convert.ToInt32(subcomment[j]["reply_user_isadmin"].ToString()));
                                     comment_data_j.reply_userinfo = new Model.comment_user_info();
-                                    comment_data_j.reply_userinfo.userid = Convert.ToInt32(userinfo_j["userid"].ToString());
+                                    comment_data_j.reply_userinfo.useruid = Convert.ToInt32(userinfo_j["uid"].ToString());
                                     comment_data_j.reply_userinfo.username = userinfo_j["username"].ToString();
                                     comment_data_j.reply_userinfo.avatar = userinfo_j["avatar"].ToString();
                                     comment_data_j.reply_userinfo.isadmin = Convert.ToBoolean(Convert.ToInt32(userinfo_j["isadmin"].ToString()));
-                                    comment_data_j.reply_userinfo.is_xpc_author = Convert.ToBoolean(Convert.ToInt32(userinfo_j["is_xpc_author"].ToString()));
+                                    comment_data_j.reply_userinfo.isediter = Convert.ToBoolean(Convert.ToInt32(userinfo_j["is_editor"].ToString()));
                                 }
                                 comment_data_j.subcomment = null;
                                 sub_lists.Add(comment_data_j);

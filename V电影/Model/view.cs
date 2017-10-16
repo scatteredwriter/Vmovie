@@ -11,12 +11,11 @@ namespace V电影.Model
     {
         public int postid { get; set; }
         public string title { get; set; }
-        public string app_fu_title { get; set; }
+        public string app_title { get; set; }
         public string intro { get; set; }
         public int count_comment { get; set; }
-        public bool is_album { get; set; }
-        public bool is_collect { get; set; }
-        public ObservableCollection<Model.view_content> content { get; set; }
+        public bool isalbum { get; set; }
+        public bool iscollection { get; set; }
         public string image { get; set; }
         public string rating { get; set; }
         public Int64 publish_time { get; set; }
@@ -24,11 +23,7 @@ namespace V电影.Model
         public int count_share { get; set; }
         public string cate { get; set; }
         public string tags { get; set; }
-        public string share_link_sweibo { get; set; }
-        public string share_link_weixin { get; set; }
-        public string share_link_qzone { get; set; }
-        public string share_link_qq { get; set; }
-        public string share_sub_title { get; set; }
-        public string weibo_share_image { get; set; }
+        public string qiniu_url { get; set; }
+        public string[] content_vids { get; set; }
     }
 }

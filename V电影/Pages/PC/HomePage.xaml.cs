@@ -70,6 +70,70 @@ namespace V电影.Pages.PC
             }
         }
 
+        private async Task First_Step2()
+        {
+            try
+            {
+                ((pivot.Items[0] as PivotItem).Header as Grid).Padding = new Thickness(0, 0, 0, 13);
+
+                string json = await HttpRequest.VmovieRequset.Index_Request();
+                viewmodel.Index = JsonToObject.JsonToObject.Convert_Index_Json(json);
+                ImageCache imagecache = new ImageCache();
+                await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.index_floder);
+                if (viewmodel.Index != null && viewmodel.Index.data.banner != null)
+                {
+                    for (int i = 0; i < viewmodel.Index.data.banner.list.Count; i++)
+                    {
+                        if (viewmodel.Index.data.banner.list != null)
+                        {
+                            string uri = viewmodel.Index.data.banner.list[i].image;
+                            ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                            viewmodel.Index.data.banner.list[i].image_source = imagesource;
+                        }
+                    }
+                    Add_FlipView_Lines();
+                }
+
+                if (viewmodel.Index != null && viewmodel.Index.data.today != null)
+                {
+                    for (int i = 0; i < viewmodel.Index.data.today.list.Count; i++)
+                    {
+                        if (viewmodel.Index.data.today.list != null)
+                        {
+                            string uri = viewmodel.Index.data.today.list[i].image;
+                            ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                            viewmodel.Index.data.today.list[i].image_source = imagesource;
+                        }
+                    }
+                    viewmodel.Lastest_New_Count = viewmodel.Index.data.today.list.Count;
+                }
+
+                await Task.Delay(500);
+                lastest_listview_sc.ChangeView(null, 30, null);
+
+                json = await HttpRequest.VmovieRequset.Cates_Request();
+                viewmodel.Cate_Lists = JsonToObject.JsonToObject.Convert_Cates_Json(json);
+                imagecache = new ImageCache();
+                await imagecache.InitializeAsync(await Params.Params.Get_ImageCacheFolder(), Params.Params.cate_floder);
+                if (viewmodel.Cate_Lists != null)
+                {
+                    for (int i = 0; i < viewmodel.Cate_Lists.Count; i++)
+                    {
+                        if (viewmodel.Cate_Lists != null)
+                        {
+                            string uri = viewmodel.Cate_Lists[i].icon;
+                            ImageSource imagesource = await imagecache.GetFromCacheAsync(new Uri(uri), uri.Substring(uri.LastIndexOf('/') + 1));
+                            viewmodel.Cate_Lists[i].image_source = imagesource;
+                        }
+                    }
+                }
+            }
+            catch (Exception)
+            {
+            }
+
+        }
+
         private async Task First_Step()
         {
             try

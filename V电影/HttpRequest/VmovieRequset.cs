@@ -52,6 +52,27 @@ namespace V电影.HttpRequest
             }
         }
 
+        public static async Task<string> Index_Request()
+        {
+            HttpClient httpclient = Default_HttpClient();
+            HttpResponseMessage response = new HttpResponseMessage();
+            Cache.JsonCache cache = new Cache.JsonCache();
+            string result = "";
+            string api = API.Vmovies_API.index_api;
+            try
+            {
+                response = await httpclient.PostAsync(api, null);
+                result = await response.Content.ReadAsStringAsync();
+                await cache.Cache(result, "Index");
+                return result;
+            }
+            catch (Exception)
+            {
+                result = await cache.Get_Cache("Index");
+                return result;
+            }
+        }
+
         public static async Task<string> Lastest_Requset(int p) //最新数据请求
         {
             HttpClient httpclient = Default_HttpClient();
@@ -270,13 +291,11 @@ namespace V电影.HttpRequest
         public static async Task<string> View_Content_Request(int postid) //文章内容请求
         {
             HttpClient httpclient = Default_HttpClient();
-            HttpResponseMessage response = new HttpResponseMessage();
-            List<KeyValuePair<string, string>> param = new List<KeyValuePair<string, string>>();
+            HttpResponseMessage response;
             string result = "";
             try
             {
-                param.Add(new KeyValuePair<string, string>("postid", postid.ToString()));
-                response = await httpclient.PostAsync(API.Vmovies_API.view_content_api, new FormUrlEncodedContent(param));
+                response = await httpclient.GetAsync(API.Vmovies_API.view_content_api.Replace("{0}", postid.ToString()));
                 result = await response.Content.ReadAsStringAsync();
                 return result;
             }

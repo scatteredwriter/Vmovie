@@ -150,13 +150,16 @@ namespace V电影.Pages.Share
             });
         }
 
-        private void Bridge_ChangedPlayVideo(object sender, int e)
+        private void Bridge_ChangedPlayVideo(object sender, string e)
         {
             this.Dispatcher?.RunAsync(CoreDispatcherPriority.Normal, () =>
             {
-                if (viewmodel.View_Info.content.Count > 1)
+                if (viewmodel.View_Info.content_vids.Count() > 1)
                 {
-                    mediaelement.Source = new Uri(viewmodel.View_Info.content[e].qiniu_url);
+                    if (!e.Contains("http:"))
+                        mediaelement.Source = new Uri("http:" + new Uri(e));
+                    else
+                        mediaelement.Source = new Uri(e);
                 }
             });
         }
@@ -174,27 +177,19 @@ namespace V电影.Pages.Share
                     await FirstStep();
                     try
                     {
-                        switch (viewmodel.View_Info.content.Count)
+                        if (viewmodel.View_Info.qiniu_url != null)
                         {
-                            case 0:
-                                {
-                                    mediaelement_grid.Visibility = Visibility.Collapsed;
-                                    Grid.SetRow(webview_grid, 0);
-                                    Grid.SetRowSpan(webview_grid, 2);
-                                }; break;
-                            case 1:
-                                {
-                                    mediaelement.Source = new Uri(viewmodel.View_Info.content[0].qiniu_url);
-
-                                }; break;
-                            default:
-                                {
-                                    mediaelement.Source = new Uri(viewmodel.View_Info.content[0].qiniu_url);
-                                }; break;
+                            if (!viewmodel.View_Info.qiniu_url.Contains("http:"))
+                                mediaelement.Source = new Uri("http:" + viewmodel.View_Info.qiniu_url);
+                            else
+                                mediaelement.Source = new Uri(viewmodel.View_Info.qiniu_url);
                         }
                     }
                     catch (Exception)
                     {
+                        mediaelement_grid.Visibility = Visibility.Collapsed;
+                        Grid.SetRow(webview_grid, 0);
+                        Grid.SetRowSpan(webview_grid, 2);
                     }
                 }
                 catch (Exception)
@@ -367,7 +362,7 @@ namespace V电影.Pages.Share
             Int64 timeStamp = (Int64)(DateTime.Now - startTime).TotalSeconds;
             string data = "[{\"postid\": \"{0}\",\"iscollect\": \"{1}\",\"addtime\": \"{2}\"}]";
             data = data.Replace("{0}", viewmodel.View_Info.postid.ToString());
-            data = data.Replace("{1}", Convert.ToInt32(!viewmodel.View_Info.is_collect).ToString());
+            data = data.Replace("{1}", Convert.ToInt32(!viewmodel.View_Info.iscollection).ToString());
             data = data.Replace("{2}", timeStamp.ToString());
             string json = await HttpRequest.VmovieRequset.Set_Collect_Request(data);
             if (!String.IsNullOrEmpty(json))
@@ -378,8 +373,8 @@ namespace V电影.Pages.Share
                     string msg = json_jobject["msg"].ToString();
                     if (msg == "ok")
                     {
-                        viewmodel.View_Info.is_collect = !viewmodel.View_Info.is_collect;
-                        if (viewmodel.View_Info.is_collect)
+                        viewmodel.View_Info.iscollection = !viewmodel.View_Info.iscollection;
+                        if (viewmodel.View_Info.iscollection)
                         {
                             ((like_num.Content as StackPanel).Children[0] as Image).Source = new BitmapImage(new Uri("ms-appx:///Assets/details_like_finish.png", UriKind.Absolute));
                             ((like_num.Content as StackPanel).Children[1] as TextBlock).Text = (Convert.ToInt32(((like_num.Content as StackPanel).Children[1] as TextBlock).Text) + 1).ToString();

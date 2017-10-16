@@ -17,6 +17,10 @@ namespace V电影.Params
             return image_folder;
         }
 
+        #region Index请求参数
+        public const string index_floder = "Index";
+        #endregion
+
         #region FlipView请求参数
         public const string flipview_floder = "FlipView";
         #endregion

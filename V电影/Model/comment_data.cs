@@ -24,10 +24,10 @@ namespace V电影.Model
 
     public class comment_user_info
     {
-        public int userid { get; set; }
+        public int useruid { get; set; }
         public string username { get; set; }
         public string avatar { get; set; }
         public bool isadmin { get; set; }
-        public bool is_xpc_author { get; set; }
+        public bool isediter { get; set; }
     }
 }

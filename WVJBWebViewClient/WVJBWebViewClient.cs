@@ -19,7 +19,7 @@ namespace WVJBWebViewClient
         private const string FPComment = "FPComment"; //翻页评论
 
         public event EventHandler<bool> FpVideoFullScreenRequest;
-        public event EventHandler<int> ChangedPlayVideo;
+        public event EventHandler<string> ChangedPlayVideo;
         public event EventHandler<int> NewViewRequest;
         public event EventHandler<string> OpenUrlRequest;
         public event EventHandler<int> DownloadVideoRequest;
@@ -44,7 +44,7 @@ namespace WVJBWebViewClient
                     }; break;
                 case PlayVideo:
                     {
-                        ChangedPlayVideo?.Invoke(this, Convert.ToInt32(param1));
+                        ChangedPlayVideo?.Invoke(this, param1);
                     }; break;
                 case DownLoadVideo:
                     {

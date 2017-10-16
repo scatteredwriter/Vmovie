@@ -125,6 +125,7 @@
     <Compile Include="Model\comment_data.cs" />
     <Compile Include="Model\DeviceInfo.cs" />
     <Compile Include="Model\flipview.cs" />
+    <Compile Include="Model\index.cs" />
     <Compile Include="Model\lastest_info.cs" />
     <Compile Include="Model\collect.cs" />
     <Compile Include="Model\notice.cs" />
@@ -137,7 +138,6 @@
     <Compile Include="Model\ToastParam.cs" />
     <Compile Include="Model\user.cs" />
     <Compile Include="Model\view.cs" />
-    <Compile Include="Model\view_content.cs" />
     <Compile Include="Pages\Mobile\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
     </Compile>
@@ -242,6 +242,8 @@
     <Content Include="Assets\login_bg.jpg" />
     <Content Include="Assets\login_input_del.png" />
     <Content Include="Assets\main_pic_shadow.png" />
+    <Content Include="Assets\main_search.png" />
+    <Content Include="Assets\me_background.png" />
     <Content Include="Assets\movie_detail_bottom_share_icon.png" />
     <Content Include="Assets\search_input_del.png" />
     <Content Include="Assets\side_behind.png" />

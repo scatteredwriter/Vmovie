@@ -55,7 +55,7 @@ for (var i = 0; i < eles6.length; i++) {
 
 var handler2 = function () {
     var videoPlaying = this.getAttribute("data-playing");
-    var videoIdx = this.getAttribute("data-index");
+    var videoUrl = this.getAttribute("data-qiniu");
     var playBtns = this.getElementsByClassName("play-btn");
     var playBtn = playBtns[0];
     var playing = this.getElementsByClassName("paly-ing");
@@ -83,7 +83,7 @@ var handler2 = function () {
         playBtn2.style.visibility = "visible";
         last_ov = this;
 
-        window.WebViewJavascriptBridge.getMessage("PlayVideo", videoIdx, "0");
+        window.WebViewJavascriptBridge.getMessage("PlayVideo", videoUrl, "0");
     }
 };
 
